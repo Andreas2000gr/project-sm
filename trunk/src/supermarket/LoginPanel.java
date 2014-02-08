@@ -88,8 +88,8 @@ public class LoginPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (jTextField1.getText() == SuperMarket.getAdminUn() && 
-                jPasswordField1.getPassword().toString()== SuperMarket.getAdminPw()) {
+        if ((jTextField1.getText().toString().equals((String)SuperMarket.getAdminUn())) && 
+                (jPasswordField1.getPassword().toString().equals((String)SuperMarket.getAdminPw()))) {
             MainPanel mp = new MainPanel(this.frame);
             frame.addPanelInMain(mp);
         }
