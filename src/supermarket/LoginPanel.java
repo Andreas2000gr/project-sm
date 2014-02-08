@@ -21,7 +21,9 @@ public class LoginPanel extends javax.swing.JPanel {
     private final SuperMarketParentFrame frame;
     public LoginPanel(SuperMarketParentFrame frame) {
         initComponents();
+        this.jTextField1.requestFocusInWindow();
         this.frame = frame;
+        repaint();
     }
 
     /**
@@ -119,8 +121,8 @@ public class LoginPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Λάθος Στοιχεία...");
             jTextField1.setText(null);
             jPasswordField1.setText(null);
-            repaint();
-            jTextField1.requestFocusInWindow();
+            jTextField1.requestFocus();
+            repaint();       
         }
     }//GEN-LAST:event_jButton1ActionPerformed
     
