@@ -4,17 +4,27 @@
  * and open the template in the editor.
  */
 
-package LocalDB;
+package supermarket.Pojos;
 
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Orgasmatron
+ * @author Euh
  */
 @Entity
 @Table(name = "CUSTOMER")
@@ -26,15 +36,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Customer.findByLastName", query = "SELECT c FROM Customer c WHERE c.lastName = :lastName"),
     @NamedQuery(name = "Customer.findByAddress", query = "SELECT c FROM Customer c WHERE c.address = :address"),
     @NamedQuery(name = "Customer.findByPointsCardNumber", query = "SELECT c FROM Customer c WHERE c.pointsCardNumber = :pointsCardNumber"),
-    @NamedQuery(name = "Customer.findByCreditCardId", query = "SELECT c FROM Customer c WHERE c.creditCardId = :creditCardId"),
     @NamedQuery(name = "Customer.findByAvailablePoints", query = "SELECT c FROM Customer c WHERE c.availablePoints = :availablePoints"),
+    @NamedQuery(name = "Customer.findByNoofchecks", query = "SELECT c FROM Customer c WHERE c.noofchecks = :noofchecks"),
     @NamedQuery(name = "Customer.findByPassword", query = "SELECT c FROM Customer c WHERE c.password = :password")})
 public class Customer implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    //@Basic(optional = false)  έγινε comment καθώς θα χρησιμοποιηθεί ο generator παρακάτω
-    @SequenceGenerator(name="cust_id", sequenceName="SQ_CUSTOMER_ID", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="cust_id")
+    @Basic(optional = false)
     @Column(name = "CUSTOMER_ID")
     private Integer customerId;
     @Basic(optional = false)
@@ -48,17 +56,21 @@ public class Customer implements Serializable {
     @Basic(optional = false)
     @Column(name = "POINTS_CARD_NUMBER")
     private String pointsCardNumber;
-    @Column(name = "CREDIT_CARD_ID")
-    private Integer creditCardId;
     @Basic(optional = false)
     @Column(name = "AVAILABLE_POINTS")
     private int availablePoints;
+    @Column(name = "NOOFCHECKS")
+    private Integer noofchecks;
+    @Basic(optional = false)
     @Column(name = "PASSWORD")
     private String password;
+    @JoinColumn(name = "CARD_ID", referencedColumnName = "CARD_ID")
+    @ManyToOne(optional = false)
+    private CreditCard cardId;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId")
+    private Collection<CheckCard> checkCardCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
     private Collection<Purchase> purchaseCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
-    private Collection<Voucher> voucherCollection;
 
     public Customer() {
     }
@@ -67,12 +79,13 @@ public class Customer implements Serializable {
         this.customerId = customerId;
     }
 
-    public Customer(Integer customerId, String firstName, String lastName, String pointsCardNumber, int availablePoints) {
+    public Customer(Integer customerId, String firstName, String lastName, String pointsCardNumber, int availablePoints, String password) {
         this.customerId = customerId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.pointsCardNumber = pointsCardNumber;
         this.availablePoints = availablePoints;
+        this.password = password;
     }
 
     public Integer getCustomerId() {
@@ -115,20 +128,20 @@ public class Customer implements Serializable {
         this.pointsCardNumber = pointsCardNumber;
     }
 
-    public Integer getCreditCardId() {
-        return creditCardId;
-    }
-
-    public void setCreditCardId(Integer creditCardId) {
-        this.creditCardId = creditCardId;
-    }
-
     public int getAvailablePoints() {
         return availablePoints;
     }
 
     public void setAvailablePoints(int availablePoints) {
         this.availablePoints = availablePoints;
+    }
+
+    public Integer getNoofchecks() {
+        return noofchecks;
+    }
+
+    public void setNoofchecks(Integer noofchecks) {
+        this.noofchecks = noofchecks;
     }
 
     public String getPassword() {
@@ -139,6 +152,23 @@ public class Customer implements Serializable {
         this.password = password;
     }
 
+    public CreditCard getCardId() {
+        return cardId;
+    }
+
+    public void setCardId(CreditCard cardId) {
+        this.cardId = cardId;
+    }
+
+    @XmlTransient
+    public Collection<CheckCard> getCheckCardCollection() {
+        return checkCardCollection;
+    }
+
+    public void setCheckCardCollection(Collection<CheckCard> checkCardCollection) {
+        this.checkCardCollection = checkCardCollection;
+    }
+
     @XmlTransient
     public Collection<Purchase> getPurchaseCollection() {
         return purchaseCollection;
@@ -146,15 +176,6 @@ public class Customer implements Serializable {
 
     public void setPurchaseCollection(Collection<Purchase> purchaseCollection) {
         this.purchaseCollection = purchaseCollection;
-    }
-
-    @XmlTransient
-    public Collection<Voucher> getVoucherCollection() {
-        return voucherCollection;
-    }
-
-    public void setVoucherCollection(Collection<Voucher> voucherCollection) {
-        this.voucherCollection = voucherCollection;
     }
 
     @Override
@@ -179,7 +200,7 @@ public class Customer implements Serializable {
 
     @Override
     public String toString() {
-        return "LocalDB.Customer[ customerId=" + customerId + " ]";
+        return "supermarket.Pojos.Customer[ customerId=" + customerId + " ]";
     }
     
 }

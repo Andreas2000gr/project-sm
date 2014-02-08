@@ -4,17 +4,29 @@
  * and open the template in the editor.
  */
 
-package LocalDB;
+package supermarket.Pojos;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Panagis
+ * @author Euh
  */
 @Entity
 @Table(name = "STORE")
@@ -25,17 +37,15 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Store.findByName", query = "SELECT s FROM Store s WHERE s.name = :name"),
     @NamedQuery(name = "Store.findByAddress", query = "SELECT s FROM Store s WHERE s.address = :address")})
 public class Store implements Serializable {
+    @Transient
+    private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
     private static final long serialVersionUID = 1L;
     @Id
-    //@Basic(optional = false)  έγινε comment καθώς θα χρησιμοποιηθεί ο generator παρακάτω
-    @SequenceGenerator(name="sto_id", sequenceName="SQ_STORE_ID", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="sto_id")
+    @Basic(optional = false)
     @Column(name = "STORE_ID")
     private Integer storeId;
-    @Basic(optional = false)
     @Column(name = "NAME")
     private String name;
-    @Basic(optional = false)
     @Column(name = "ADDRESS")
     private String address;
     @ManyToMany(mappedBy = "storeCollection")
@@ -50,18 +60,14 @@ public class Store implements Serializable {
         this.storeId = storeId;
     }
 
-    public Store(Integer storeId, String name, String address) {
-        this.storeId = storeId;
-        this.name = name;
-        this.address = address;
-    }
-
     public Integer getStoreId() {
         return storeId;
     }
 
     public void setStoreId(Integer storeId) {
+        Integer oldStoreId = this.storeId;
         this.storeId = storeId;
+        changeSupport.firePropertyChange("storeId", oldStoreId, storeId);
     }
 
     public String getName() {
@@ -69,7 +75,9 @@ public class Store implements Serializable {
     }
 
     public void setName(String name) {
+        String oldName = this.name;
         this.name = name;
+        changeSupport.firePropertyChange("name", oldName, name);
     }
 
     public String getAddress() {
@@ -77,7 +85,9 @@ public class Store implements Serializable {
     }
 
     public void setAddress(String address) {
+        String oldAddress = this.address;
         this.address = address;
+        changeSupport.firePropertyChange("address", oldAddress, address);
     }
 
     @XmlTransient
@@ -120,7 +130,15 @@ public class Store implements Serializable {
 
     @Override
     public String toString() {
-        return "LocalDB.Store[ storeId=" + storeId + " ]";
+        return "supermarket.Pojos.Store[ storeId=" + storeId + " ]";
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        changeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        changeSupport.removePropertyChangeListener(listener);
     }
     
 }

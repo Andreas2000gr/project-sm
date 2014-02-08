@@ -4,19 +4,30 @@
  * and open the template in the editor.
  */
 
-package LocalDB;
+package supermarket.Pojos;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Panagis
+ * @author Euh
  */
 @Entity
 @Table(name = "PURCHASE")
@@ -31,9 +42,7 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Purchase implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    //@Basic(optional = false)  ����� comment ����� �� �������������� � generator ��������
-    @SequenceGenerator(name="pur_id", sequenceName="SQ_PURCHASE_ID", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="pur_id")
+    @Basic(optional = false)
     @Column(name = "PURCHASE_ID")
     private Integer purchaseId;
     @Basic(optional = false)
@@ -48,8 +57,8 @@ public class Purchase implements Serializable {
     private int pointsEarned;
     @Basic(optional = false)
     @Column(name = "DELIVERY")
-    private Boolean delivery;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "purchaseId")
+    private int delivery;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "purchase")
     private Collection<ProductPurchase> productPurchaseCollection;
     @JoinColumn(name = "STORE", referencedColumnName = "STORE_ID")
     @ManyToOne(optional = false)
@@ -59,14 +68,13 @@ public class Purchase implements Serializable {
     private Customer customer;
 
     public Purchase() {
-        this.productPurchaseCollection = new ArrayList<>(0);
     }
 
     public Purchase(Integer purchaseId) {
         this.purchaseId = purchaseId;
     }
 
-    public Purchase(Integer purchaseId, Date datetime, float amount, int pointsEarned, Boolean delivery) {
+    public Purchase(Integer purchaseId, Date datetime, float amount, int pointsEarned, int delivery) {
         this.purchaseId = purchaseId;
         this.datetime = datetime;
         this.amount = amount;
@@ -106,11 +114,11 @@ public class Purchase implements Serializable {
         this.pointsEarned = pointsEarned;
     }
 
-    public Serializable getDelivery() {
+    public int getDelivery() {
         return delivery;
     }
 
-    public void setDelivery(Boolean delivery) {
+    public void setDelivery(int delivery) {
         this.delivery = delivery;
     }
 
@@ -161,7 +169,7 @@ public class Purchase implements Serializable {
 
     @Override
     public String toString() {
-        return "LocalDB.Purchase[ purchaseId=" + purchaseId + " ]";
+        return "supermarket.Pojos.Purchase[ purchaseId=" + purchaseId + " ]";
     }
     
 }
