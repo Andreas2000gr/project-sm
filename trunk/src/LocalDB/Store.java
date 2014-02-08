@@ -8,22 +8,13 @@ package LocalDB;
 
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Orgasmatron
+ * @author Panagis
  */
 @Entity
 @Table(name = "STORE")
@@ -36,7 +27,9 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Store implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
+    //@Basic(optional = false)  έγινε comment καθώς θα χρησιμοποιηθεί ο generator παρακάτω
+    @SequenceGenerator(name="sto_id", sequenceName="SQ_STORE_ID", allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="sto_id")
     @Column(name = "STORE_ID")
     private Integer storeId;
     @Basic(optional = false)
