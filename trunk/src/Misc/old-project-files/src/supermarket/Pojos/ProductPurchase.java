@@ -4,15 +4,23 @@
  * and open the template in the editor.
  */
 
-package LocalDB;
+package supermarket.Pojos;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Panagis
+ * @author Euh
  */
 @Entity
 @Table(name = "PRODUCT_PURCHASE")
@@ -24,20 +32,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ProductPurchase implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    //@Basic(optional = false)  έγινε comment καθώς θα χρησιμοποιηθεί ο generator παρακάτω
-    @SequenceGenerator(name="prpur_id", sequenceName="SQ_PRODUCT_PURCHASE_ID", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="prpur_id")
+    @Basic(optional = false)
     @Column(name = "PRODUCT_PURCHASE_ID")
     private Integer productPurchaseId;
     @Basic(optional = false)
     @Column(name = "QUANTITY")
     private int quantity;
-    @JoinColumn(name = "PURCHASE_ID", referencedColumnName = "PURCHASE_ID")
+    @JoinColumn(name = "PURCHASE", referencedColumnName = "PURCHASE_ID")
     @ManyToOne(optional = false)
-    private Purchase purchaseId;
-    @JoinColumn(name = "PRODUCT_ID", referencedColumnName = "PRODUCT_ID")
+    private Purchase purchase;
+    @JoinColumn(name = "PRODUCT", referencedColumnName = "PRODUCT_ID")
     @ManyToOne(optional = false)
-    private Product productId;
+    private Product product;
 
     public ProductPurchase() {
     }
@@ -67,20 +73,20 @@ public class ProductPurchase implements Serializable {
         this.quantity = quantity;
     }
 
-    public Purchase getPurchaseId() {
-        return purchaseId;
+    public Purchase getPurchase() {
+        return purchase;
     }
 
-    public void setPurchaseId(Purchase purchaseId) {
-        this.purchaseId = purchaseId;
+    public void setPurchase(Purchase purchase) {
+        this.purchase = purchase;
     }
 
-    public Product getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(Product productId) {
-        this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     @Override
@@ -105,7 +111,7 @@ public class ProductPurchase implements Serializable {
 
     @Override
     public String toString() {
-        return "LocalDB.ProductPurchase[ productPurchaseId=" + productPurchaseId + " ]";
+        return "supermarket.Pojos.ProductPurchase[ productPurchaseId=" + productPurchaseId + " ]";
     }
     
 }
