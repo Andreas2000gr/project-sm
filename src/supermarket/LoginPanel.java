@@ -6,14 +6,10 @@
 
 package supermarket;
 
-import AdminGUI.*;
-import supermarket.*;
-
-
-
+import AdminGUI.MainPanel;
 /**
  *
- * @author Orgasmatron
+ * @author Panagis
  */
 public class LoginPanel extends javax.swing.JPanel {
 
@@ -92,9 +88,9 @@ public class LoginPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (jTextField1.getText() == SuperMarket.getUN() && 
-                jPasswordField1.getPassword().toString()== SuperMarket.getPW()){
-            MainPanel mp = new MainPanel(this);
+        if (jTextField1.getText() == SuperMarket.getAdminUn() && 
+                jPasswordField1.getPassword().toString()== SuperMarket.getAdminPw()) {
+            MainPanel mp = new MainPanel(this.frame);
             frame.addPanelInMain(mp);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
