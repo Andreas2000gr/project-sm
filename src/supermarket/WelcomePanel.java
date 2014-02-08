@@ -86,8 +86,8 @@ public class WelcomePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        LoginPanel lp = new LoginPanel(this.frame);
-        frame.addPanelInMain(lp);
+        frame.pnl = new LoginPanel(this.frame);
+        frame.addPanelInMain();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

@@ -7,36 +7,56 @@
 package supermarket;
 
 import java.awt.BorderLayout;
+import java.util.Arrays;
 import javax.swing.JPanel;
+import AdminGUI.*;
 /**
  *
  * @author Orgasmatron
  */
 public class SuperMarketParentFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form superMarketParentFrame
-     */
-    WelcomePanel wp = new WelcomePanel(this);
+    private static String adminUn  = "admin";
+    private static String adminPw  = "admin";
 
+    public static String getAdminUn() {
+        return adminUn;
+    }
+
+    public static String getAdminPw() {
+        return adminPw;
+    }
     
-     /**
+    public JPanel pnl = new WelcomePanel(this); //Αρχική εικόνα
+
+    /**
      * Όταν κληθεί αφαιρεί το component που υπάρχει στην κεντρική περιοχή και προσθέτει το νέο
-     * @param p Το νέο component που πρέπει να προστεθεί στην κεντρική περιοχή
+     * @param 
      */
-    public void addPanelInMain(JPanel p){
+    public void addPanelInMain(){
         jPanel6.removeAll();
-        jPanel6.add(p);
+        jPanel6.add(pnl);
+        jPanel6.repaint();
         jPanel6.revalidate();
     }
     
-    public SuperMarketParentFrame() {
-        initComponents();
-        this.jPanel6.add(wp);
+    public boolean validateCredentials(String un, char[] pw){
+        if (un.equals(adminUn) && Arrays.equals(pw,adminPw.toCharArray())) {
+            pnl = new MainPanel(this);
+            this.addPanelInMain();
+            return true;
+        }
+        return false;
     }
     
-
-
+    /**
+    * Creates new form superMarketParentFrame
+    */
+    public SuperMarketParentFrame() {
+        initComponents();
+        this.jPanel6.add(pnl);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
