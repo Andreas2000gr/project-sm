@@ -9,10 +9,8 @@ package supermarket;
  *
  * @author Loukatos
  */
-import java.util.*;
-import javax.persistence.*;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 
 
@@ -23,28 +21,24 @@ public class SuperMarket {
      * @param args the command line arguments
      */
 
-    private static String adminUn;
-    private static String adminPw;
-
-    public SuperMarket() {
-        this.adminPw = "admin";
-        this.adminUn = "admin";
-    }
-
-    public static String getAdminUn() {
-        return adminUn;
-    }
-
-    public static String getAdminPw() {
-        return adminPw;
-    }
-    
-    public static void main(String[] args) {
-		// Δημιουργούμε το SuperMarket
-        SuperMarket sm = new SuperMarket();     
+    private static void createAndShowGUI() {
+        // Δημιουργούμε το SuperMarket
         SuperMarketParentFrame s = new SuperMarketParentFrame();
         s.setVisible(true);
         s.pack();
+    }
+        
+    public static void main(String[] args) {
+        //Schedule a job for the event dispatch thread:
+        //creating and showing this application's GUI.
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                //Turn off metal's use of bold fonts
+                UIManager.put("swing.boldMetal", Boolean.FALSE);
+                createAndShowGUI();
+                }
+        });
+
     }
     
 }
