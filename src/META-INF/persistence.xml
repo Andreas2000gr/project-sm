@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-  <persistence-unit name="SuperMarketPU" transaction-type="RESOURCE_LOCAL">
+  <persistence-unit name="SuperMarket_external_PU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>externalDB.CreditCardAuthority</class>
     <class>externalDB.ExternalBank</class>
-    <class>LocalDB.Store</class>
-    <class>LocalDB.ProductPurchase</class>
-    <class>LocalDB.Purchase</class>
-    <class>LocalDB.Voucher</class>
-    <class>LocalDB.Product</class>
-    <class>LocalDB.Customer</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://plh24.ecomet.eap.gr:8080/CREDIT_CARD_AUTH_DB"/>
       <property name="javax.persistence.jdbc.password" value="studentpass"/>
       <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
       <property name="javax.persistence.jdbc.user" value="student"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="SuperMarket_local_PU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>LocalDB.Customer</class>
+    <class>LocalDB.Product</class>
+    <class>LocalDB.ProductPurchase</class>
+    <class>LocalDB.Purchase</class>
+    <class>LocalDB.Store</class>
+    <class>LocalDB.Voucher</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/SM"/>
+      <property name="javax.persistence.jdbc.password" value="sm"/>
+      <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+      <property name="javax.persistence.jdbc.user" value="sm"/>
     </properties>
   </persistence-unit>
 </persistence>
