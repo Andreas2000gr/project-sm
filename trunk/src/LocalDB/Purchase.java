@@ -7,27 +7,16 @@
 package LocalDB;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Orgasmatron
+ * @author Panagis
  */
 @Entity
 @Table(name = "PURCHASE")
@@ -42,7 +31,9 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Purchase implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
+    //@Basic(optional = false)  έγινε comment καθώς θα χρησιμοποιηθεί ο generator παρακάτω
+    @SequenceGenerator(name="pur_id", sequenceName="SQ_PURCHASE_ID", allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="pur_id")
     @Column(name = "PURCHASE_ID")
     private Integer purchaseId;
     @Basic(optional = false)
@@ -57,7 +48,7 @@ public class Purchase implements Serializable {
     private int pointsEarned;
     @Basic(optional = false)
     @Column(name = "DELIVERY")
-    private Serializable delivery;
+    private Boolean delivery;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "purchaseId")
     private Collection<ProductPurchase> productPurchaseCollection;
     @JoinColumn(name = "STORE", referencedColumnName = "STORE_ID")
@@ -68,13 +59,14 @@ public class Purchase implements Serializable {
     private Customer customer;
 
     public Purchase() {
+        this.productPurchaseCollection = new ArrayList<>(0);
     }
 
     public Purchase(Integer purchaseId) {
         this.purchaseId = purchaseId;
     }
 
-    public Purchase(Integer purchaseId, Date datetime, float amount, int pointsEarned, Serializable delivery) {
+    public Purchase(Integer purchaseId, Date datetime, float amount, int pointsEarned, Boolean delivery) {
         this.purchaseId = purchaseId;
         this.datetime = datetime;
         this.amount = amount;
@@ -118,7 +110,7 @@ public class Purchase implements Serializable {
         return delivery;
     }
 
-    public void setDelivery(Serializable delivery) {
+    public void setDelivery(Boolean delivery) {
         this.delivery = delivery;
     }
 
