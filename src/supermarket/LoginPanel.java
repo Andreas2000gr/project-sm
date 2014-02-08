@@ -23,7 +23,7 @@ public class LoginPanel extends javax.swing.JPanel {
         initComponents();
         this.jTextField1.requestFocusInWindow();
         this.frame = frame;
-        repaint();
+        this.repaint();
     }
 
     /**
@@ -118,11 +118,12 @@ public class LoginPanel extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (!frame.validateCredentials(jTextField1.getText(),jPasswordField1.getPassword())) {
-            JOptionPane.showMessageDialog(null, "Λάθος Στοιχεία...");
             jTextField1.setText(null);
             jPasswordField1.setText(null);
+            this.repaint();
             jTextField1.requestFocus();
-            repaint();       
+        } else {
+            frame.addPanelInMain();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
     

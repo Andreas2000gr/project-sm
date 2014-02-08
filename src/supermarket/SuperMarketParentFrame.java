@@ -54,10 +54,8 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
     public boolean validateCredentials(String un, char[] pw){
         if (un.equals(adminUn) && Arrays.equals(pw,adminPw.toCharArray())) {
             pnl = new MainPanel(this);
-            this.addPanelInMain();
             return true;
         } 
-        
         try {
             loc.getTransaction().begin();
             Query q = loc.createNamedQuery("Customer.findByIdPassword");//Χρήση του προκατασκευασμένου query
@@ -65,11 +63,10 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
             q.setParameter("password", new String(pw)); //Μετατροπή του char[]->String
             cust = (Customer)q.getSingleResult();
             pnl = new CustMainPanel(this);
-            this.addPanelInMain();
             loc.close();
             return false;
         } catch (NoResultException e) { //Σε περίπτωση που δεν υπάρχει αυτή η κάρτα
-                JOptionPane.showMessageDialog(null, "Δεν υπάρχει χρήστης με αυτήν την κάρτα...");
+                JOptionPane.showMessageDialog(null, "Λάθος Στοιχεία Εισόδου...");
                 loc.getTransaction().rollback(); //Δεν ξεχνάμε να κλείσουμε το transaction!!!!
                 return true;
         } catch (NonUniqueResultException e) { //Για να πιάσουμε δύο ίδιες κάρτες εφόσον δεν είναι μοναδικές
