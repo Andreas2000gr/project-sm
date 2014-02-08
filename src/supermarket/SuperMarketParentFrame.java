@@ -6,29 +6,40 @@
 
 package supermarket;
 
-import java.awt.BorderLayout;
 import java.util.Arrays;
 import javax.swing.JPanel;
 import AdminGUI.*;
+import CustomerGUI.*;
+import javax.persistence.*;
+import LocalDB.*;
+import externalDB.*;
+import javax.swing.JOptionPane;
+
 /**
  *
- * @author Orgasmatron
+ * @author Panagis
  */
 public class SuperMarketParentFrame extends javax.swing.JFrame {
-
+    
+    //Hard-coded admin credentials!!!
     private static String adminUn  = "admin";
     private static String adminPw  = "admin";
-
+    
     public static String getAdminUn() {
         return adminUn;
     }
-
     public static String getAdminPw() {
         return adminPw;
     }
     
+    // Δημιουργία του ενιαίου DB manager
+    private final DBmanager db = new DBmanager();
+    EntityManager localDB = db.getLoc();
+    EntityManager externalDB = db.getExt();
+    
     public JPanel pnl = new WelcomePanel(this); //Αρχική εικόνα
-
+    public Customer cust; //Μεταβλητή που θα κρατήσει τον πελάτη και θα τον πασάρει σε κάθε JPanel
+    
     /**
      * Όταν κληθεί αφαιρεί το component που υπάρχει στην κεντρική περιοχή και προσθέτει το νέο
      * @param 
@@ -45,8 +56,35 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
             pnl = new MainPanel(this);
             this.addPanelInMain();
             return true;
+        } 
+        
+        try {
+            localDB.getTransaction().begin();
+            Query q = localDB.createNamedQuery("Customer.findByIdPassword");//Χρήση του προκατασκευασμένου query
+            q.setParameter("cardno", un);
+            q.setParameter("password", new String(pw)); //Μετατροπή του char[]->String
+            cust = (Customer)q.getSingleResult();
+            pnl = new CustMainPanel(this);
+            this.addPanelInMain();
+            localDB.close();
+            return false;
+        } catch (NoResultException e) { //Σε περίπτωση που δεν υπάρχει αυτή η κάρτα
+                JOptionPane.showMessageDialog(null, "Δεν υπάρχει χρήστης με αυτήν την κάρτα...");
+                localDB.getTransaction().rollback(); //Δεν ξεχνάμε να κλείσουμε το transaction!!!!
+                return true;
+        } catch (NonUniqueResultException e) { //Για να πιάσουμε δύο ίδιες κάρτες εφόσον δεν είναι μοναδικές
+                JOptionPane.showMessageDialog(null, "Όχι μοναδικός χρήστης...");
+                localDB.getTransaction().rollback();
+                return true;
+        } catch (Exception e) { //Just in case...
+                JOptionPane.showMessageDialog(null, "Σφάλμα βάσης...");
+                localDB.getTransaction().rollback();
+                return true;
+        } finally {
+            return true;
         }
-        return false;
+
+
     }
     
     /**
