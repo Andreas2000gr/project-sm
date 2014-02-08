@@ -28,7 +28,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Customer.findByPointsCardNumber", query = "SELECT c FROM Customer c WHERE c.pointsCardNumber = :pointsCardNumber"),
     @NamedQuery(name = "Customer.findByCreditCardId", query = "SELECT c FROM Customer c WHERE c.creditCardId = :creditCardId"),
     @NamedQuery(name = "Customer.findByAvailablePoints", query = "SELECT c FROM Customer c WHERE c.availablePoints = :availablePoints"),
-    @NamedQuery(name = "Customer.findByPassword", query = "SELECT c FROM Customer c WHERE c.password = :password")})
+    @NamedQuery(name = "Customer.findByPassword", query = "SELECT c FROM Customer c WHERE c.password = :password"),
+    // Παναγής , προσθήκη Named query  για αναζήτηση πελάτη με password και κάρτα πόντων.
+    @NamedQuery(name = "Customer.findByIdPassword", query = "SELECT c FROM Customer c WHERE c.password = :password and c.pointsCardNumber = :cardno")})
+    
 public class Customer implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
