@@ -19,30 +19,30 @@ import javax.persistence.Persistence;
 
 public class DBmanager {
      
-    private EntityManager loc;
-    private EntityManager ext;
+    private EntityManager localDB;
+    private EntityManager externalDB;
     
     public DBmanager(){
         EntityManagerFactory emLoc = Persistence.createEntityManagerFactory("SuperMarket-local-PU");
         EntityManagerFactory emExt = Persistence.createEntityManagerFactory("SuperMarket-external-PU");
        
-        loc = emLoc.createEntityManager();  
-        ext = emExt.createEntityManager();
+        localDB = emLoc.createEntityManager();  
+        externalDB = emExt.createEntityManager();
     }
 
     public EntityManager getLoc() {
-        return loc;
+        return localDB;
     }
 
-    public void setLoc(EntityManager loc) {
-        this.loc = loc;
+    public void setLoc(EntityManager localDB) {
+        this.localDB = localDB;
     }
 
     public EntityManager getExt() {
-        return ext;
+        return externalDB;
     }
 
-    public void setExt(EntityManager ext) {
-        this.ext = ext;
+    public void setExt(EntityManager externalDB) {
+        this.externalDB = externalDB;
     }
 }
