@@ -1,6 +1,6 @@
 /*
-Η βάση πρέπει να ονομαστεί SM με χρήστη και password sm ώστε να ταιριάζει κατευθείαν με
-τις ρυθμίσεις του persistence.xml χωρίς αλλαγές. 
+Ξ— Ξ²Ξ¬ΟƒΞ· Ο€ΟΞ­Ο€ΞµΞΉ Ξ½Ξ± ΞΏΞ½ΞΏΞΌΞ±ΟƒΟ„ΞµΞ― SM ΞΌΞµ Ο‡ΟΞ®ΟƒΟ„Ξ· ΞΊΞ±ΞΉ password sm ΟΟƒΟ„Ξµ Ξ½Ξ± Ο„Ξ±ΞΉΟΞΉΞ¬Ξ¶ΞµΞΉ ΞΊΞ±Ο„ΞµΟ…ΞΈΞµΞ―Ξ±Ξ½ ΞΌΞµ
+Ο„ΞΉΟ‚ ΟΟ…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ Ο„ΞΏΟ… persistence.xml Ο‡Ο‰ΟΞ―Ο‚ Ξ±Ξ»Ξ»Ξ±Ξ³Ξ­Ο‚. 
 */
 --------------------------------------------------------------------------------------------------------------
 /*DDL FOR PRODUCT TABLE */
@@ -37,11 +37,11 @@ CREATE TABLE "CUSTOMER" (
                          FIRST_NAME VARCHAR(30) NOT NULL,
                          LAST_NAME VARCHAR(40) NOT NULL,
                          ADDRESS VARCHAR(50),
-                         POINTS_CARD_NUMBER VARCHAR(20) NOT NULL, -- Το οποίο έγινε και UN
-			 CREDIT_CARD_ID INTEGER, -- Προσθήκη αριθμού κάρτας ίδιος τύπος με το πεδίο του πίνακα καρτών
+                         POINTS_CARD_NUMBER VARCHAR(20) NOT NULL, -- Γ”Γ― Γ―Γ°Γ―ΓΓ― ΓΓ£Γ©Γ­Γ¥ ΓªΓ΅Γ© UN
+			 CREDIT_CARD_ID INTEGER, -- ΓΓ±Γ―Γ³Γ¨ΓΓªΓ§ Γ΅Γ±Γ©Γ¨Γ¬Γ―Γ½ ΓªΓΓ±Γ΄Γ΅Γ² ΓΓ¤Γ©Γ―Γ² Γ΄Γ½Γ°Γ―Γ² Γ¬Γ¥ Γ΄Γ― Γ°Γ¥Γ¤ΓΓ― Γ΄Γ―Γµ Γ°ΓΓ­Γ΅ΓªΓ΅ ΓªΓ΅Γ±Γ΄ΓΎΓ­
                          AVAILABLE_POINTS INTEGER  NOT NULL,
-                         --NO_OF_CHECKS INTEGER Ακυρώθηκε στην νέα έκδοση της εφαρμογής
-			 PASSWORD VARCHAR(8) -- Προσθήκη Password
+                         --NO_OF_CHECKS INTEGER ΓΓªΓµΓ±ΓΎΓ¨Γ§ΓªΓ¥ Γ³Γ΄Γ§Γ­ Γ­ΓΓ΅ ΓΓªΓ¤Γ―Γ³Γ§ Γ΄Γ§Γ² Γ¥Γ¶Γ΅Γ±Γ¬Γ―Γ£ΓΓ²
+			 PASSWORD VARCHAR(8) -- ΓΓ±Γ―Γ³Γ¨ΓΓªΓ§ Password
                          );
 --------------------------------------------------------------------------------------------------------------
 /*DDL FOR PRODUCT_PURCHASE TABLE  */
@@ -113,49 +113,49 @@ CREATE SEQUENCE SQ_VOUCHER_ID MINVALUE 1 MAXVALUE 99999999 START WITH 1 INCREMEN
 
 -- STORE
 INSERT INTO SM.STORE (STORE_ID, "NAME", ADDRESS) 
-	VALUES (1, 'Βερόπουλος Αθηνών', 'Λ. Πατησίων 234');
+	VALUES (1, 'Γ‚Γ¥Γ±ΓΌΓ°Γ―ΓµΓ«Γ―Γ² ΓΓ¨Γ§Γ­ΓΎΓ­', 'Γ‹. ΓΓ΅Γ΄Γ§Γ³ΓΓΉΓ­ 234');
 INSERT INTO SM.STORE (STORE_ID, "NAME", ADDRESS) 
-	VALUES (2, 'Βερόπουλος Αμαρουσίου', 'Λ. Κηφισίας 189');
+	VALUES (2, 'Γ‚Γ¥Γ±ΓΌΓ°Γ―ΓµΓ«Γ―Γ² ΓΓ¬Γ΅Γ±Γ―ΓµΓ³ΓΓ―Γµ', 'Γ‹. ΓΓ§Γ¶Γ©Γ³ΓΓ΅Γ² 189');
 INSERT INTO SM.STORE (STORE_ID, "NAME", ADDRESS) 
-	VALUES (3, 'Βερόπουλος Γέρακα', 'Αγ. Κωνσταντίνου 29');
+	VALUES (3, 'Γ‚Γ¥Γ±ΓΌΓ°Γ―ΓµΓ«Γ―Γ² ΓƒΓΓ±Γ΅ΓªΓ΅', 'ΓΓ£. ΓΓΉΓ­Γ³Γ΄Γ΅Γ­Γ΄ΓΓ­Γ―Γµ 29');
 
 
 -- PRODUCTS
 INSERT INTO SM.PRODUCT (PRODUCT_ID, "NAME", CODE, POINTS, PRICE) 
-	VALUES (1,'Aim Οδοντόκρεμα 75 ml', '1010', 15, 4.23);
+	VALUES (1,'Aim ΓΓ¤Γ―Γ­Γ΄ΓΌΓªΓ±Γ¥Γ¬Γ΅ 75 ml', '1010', 15, 4.23);
 INSERT INTO SM.PRODUCT (PRODUCT_ID, "NAME", CODE, POINTS, PRICE) 
-	VALUES (2,'Μακαρόνια No7', '2020', 10, 0.75);
+	VALUES (2,'ΓΓ΅ΓªΓ΅Γ±ΓΌΓ­Γ©Γ΅ No7', '2020', 10, 0.75);
 INSERT INTO SM.PRODUCT (PRODUCT_ID, "NAME", CODE, POINTS, PRICE) 
-	VALUES (3,'Αλεύρι Ολικής', '1020', 10, 10.3);
+	VALUES (3,'ΓΓ«Γ¥Γ½Γ±Γ© ΓΓ«Γ©ΓªΓΓ²', '1020', 10, 10.3);
 INSERT INTO SM.PRODUCT (PRODUCT_ID, "NAME", CODE, POINTS, PRICE) 
-	VALUES (4,'Λάδι 5lt', '1030', 50, 21.45);
+	VALUES (4,'Γ‹ΓΓ¤Γ© 5lt', '1030', 50, 21.45);
 INSERT INTO SM.PRODUCT (PRODUCT_ID, "NAME", CODE, POINTS, PRICE) 
-	VALUES (5,'Δημητριακά ολικής', '1040', 20, 5.25);
+	VALUES (5,'Γ„Γ§Γ¬Γ§Γ΄Γ±Γ©Γ΅ΓªΓ Γ―Γ«Γ©ΓªΓΓ²', '1040', 20, 5.25);
 INSERT INTO SM.PRODUCT (PRODUCT_ID, "NAME", CODE, POINTS, PRICE) 
-	VALUES (6,'Χαρτί κουζίνας', '1050', 10, 5.40);
+	VALUES (6,'Γ—Γ΅Γ±Γ΄Γ ΓªΓ―ΓµΓ¦ΓΓ­Γ΅Γ²', '1050', 10, 5.40);
 INSERT INTO SM.PRODUCT (PRODUCT_ID, "NAME", CODE, POINTS, PRICE) 
-	VALUES (7,'Μακαρόνια No3', '1060', 15, 1.25);
+	VALUES (7,'ΓΓ΅ΓªΓ΅Γ±ΓΌΓ­Γ©Γ΅ No3', '1060', 15, 1.25);
 INSERT INTO SM.PRODUCT (PRODUCT_ID, "NAME", CODE, POINTS, PRICE) 
-	VALUES (8,'Badedas Αφρόλουτρο 750 ml', '1070', 5, 6.44);
+	VALUES (8,'Badedas ΓΓ¶Γ±ΓΌΓ«Γ―ΓµΓ΄Γ±Γ― 750 ml', '1070', 5, 6.44);
 INSERT INTO SM.PRODUCT (PRODUCT_ID, "NAME", CODE, POINTS, PRICE) 
-	VALUES (9,'Καφές 250gr', '2010', 15, 3.2);
+	VALUES (9,'ΓΓ΅Γ¶ΓΓ² 250gr', '2010', 15, 3.2);
 INSERT INTO SM.PRODUCT (PRODUCT_ID, "NAME", CODE, POINTS, PRICE) 
-	VALUES (10,'Απορρυπαντικό Ρούχων', '1080', 50, 26.5);
+	VALUES (10,'ΓΓ°Γ―Γ±Γ±ΓµΓ°Γ΅Γ­Γ΄Γ©ΓªΓΌ Γ‘Γ―Γ½Γ·ΓΉΓ­', '1080', 50, 26.5);
 INSERT INTO SM.PRODUCT (PRODUCT_ID, "NAME", CODE, POINTS, PRICE) 
-	VALUES (11,'Maggi Κύβοι Ζωμό 12τεμ.', '1090', 20, 5.5);
+	VALUES (11,'Maggi ΓΓ½ΓΆΓ―Γ© Γ†ΓΉΓ¬ΓΌ 12Γ΄Γ¥Γ¬.', '1090', 20, 5.5);
 INSERT INTO SM.PRODUCT (PRODUCT_ID, "NAME", CODE, POINTS, PRICE) 
-	VALUES (12,'Μουστάρδα 500 gr', '2000', 10, 3.66);
+	VALUES (12,'ΓΓ―ΓµΓ³Γ΄ΓΓ±Γ¤Γ΅ 500 gr', '2000', 10, 3.66);
 
 
 -- CUSTOMERS
 INSERT INTO SM.CUSTOMER (CUSTOMER_ID, FIRST_NAME, LAST_NAME, ADDRESS, POINTS_CARD_NUMBER, CREDIT_CARD_ID, AVAILABLE_POINTS, PASSWORD) 
-	VALUES (1, 'Andreas', 'Paradise', 'Αιόλου 29, Γαλάτσι', '1010-1010', 1, 0, 'aparadis');
+	VALUES (1, 'Andreas', 'Paradise', 'ΓΓ©ΓΌΓ«Γ―Γµ 29, ΓƒΓ΅Γ«ΓΓ΄Γ³Γ©', '1010-1010', 1, 0, 'aparadis');
 INSERT INTO SM.CUSTOMER (CUSTOMER_ID, FIRST_NAME, LAST_NAME, ADDRESS, POINTS_CARD_NUMBER, CREDIT_CARD_ID, AVAILABLE_POINTS, PASSWORD) 
-	VALUES (2, 'Panagis', 'Loukatos', 'Αγ. Μαρίνας 33, Πειραιάς', '2020-2020', 2, 0, 'ploukato');
+	VALUES (2, 'Panagis', 'Loukatos', 'ΓΓ£. ΓΓ΅Γ±ΓΓ­Γ΅Γ² 33, ΓΓ¥Γ©Γ±Γ΅Γ©ΓΓ²', '2020-2020', 2, 0, 'ploukato');
 INSERT INTO SM.CUSTOMER (CUSTOMER_ID, FIRST_NAME, LAST_NAME, ADDRESS, POINTS_CARD_NUMBER, CREDIT_CARD_ID, AVAILABLE_POINTS, PASSWORD) 
-	VALUES (3, 'Anestis', 'Passas', 'Δωδεκανήσου 20, Χολαργός', '3030-3030', 3, 0, 'apassas');
+	VALUES (3, 'Anestis', 'Passas', 'Γ„ΓΉΓ¤Γ¥ΓªΓ΅Γ­ΓΓ³Γ―Γµ 20, Γ—Γ―Γ«Γ΅Γ±Γ£ΓΌΓ²', '3030-3030', 3, 0, 'apassas');
 INSERT INTO SM.CUSTOMER (CUSTOMER_ID, FIRST_NAME, LAST_NAME, ADDRESS, POINTS_CARD_NUMBER, CREDIT_CARD_ID, AVAILABLE_POINTS, PASSWORD) 
-	VALUES (4, 'Evangelia', 'Papavasileiou', 'Αγ. Διονυσίου 123, Αγ. Παρασκευή', '4040-4040', 4, 0, 'epapavas');
+	VALUES (4, 'Evangelia', 'Papavasileiou', 'ΓΓ£. Γ„Γ©Γ―Γ­ΓµΓ³ΓΓ―Γµ 123, ΓΓ£. ΓΓ΅Γ±Γ΅Γ³ΓªΓ¥ΓµΓ', '4040-4040', 4, 0, 'epapavas');
 
 
 -- STORE_PRODUCT
