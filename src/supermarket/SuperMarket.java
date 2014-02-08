@@ -23,8 +23,16 @@ public class SuperMarket {
      * @param args the command line arguments
      */
 
-    public String adminUn = "admin";
-    public String adminPw = "admin";
+    private final String adminUn = "admin";
+    private final String adminPw = "admin";
+    
+    public String getUN(){
+        return adminUn;
+    }
+    
+    public String getPW(){
+        return adminPw;
+    }
     public static void main(String[] args) {
 		// Δημιουργούμε το SuperMarket
         SuperMarket sm = new SuperMarket();     
