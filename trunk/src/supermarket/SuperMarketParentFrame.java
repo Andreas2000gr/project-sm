@@ -12,7 +12,6 @@ import AdminGUI.*;
 import CustomerGUI.*;
 import javax.persistence.*;
 import LocalDB.*;
-import externalDB.*;
 import javax.swing.JOptionPane;
 
 /**
@@ -31,19 +30,18 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
         return adminPw;
     }
     
-    private final DBmanager db;
+    private final DBmanager db = new DBmanager();
     public JPanel pnl = new WelcomePanel(this); //Αρχική εικόνα
     public Customer cust; //Μεταβλητή που θα κρατήσει τον πελάτη και θα τον πασάρει σε κάθε JPanel
-    private EntityManager loc;  
-    private EntityManager ext; 
+    private EntityManager loc = db.getLoc();  
+    private EntityManager ext = db.getExt(); 
 
     /**
     * Creates new form superMarketParentFrame
     */
-    public SuperMarketParentFrame(DBmanager db) {
+    public SuperMarketParentFrame() {
         initComponents();
         this.jPanel6.add(pnl);
-        this.db = db;
         this.loc = db.getLoc();
         this.ext = db.getExt();
     }
