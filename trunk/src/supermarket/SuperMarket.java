@@ -95,74 +95,81 @@ public class SuperMarket {
             Store abFalirou = new Store(null,"AB Φαλήρου", "Ποσειδώνος 300, Παλαιό Φάληρο");
             Store abGeraka = new Store(null,"AB Γέρακα", "Λεωφόρος Σπάτων 81, Γέρακας");
 
-            /**
-             * Οριζούμε τα προϊόντα που εμπορεύεται ένα κατάστημα,
-             */
-            Collection<Product> AlimouList = new ArrayList<>();
-            AlimouList.add(odokrema);
-            AlimouList.add(makaroniano7);
-            AlimouList.add(alevri);
-            AlimouList.add(ladi);
-            AlimouList.add(dimitriaka);
-            AlimouList.add(xartikouzinas);
-            AlimouList.add(makaroniano3);
-            AlimouList.add(badedas);
-            AlimouList.add(kafesellinikos);
-            AlimouList.add(kafesfiltrou);
-            AlimouList.add(kafesespresso);
-            AlimouList.add(aporrouxwn);
-            AlimouList.add(kyboimaggi);
-            AlimouList.add(moustarda);
-            AlimouList.add(ketsap);
-            AlimouList.add(malaktikoroux);
-            AlimouList.add(ryzibasmati);
-            AlimouList.add(tsixles);
-            AlimouList.add(galafresko);
-            AlimouList.add(sokolata);
-
-            abAlimou.setProductCollection(AlimouList);
-            db.getLoc().persist(abAlimou);
-            db.getLoc().merge(abAlimou);
+            Collection<Store> sc = new ArrayList<>(0);
+            sc.add(abGeraka);
+            ketsap.setStoreCollection(sc);
             
-
-            // κάνουμε το ίδιο και για το άλλο κατάστημα
-            Collection<Product> FalirouList = new ArrayList<>();
-            FalirouList.add(ladi);
-            FalirouList.add(dimitriaka);
-            FalirouList.add(xartikouzinas);
-            FalirouList.add(makaroniano3);
-            FalirouList.add(badedas);
-            FalirouList.add(kafesellinikos);
-            FalirouList.add(kafesfiltrou);
-            FalirouList.add(kafesespresso);
-            FalirouList.add(aporrouxwn);
-            FalirouList.add(kyboimaggi);
-            FalirouList.add(moustarda);
-            FalirouList.add(ketsap);
-            FalirouList.add(malaktikoroux);
-
-            abFalirou.setProductCollection(FalirouList);
-            db.getLoc().persist(abFalirou);
-            db.getLoc().merge(abFalirou);
-
-            // κάνουμε το ίδιο και για το άλλο κατάστημα
-            Collection<Product> GerakaList = new ArrayList<>();
-            GerakaList.add(odokrema);
-            GerakaList.add(makaroniano7);
-            GerakaList.add(alevri);
-            GerakaList.add(ketsap);
-            GerakaList.add(malaktikoroux);
-            GerakaList.add(ryzibasmati);
-            GerakaList.add(tsixles);
-            GerakaList.add(galafresko);
-            GerakaList.add(sokolata);
-            GerakaList.add(ladi);
-            GerakaList.add(dimitriaka);
-            GerakaList.add(xartikouzinas);
-
-            abGeraka.setProductCollection(GerakaList); 
-            db.getLoc().persist(abGeraka);
-            db.getLoc().merge(abGeraka);
+            db.getLoc().persist(ketsap);
+            db.getLoc().merge(ketsap);
+            
+//            /**
+//             * Οριζούμε τα προϊόντα που εμπορεύεται ένα κατάστημα,
+//             */
+//            Collection<Product> AlimouList = new ArrayList<>();
+//            AlimouList.add(odokrema);
+//            AlimouList.add(makaroniano7);
+//            AlimouList.add(alevri);
+//            AlimouList.add(ladi);
+//            AlimouList.add(dimitriaka);
+//            AlimouList.add(xartikouzinas);
+//            AlimouList.add(makaroniano3);
+//            AlimouList.add(badedas);
+//            AlimouList.add(kafesellinikos);
+//            AlimouList.add(kafesfiltrou);
+//            AlimouList.add(kafesespresso);
+//            AlimouList.add(aporrouxwn);
+//            AlimouList.add(kyboimaggi);
+//            AlimouList.add(moustarda);
+//            AlimouList.add(ketsap);
+//            AlimouList.add(malaktikoroux);
+//            AlimouList.add(ryzibasmati);
+//            AlimouList.add(tsixles);
+//            AlimouList.add(galafresko);
+//            AlimouList.add(sokolata);
+//
+//            abAlimou.setProductCollection(AlimouList);
+//            db.getLoc().persist(abAlimou);
+//            db.getLoc().merge(abAlimou);
+//            
+//
+//            // κάνουμε το ίδιο και για το άλλο κατάστημα
+//            Collection<Product> FalirouList = new ArrayList<>();
+//            FalirouList.add(ladi);
+//            FalirouList.add(dimitriaka);
+//            FalirouList.add(xartikouzinas);
+//            FalirouList.add(makaroniano3);
+//            FalirouList.add(badedas);
+//            FalirouList.add(kafesellinikos);
+//            FalirouList.add(kafesfiltrou);
+//            FalirouList.add(kafesespresso);
+//            FalirouList.add(aporrouxwn);
+//            FalirouList.add(kyboimaggi);
+//            FalirouList.add(moustarda);
+//            FalirouList.add(ketsap);
+//            FalirouList.add(malaktikoroux);
+//
+//            abFalirou.setProductCollection(FalirouList);
+//            db.getLoc().persist(abFalirou);
+//            db.getLoc().merge(abFalirou);
+//
+//            // κάνουμε το ίδιο και για το άλλο κατάστημα
+//            Collection<Product> GerakaList = new ArrayList<>();
+//            GerakaList.add(odokrema);
+//            GerakaList.add(makaroniano7);
+//            GerakaList.add(alevri);
+//            GerakaList.add(ketsap);
+//            GerakaList.add(malaktikoroux);
+//            GerakaList.add(ryzibasmati);
+//            GerakaList.add(tsixles);
+//            GerakaList.add(galafresko);
+//            GerakaList.add(sokolata);
+//            GerakaList.add(ladi);
+//            GerakaList.add(dimitriaka);
+//            GerakaList.add(xartikouzinas);
+//
+//            abGeraka.setProductCollection(GerakaList); 
+//            db.getLoc().persist(abGeraka);
+//            db.getLoc().merge(abGeraka);
             
             /**
              * Κάνοντας commit το transaction θα δημιουργηθούν οι αντίστοιχες
