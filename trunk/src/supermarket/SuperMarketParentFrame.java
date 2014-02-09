@@ -31,17 +31,19 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
     }
     
     private final DBmanager db = new DBmanager();
-    public JPanel pnl = new WelcomePanel(this); //Αρχική εικόνα
     public Customer cust; //Μεταβλητή που θα κρατήσει τον πελάτη και θα τον πασάρει σε κάθε JPanel
     private EntityManager loc = db.getLoc();  
     private EntityManager ext = db.getExt(); 
 
+    public JPanel pnl = new WelcomePanel(this); //Αρχική εικόνα κεντρικού panel
+    public JPanel brd = new BorderPanel(this);
     /**
     * Creates new form superMarketParentFrame
     */
     public SuperMarketParentFrame() {
         initComponents();
         this.jPanel6.add(pnl);
+        this.jPanel2.add(brd);
         this.loc = db.getLoc();
         this.ext = db.getExt();
     }
@@ -57,6 +59,13 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
         jPanel6.add(pnl);
         jPanel6.repaint();
         jPanel6.revalidate();
+    }
+    
+    public void addPanelInLeftBorder(){
+        jPanel2.removeAll();
+        jPanel2.add(brd);
+        jPanel2.repaint();
+        jPanel2.revalidate();
     }
     
     public boolean validateCredentials(String un, char[] pw){
@@ -138,7 +147,7 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
-        jPanel2.setBackground(new java.awt.Color(0, 179, 117));
+        jPanel2.setBackground(new java.awt.Color(0, 172, 63));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
