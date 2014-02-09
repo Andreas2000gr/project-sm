@@ -215,13 +215,31 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
         for (char x : usrPASSWORD) {
             usrFINAL_PASSWORD += x;
         }
+        
+        char[] usrNewPASSWORD = usrNEW_PASSWORD.getPassword();
+        String usrNEWFINAL_PASSWORD = "";
+        for (char x : usrNewPASSWORD) {
+            usrNEWFINAL_PASSWORD += x;
+        }        
 
+        char[] usrConfirmedPASSWORD = usrNEW_PASSWORD_Confirm.getPassword();
+        String usrConfirmedFINAL_PASSWORD = "";
+        for (char x : usrConfirmedPASSWORD) {
+            usrConfirmedFINAL_PASSWORD += x;
+        }  
+        
         if (!frame.cust.getPassword().equals(usrFINAL_PASSWORD)) {
             this.repaint();
             usrOLD_PASSWORD.requestFocus();
             JOptionPane.showMessageDialog(null, "Λανθασμένος κωδικός πρόσβασης.");
         } else {
-            JOptionPane.showMessageDialog(null, "ok..");
+            //ελέγχουμε εαν το νέο και επιβεβαιωμένο password ταιριάζουν
+            if (!usrNEWFINAL_PASSWORD.equals(usrConfirmedFINAL_PASSWORD)) {
+            this.repaint();
+            usrOLD_PASSWORD.requestFocus();
+            JOptionPane.showMessageDialog(null, "Οι δυο νέοι κωδικοί δεν ταιριάζουν.");
+        }
+            
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
