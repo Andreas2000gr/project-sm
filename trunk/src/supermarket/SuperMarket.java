@@ -94,14 +94,18 @@ public class SuperMarket {
             Store abAlimou = new Store(null,"AB Αλίμου", "Καλαμακίου 120, Άλιμος");
             Store abFalirou = new Store(null,"AB Φαλήρου", "Ποσειδώνος 300, Παλαιό Φάληρο");
             Store abGeraka = new Store(null,"AB Γέρακα", "Λεωφόρος Σπάτων 81, Γέρακας");
-
-            Collection<Store> sc = new ArrayList<>(0);
+            
+            //Παρακάτω φαίνεται ο σωστός τρόπος ώστε να ενημερωθεί και ο πίνακας 
+            //Store_Product. O λόγος που δεν δουλεύει το ανάποδο είναι διότι η κλάση Product
+            // έχει τα στοιχεία για τον join table και μόνο μία εκ των δύο μπορεί να τα έχει.
+            
+            Collection<Store> sc = new ArrayList<>(); //αρχικοποίηση
             sc.add(abGeraka);
             ketsap.setStoreCollection(sc);
             
             db.getLoc().persist(ketsap);
             db.getLoc().merge(ketsap);
-            
+
 //            /**
 //             * Οριζούμε τα προϊόντα που εμπορεύεται ένα κατάστημα,
 //             */
@@ -170,7 +174,7 @@ public class SuperMarket {
 //            abGeraka.setProductCollection(GerakaList); 
 //            db.getLoc().persist(abGeraka);
 //            db.getLoc().merge(abGeraka);
-            
+
             /**
              * Κάνοντας commit το transaction θα δημιουργηθούν οι αντίστοιχες
              * εγγραφές Store και Product στη ΒΔ ενώ τα αντίστοιχα αντικείμενα
