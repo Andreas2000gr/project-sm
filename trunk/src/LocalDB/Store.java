@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package LocalDB;
 
 import java.io.Serializable;
@@ -39,15 +40,10 @@ public class Store implements Serializable {
     @Basic(optional = false)
     @Column(name = "ADDRESS")
     private String address;
-//    @ManyToMany(mappedBy = "storeCollection")
-//    private Collection<Product> productCollection;
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
-//    private Collection<Purchase> purchaseCollection;
-   @ManyToMany(cascade = CascadeType.ALL, mappedBy = "storeList")
-    private List<Product> productList;
+    @ManyToMany(mappedBy = "storeCollection")
+    private Collection<Product> productCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
-    private List<Purchase> purchaseList;
-    
+    private Collection<Purchase> purchaseCollection;
     
     public Store() {
     }
@@ -61,16 +57,6 @@ public class Store implements Serializable {
         this.name = name;
         this.address = address;
     }
-
-    /* @EPA:: constructor */
-    public Store(String name, String address) {
-        this.name = name;
-        this.address = address;
-    }
-    /* @EPA:: setProductList */
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
-    }    
 
     public Integer getStoreId() {
         return storeId;
@@ -96,23 +82,23 @@ public class Store implements Serializable {
         this.address = address;
     }
 
-//    @XmlTransient
-//    public Collection<Product> getProductCollection() {
-//        return productCollection;
-//    }
-//
-//    public void setProductCollection(Collection<Product> productCollection) {
-//        this.productCollection = productCollection;
-//    }
-//
-//    @XmlTransient
-//    public Collection<Purchase> getPurchaseCollection() {
-//        return purchaseCollection;
-//    }
-//
-//    public void setPurchaseCollection(Collection<Purchase> purchaseCollection) {
-//        this.purchaseCollection = purchaseCollection;
-//    }
+    @XmlTransient
+    public Collection<Product> getProductCollection() {
+        return productCollection;
+    }
+
+    public void setProductCollection(Collection<Product> productCollection) {
+        this.productCollection = productCollection;
+    }
+
+    @XmlTransient
+    public Collection<Purchase> getPurchaseCollection() {
+        return purchaseCollection;
+    }
+
+    public void setPurchaseCollection(Collection<Purchase> purchaseCollection) {
+        this.purchaseCollection = purchaseCollection;
+    }
 
     @Override
     public int hashCode() {
