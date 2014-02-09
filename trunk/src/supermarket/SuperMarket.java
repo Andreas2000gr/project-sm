@@ -41,8 +41,8 @@ public class SuperMarket {
             q.executeUpdate();
             q = db.getLoc().createQuery("DELETE FROM Store s");
             q.executeUpdate();
-            q = db.getLoc().createQuery("DELETE FROM Customer c");
-            q.executeUpdate();
+//            q = db.getLoc().createQuery("DELETE FROM Customer c");
+//            q.executeUpdate();
             q = db.getLoc().createQuery("DELETE FROM Voucher v");
             q.executeUpdate();
 
@@ -67,7 +67,7 @@ public class SuperMarket {
         // αρχικοποίηση transaction
         db.getLoc().getTransaction().begin();
         try {
-            /* Δημιουργία Προϊόντων */
+            /* Δημιουργία Προϊόντων */ 
             Product odokrema = new Product(null,"Aim Οδοντόκρεμα 75 ml", "1100", 10, 4.35f);
             Product makaroniano7 = new Product(null,"Μακαρόνια No7", "1110", 5, 2.35f);
             Product alevri = new Product(null,"Αλεύρι Ολικής", "1120", 4, 8.88f);
@@ -98,7 +98,7 @@ public class SuperMarket {
             /**
              * Οριζούμε τα προϊόντα που εμπορεύεται ένα κατάστημα,
              */
-            List<Product> AlimouList = new ArrayList<>();
+            Collection<Product> AlimouList = new ArrayList<>();
             AlimouList.add(odokrema);
             AlimouList.add(makaroniano7);
             AlimouList.add(alevri);
@@ -126,7 +126,7 @@ public class SuperMarket {
             
 
             // κάνουμε το ίδιο και για το άλλο κατάστημα
-            List<Product> FalirouList = new ArrayList<>();
+            Collection<Product> FalirouList = new ArrayList<>();
             FalirouList.add(ladi);
             FalirouList.add(dimitriaka);
             FalirouList.add(xartikouzinas);
@@ -179,8 +179,8 @@ public class SuperMarket {
     public static void main(String[] args) {
         // Δημιουργούμε το SuperMarket
         SuperMarket sm = new SuperMarket();
-        //sm.CleanDB();
-        //sm.createStoresAndProducts();
+        sm.CleanDB();
+        sm.createStoresAndProducts();
         
         //Schedule a job for the event dispatch thread:
         //creating and showing this application's GUI.
