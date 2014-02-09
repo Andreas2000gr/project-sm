@@ -56,12 +56,17 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         label1 = new java.awt.Label();
         label2 = new java.awt.Label();
-        jPasswordField3 = new javax.swing.JPasswordField();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jPasswordField2 = new javax.swing.JPasswordField();
+        usrOLD_PASSWORD = new javax.swing.JPasswordField();
+        usrNEW_PASSWORD = new javax.swing.JPasswordField();
+        usrNEW_PASSWORD_Confirm = new javax.swing.JPasswordField();
         label3 = new java.awt.Label();
 
         jButton2.setText("Αποθήκευση");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         ReturnToMainCustomerForm.setText("επιστροφή");
         ReturnToMainCustomerForm.setActionCommand("return");
@@ -143,9 +148,9 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
                     .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPasswordField1)
-                    .addComponent(jPasswordField3)
-                    .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(usrNEW_PASSWORD)
+                    .addComponent(usrOLD_PASSWORD)
+                    .addComponent(usrNEW_PASSWORD_Confirm, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -153,15 +158,15 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPasswordField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(usrOLD_PASSWORD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(usrNEW_PASSWORD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(usrNEW_PASSWORD_Confirm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -202,15 +207,30 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_ReturnToMainCustomerFormActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+
+        char[] usrPASSWORD = usrOLD_PASSWORD.getPassword();
+        String usrFINAL_PASSWORD = "";
+        for (char x : usrPASSWORD) {
+            usrFINAL_PASSWORD += x;
+        }
+
+        if (!frame.cust.getPassword().equals(usrFINAL_PASSWORD)) {
+            this.repaint();
+            usrOLD_PASSWORD.requestFocus();
+            JOptionPane.showMessageDialog(null, "Λανθασμένος κωδικός πρόσβασης.");
+        } else {
+            JOptionPane.showMessageDialog(null, "ok..");
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ReturnToMainCustomerForm;
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JPasswordField jPasswordField2;
-    private javax.swing.JPasswordField jPasswordField3;
     private java.awt.Label label1;
     private java.awt.Label label2;
     private java.awt.Label label3;
@@ -219,6 +239,9 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
     private java.awt.Label label6;
     private javax.swing.JTextField usrFIRST_NAME;
     private javax.swing.JTextField usrLAST_NAME;
+    private javax.swing.JPasswordField usrNEW_PASSWORD;
+    private javax.swing.JPasswordField usrNEW_PASSWORD_Confirm;
+    private javax.swing.JPasswordField usrOLD_PASSWORD;
     private javax.swing.JTextField usrPointsCardNum;
     // End of variables declaration//GEN-END:variables
 }
