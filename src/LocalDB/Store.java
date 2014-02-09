@@ -7,6 +7,7 @@ package LocalDB;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -38,11 +39,16 @@ public class Store implements Serializable {
     @Basic(optional = false)
     @Column(name = "ADDRESS")
     private String address;
-    @ManyToMany(mappedBy = "storeCollection")
-    private Collection<Product> productCollection;
+//    @ManyToMany(mappedBy = "storeCollection")
+//    private Collection<Product> productCollection;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
+//    private Collection<Purchase> purchaseCollection;
+   @ManyToMany(cascade = CascadeType.ALL, mappedBy = "storeList")
+    private List<Product> productList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
-    private Collection<Purchase> purchaseCollection;
-
+    private List<Purchase> purchaseList;
+    
+    
     public Store() {
     }
 
@@ -61,6 +67,10 @@ public class Store implements Serializable {
         this.name = name;
         this.address = address;
     }
+    /* @EPA:: setProductList */
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
+    }    
 
     public Integer getStoreId() {
         return storeId;
@@ -86,23 +96,23 @@ public class Store implements Serializable {
         this.address = address;
     }
 
-    @XmlTransient
-    public Collection<Product> getProductCollection() {
-        return productCollection;
-    }
-
-    public void setProductCollection(Collection<Product> productCollection) {
-        this.productCollection = productCollection;
-    }
-
-    @XmlTransient
-    public Collection<Purchase> getPurchaseCollection() {
-        return purchaseCollection;
-    }
-
-    public void setPurchaseCollection(Collection<Purchase> purchaseCollection) {
-        this.purchaseCollection = purchaseCollection;
-    }
+//    @XmlTransient
+//    public Collection<Product> getProductCollection() {
+//        return productCollection;
+//    }
+//
+//    public void setProductCollection(Collection<Product> productCollection) {
+//        this.productCollection = productCollection;
+//    }
+//
+//    @XmlTransient
+//    public Collection<Purchase> getPurchaseCollection() {
+//        return purchaseCollection;
+//    }
+//
+//    public void setPurchaseCollection(Collection<Purchase> purchaseCollection) {
+//        this.purchaseCollection = purchaseCollection;
+//    }
 
     @Override
     public int hashCode() {
