@@ -69,6 +69,14 @@ public class Product implements Serializable {
         this.price = price;
     }
 
+    /* @EPA:: constructor */
+    public Product( String name, String code, int points, float price) {
+        this.name = name;
+        this.code = code;
+        this.points = points;
+        this.price = price;
+    }
+    
     public Integer getProductId() {
         return productId;
     }
