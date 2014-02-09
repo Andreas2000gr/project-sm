@@ -4,50 +4,28 @@
  * and open the template in the editor.
  */
 package supermarket;
-
-import LocalDB.*;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
  * @author Loukatos
  */
-
+import LocalDB.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import javax.persistence.Query;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import supermarket.DBmanager;
 
 public class SuperMarket {
-
-    private DBmanager db = new DBmanager();
-
-    /**
+    
+    // Δημιουργία του ενιαίου DB manager
+    private static DBmanager db = new DBmanager(); 
+    
+     /**
      * @param args the command line arguments
      */
     public SuperMarket() {
-        this.db = db;
-    }
-
-    private static void createAndShowGUI() {
-        // Δημιουργούμε το SuperMarket
-        SuperMarketParentFrame s = new SuperMarketParentFrame();
-        s.setVisible(true);
-        s.pack();
-    }
-
-    public static void main(String[] args) {
-        //Schedule a job for the event dispatch thread:
-        //creating and showing this application's GUI.
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                //Turn off metal's use of bold fonts
-                UIManager.put("swing.boldMetal", Boolean.FALSE);
-                createAndShowGUI();
-            }
-        });
-
+        
     }
 
     // @EPA:: Καθαρίζει όλους τους πίνακες της ΒΔ     
@@ -74,8 +52,14 @@ public class SuperMarket {
             db.getLoc().getTransaction().rollback();
         }
     }
+    
+    private static void createAndShowGUI() {
+        SuperMarketParentFrame s = new SuperMarketParentFrame(db);
+        s.setVisible(true);
+        s.pack();
+    }
 
-    /**
+     /**
      * @EPA:: Δημιουργεί προϊόντα και καταστήματα καθορίζει τα προϊόντα που
      * εμπορεύεται κάθε κατάστημα και τα αποθηκεύει στη ΒΔ.
      */
@@ -84,32 +68,32 @@ public class SuperMarket {
         db.getLoc().getTransaction().begin();
         try {
             /* Δημιουργία Προϊόντων */
-            Product odokrema = new Product("Aim Οδοντόκρεμα 75 ml", "1100", 10, 4.35f);
-            Product makaroniano7 = new Product("Μακαρόνια No7", "1110", 5, 2.35f);
-            Product alevri = new Product("Αλεύρι Ολικής", "1120", 4, 8.88f);
-            Product ladi = new Product("Λάδι 5lt", "1130", 3, 22.34f);
-            Product dimitriaka = new Product("Δημητριακά ολικής", "1140", 2, 4.61f);
-            Product xartikouzinas = new Product("Χαρτί κουζίνας", "1150", 50, 4.66f);
-            Product makaroniano3 = new Product("Μακαρόνια No3", "1160", 20, 4.71f);
-            Product badedas = new Product("Badedas Αφρόλουτρο 750 ml", "1170", 15, 4.76f);
-            Product kafesellinikos = new Product("Καφές Ελλ. 250gr", "1180", 12, 4.81f);
-            Product kafesfiltrou = new Product("Καφές Φίλτρου 250gr", "1190", 10, 4.86f);
-            Product kafesespresso = new Product("Καφές espresso 250gr", "1200", 5, 4.91f);
-            Product aporrouxwn = new Product("Απορρυπαντικό Ρούχων", "1210", 16, 24.96f);
-            Product kyboimaggi = new Product("Maggi Κύβοι Ζωμό 12τεμ.", "1220", 16, 5.01f);
-            Product moustarda = new Product("Μουστάρδα 500 gr", "1230", 17, 5.06f);
-            Product ketsap = new Product("Κέτσαπ 500 gr", "1240", 17, 5.11f);
-            Product malaktikoroux = new Product("Μαλακτικό Ρούχων 1lt", "1250", 18, 15.16f);
-            Product ryzibasmati = new Product("Ρύζι Basmati 500gr", "1260", 18, 5.21f);
-            Product tsixles = new Product("Τσίχλες Trdent Μέντα", "1270", 19, 5.26f);
-            Product galafresko = new Product("Γάλα φρέσκο 1Ltr", "1280", 20, 5.31f);
-            Product sokolata = new Product("Σολολάτες Lakta 12τμ.", "1290", 20, 15.21f);
+            Product odokrema = new Product(null,"Aim Οδοντόκρεμα 75 ml", "1100", 10, 4.35f);
+            Product makaroniano7 = new Product(null,"Μακαρόνια No7", "1110", 5, 2.35f);
+            Product alevri = new Product(null,"Αλεύρι Ολικής", "1120", 4, 8.88f);
+            Product ladi = new Product(null,"Λάδι 5lt", "1130", 3, 22.34f);
+            Product dimitriaka = new Product(null,"Δημητριακά ολικής", "1140", 2, 4.61f);
+            Product xartikouzinas = new Product(null,"Χαρτί κουζίνας", "1150", 50, 4.66f);
+            Product makaroniano3 = new Product(null,"Μακαρόνια No3", "1160", 20, 4.71f);
+            Product badedas = new Product(null,"Badedas Αφρόλουτρο 750 ml", "1170", 15, 4.76f);
+            Product kafesellinikos = new Product(null,"Καφές Ελλ. 250gr", "1180", 12, 4.81f);
+            Product kafesfiltrou = new Product(null,"Καφές Φίλτρου 250gr", "1190", 10, 4.86f);
+            Product kafesespresso = new Product(null,"Καφές espresso 250gr", "1200", 5, 4.91f);
+            Product aporrouxwn = new Product(null,"Απορρυπαντικό Ρούχων", "1210", 16, 24.96f);
+            Product kyboimaggi = new Product(null,"Maggi Κύβοι Ζωμό 12τεμ.", "1220", 16, 5.01f);
+            Product moustarda = new Product(null,"Μουστάρδα 500 gr", "1230", 17, 5.06f);
+            Product ketsap = new Product(null,"Κέτσαπ 500 gr", "1240", 17, 5.11f);
+            Product malaktikoroux = new Product(null,"Μαλακτικό Ρούχων 1lt", "1250", 18, 15.16f);
+            Product ryzibasmati = new Product(null,"Ρύζι Basmati 500gr", "1260", 18, 5.21f);
+            Product tsixles = new Product(null,"Τσίχλες Trdent Μέντα", "1270", 19, 5.26f);
+            Product galafresko = new Product(null,"Γάλα φρέσκο 1Ltr", "1280", 20, 5.31f);
+            Product sokolata = new Product(null,"Σολολάτες Lakta 12τμ.", "1290", 20, 15.21f);
 
 
             /* Δημιουργία Καταστημάτων */
-            Store abAlimou = new Store("AB Αλίμου", "Καλαμακίου 120, Άλιμος");
-            Store abFalirou = new Store("AB Φαλήρου", "Ποσειδώνος 300, Παλαιό Φάληρο");
-            Store abGeraka = new Store("AB Γέρακα", "Λεωφόρος Σπάτων 81, Γέρακας");
+            Store abAlimou = new Store(null,"AB Αλίμου", "Καλαμακίου 120, Άλιμος");
+            Store abFalirou = new Store(null,"AB Φαλήρου", "Ποσειδώνος 300, Παλαιό Φάληρο");
+            Store abGeraka = new Store(null,"AB Γέρακα", "Λεωφόρος Σπάτων 81, Γέρακας");
 
             /**
              * Οριζούμε τα προϊόντα που εμπορεύεται ένα κατάστημα,
@@ -136,8 +120,10 @@ public class SuperMarket {
             AlimouList.add(galafresko);
             AlimouList.add(sokolata);
 
-            abAlimou.setProductList(AlimouList);
+            abAlimou.setProductCollection(AlimouList);
             db.getLoc().persist(abAlimou);
+            db.getLoc().merge(abAlimou);
+            
 
             // κάνουμε το ίδιο και για το άλλο κατάστημα
             List<Product> FalirouList = new ArrayList<>();
@@ -155,11 +141,12 @@ public class SuperMarket {
             FalirouList.add(ketsap);
             FalirouList.add(malaktikoroux);
 
-            abFalirou.setProductList(FalirouList);
+            abFalirou.setProductCollection(FalirouList);
             db.getLoc().persist(abFalirou);
+            db.getLoc().merge(abFalirou);
 
             // κάνουμε το ίδιο και για το άλλο κατάστημα
-            List<Product> GerakaList = new ArrayList<>();
+            Collection<Product> GerakaList = new ArrayList<>();
             GerakaList.add(odokrema);
             GerakaList.add(makaroniano7);
             GerakaList.add(alevri);
@@ -173,8 +160,10 @@ public class SuperMarket {
             GerakaList.add(dimitriaka);
             GerakaList.add(xartikouzinas);
 
-            abGeraka.setProductList(GerakaList);
+            abGeraka.setProductCollection(GerakaList); 
             db.getLoc().persist(abGeraka);
+            db.getLoc().merge(abGeraka);
+            
             /**
              * Κάνοντας commit το transaction θα δημιουργηθούν οι αντίστοιχες
              * εγγραφές Store και Product στη ΒΔ ενώ τα αντίστοιχα αντικείμενα
@@ -186,4 +175,27 @@ public class SuperMarket {
             db.getLoc().getTransaction().rollback();
         }
     }
+    
+    public static void main(String[] args) {
+        // Δημιουργούμε το SuperMarket
+        SuperMarket sm = new SuperMarket();
+        sm.CleanDB();
+        sm.createStoresAndProducts();
+        
+        //Schedule a job for the event dispatch thread:
+        //creating and showing this application's GUI.
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                //Turn off metal's use of bold fonts
+                UIManager.put("swing.boldMetal", Boolean.FALSE);
+                createAndShowGUI();
+            }
+        });
+
+    }
+
+    
+
+
+   
 }

@@ -24,7 +24,6 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
     //Hard-coded admin credentials!!!
     private static String adminUn  = "admin";
     private static String adminPw  = "admin";
-    
     public static String getAdminUn() {
         return adminUn;
     }
@@ -32,13 +31,24 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
         return adminPw;
     }
     
-    // Δημιουργία του ενιαίου DB manager
-    private final DBmanager db = new DBmanager();
-    EntityManager loc = db.getLoc();
-    EntityManager ext = db.getExt();
-    
+    private final DBmanager db;
     public JPanel pnl = new WelcomePanel(this); //Αρχική εικόνα
     public Customer cust; //Μεταβλητή που θα κρατήσει τον πελάτη και θα τον πασάρει σε κάθε JPanel
+    private EntityManager loc;  
+    private EntityManager ext; 
+
+    /**
+    * Creates new form superMarketParentFrame
+    */
+    public SuperMarketParentFrame(DBmanager db) {
+        initComponents();
+        this.jPanel6.add(pnl);
+        this.db = db;
+        this.loc = db.getLoc();
+        this.ext = db.getExt();
+    }
+        
+
     
     /**
      * Όταν κληθεί αφαιρεί το component που υπάρχει στην κεντρική περιοχή και προσθέτει το νέο
@@ -82,14 +92,6 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
         }
 
 
-    }
-    
-    /**
-    * Creates new form superMarketParentFrame
-    */
-    public SuperMarketParentFrame() {
-        initComponents();
-        this.jPanel6.add(pnl);
     }
     
     /**
@@ -190,8 +192,7 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                
-                new SuperMarketParentFrame().setVisible(true);
+
             }
         });
     }
