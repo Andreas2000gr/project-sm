@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package LocalDB;
 
 import java.io.Serializable;
@@ -25,11 +24,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Store.findByName", query = "SELECT s FROM Store s WHERE s.name = :name"),
     @NamedQuery(name = "Store.findByAddress", query = "SELECT s FROM Store s WHERE s.address = :address")})
 public class Store implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     //@Basic(optional = false)  έγινε comment καθώς θα χρησιμοποιηθεί ο generator παρακάτω
-    @SequenceGenerator(name="sto_id", sequenceName="SQ_STORE_ID", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="sto_id")
+    @SequenceGenerator(name = "sto_id", sequenceName = "SQ_STORE_ID", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sto_id")
     @Column(name = "STORE_ID")
     private Integer storeId;
     @Basic(optional = false)
@@ -52,6 +52,12 @@ public class Store implements Serializable {
 
     public Store(Integer storeId, String name, String address) {
         this.storeId = storeId;
+        this.name = name;
+        this.address = address;
+    }
+
+    /* @EPA:: constructor */
+    public Store(String name, String address) {
         this.name = name;
         this.address = address;
     }
@@ -122,5 +128,5 @@ public class Store implements Serializable {
     public String toString() {
         return "LocalDB.Store[ storeId=" + storeId + " ]";
     }
-    
+
 }
