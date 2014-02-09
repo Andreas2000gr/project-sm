@@ -98,11 +98,11 @@ public class SuperMarket {
             //Παρακάτω φαίνεται ο σωστός τρόπος ώστε να ενημερωθεί και ο πίνακας 
             //Store_Product. O λόγος που δεν δουλεύει το ανάποδο είναι διότι η κλάση Product
             // έχει τα στοιχεία για τον join table και μόνο μία εκ των δύο μπορεί να τα έχει.
-            
+
             Collection<Store> sc = new ArrayList<>(); //αρχικοποίηση
             sc.add(abGeraka);
             ketsap.setStoreCollection(sc);
-            
+
             db.getLoc().persist(ketsap);
             db.getLoc().merge(ketsap);
 
