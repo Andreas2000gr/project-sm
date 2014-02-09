@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package CustomerGUI;
 
-import supermarket.SuperMarketParentFrame;
+import supermarket.*;
 
 /**
  *
@@ -18,11 +17,12 @@ public class CustMainPanel extends javax.swing.JPanel {
      * Creates new form CustMainPanel
      */
     private final SuperMarketParentFrame frame;
-    
+
     public CustMainPanel(SuperMarketParentFrame frame) {
         initComponents();
         this.frame = frame;
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -32,37 +32,192 @@ public class CustMainPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jButton5 = new javax.swing.JButton();
+        BuyProducts = new javax.swing.JPanel();
+        PurchaseButton = new javax.swing.JButton();
+        ViewBasketjButton = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        EditProfileButton1 = new javax.swing.JButton();
+        ChecksjButton = new javax.swing.JButton();
+        ChangePasswordjButton = new javax.swing.JButton();
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("Εύη, βάλε τον κώδικά σου σε αυτό το παράθυρο που είναι προσβάσιμο από το Login.");
-        jScrollPane1.setViewportView(jTextArea1);
+        jButton5.setText("Επιστροφή");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        BuyProducts.setBorder(javax.swing.BorderFactory.createTitledBorder("Αγορά"));
+
+        PurchaseButton.setText("Πραγματοποίηση αγορών");
+        PurchaseButton.setMaximumSize(new java.awt.Dimension(199, 25));
+        PurchaseButton.setMinimumSize(new java.awt.Dimension(199, 25));
+        PurchaseButton.setPreferredSize(new java.awt.Dimension(199, 25));
+        PurchaseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PurchaseButtonActionPerformed(evt);
+            }
+        });
+
+        ViewBasketjButton.setText("Προβολή Καλαθιού");
+        ViewBasketjButton.setMaximumSize(new java.awt.Dimension(199, 25));
+        ViewBasketjButton.setMinimumSize(new java.awt.Dimension(199, 25));
+        ViewBasketjButton.setPreferredSize(new java.awt.Dimension(199, 25));
+        ViewBasketjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ViewBasketjButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout BuyProductsLayout = new javax.swing.GroupLayout(BuyProducts);
+        BuyProducts.setLayout(BuyProductsLayout);
+        BuyProductsLayout.setHorizontalGroup(
+            BuyProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(BuyProductsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(BuyProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(PurchaseButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ViewBasketjButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(29, Short.MAX_VALUE))
+        );
+        BuyProductsLayout.setVerticalGroup(
+            BuyProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(BuyProductsLayout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(PurchaseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ViewBasketjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(30, Short.MAX_VALUE))
+        );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Διαχείριση Προφίλ"));
+
+        EditProfileButton1.setText("Επεξεργασία προφίλ");
+        EditProfileButton1.setMaximumSize(new java.awt.Dimension(199, 25));
+        EditProfileButton1.setMinimumSize(new java.awt.Dimension(199, 25));
+        EditProfileButton1.setPreferredSize(new java.awt.Dimension(199, 25));
+        EditProfileButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditProfileButton1ActionPerformed(evt);
+            }
+        });
+
+        ChecksjButton.setText("Επιταγές");
+        ChecksjButton.setMaximumSize(new java.awt.Dimension(199, 25));
+        ChecksjButton.setMinimumSize(new java.awt.Dimension(199, 25));
+        ChecksjButton.setPreferredSize(new java.awt.Dimension(199, 25));
+        ChecksjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChecksjButtonActionPerformed(evt);
+            }
+        });
+
+        ChangePasswordjButton.setText("Αλλαγή κωδικού");
+        ChangePasswordjButton.setMaximumSize(new java.awt.Dimension(199, 25));
+        ChangePasswordjButton.setMinimumSize(new java.awt.Dimension(199, 25));
+        ChangePasswordjButton.setPreferredSize(new java.awt.Dimension(199, 25));
+        ChangePasswordjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChangePasswordjButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(EditProfileButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ChangePasswordjButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ChecksjButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(EditProfileButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ChangePasswordjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ChecksjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(6, 6, 6))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(67, 67, 67)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(220, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(jButton5))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(88, 88, 88)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(BuyProducts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(90, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(57, 57, 57)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(222, Short.MAX_VALUE))
+                .addGap(49, 49, 49)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(BuyProducts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(90, 90, 90)
+                .addComponent(jButton5)
+                .addGap(49, 49, 49))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        frame.pnl = new LoginPanel(this.frame);
+        frame.addPanelInMain();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void EditProfileButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditProfileButton1ActionPerformed
+        // TODO add your handling code here:
+        frame.pnl = new EditProfileJPanel(this.frame);
+        frame.addPanelInMain();
+    }//GEN-LAST:event_EditProfileButton1ActionPerformed
+
+    private void ChecksjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChecksjButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ChecksjButtonActionPerformed
+
+    private void ChangePasswordjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangePasswordjButtonActionPerformed
+        // TODO add your handling code here:
+        frame.pnl = new ChangePasswordJPanel(this.frame);
+        frame.addPanelInMain();
+    }//GEN-LAST:event_ChangePasswordjButtonActionPerformed
+
+    private void ViewBasketjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewBasketjButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ViewBasketjButtonActionPerformed
+
+    private void PurchaseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PurchaseButtonActionPerformed
+        // TODO add your handling code here:
+        frame.pnl = new EditProfileJPanel(this.frame);
+        frame.addPanelInMain();
+    }//GEN-LAST:event_PurchaseButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JPanel BuyProducts;
+    private javax.swing.JButton ChangePasswordjButton;
+    private javax.swing.JButton ChecksjButton;
+    private javax.swing.JButton EditProfileButton1;
+    private javax.swing.JButton PurchaseButton;
+    private javax.swing.JButton ViewBasketjButton;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
 }
