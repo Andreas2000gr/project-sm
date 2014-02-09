@@ -9,7 +9,7 @@ public class ThreadSm extends Thread {
      private DBmanager db;
      private Customer customer;
     
-}
+
 
 //Constructor gia ThreadSm
 
@@ -22,3 +22,10 @@ public class ThreadSm extends Thread {
 //Μεθοδος για έλεγχος των thread συμφωνα με την εκφωνηση
 
 //Μεθοδος run που θα εκτελει τα νηματα
+@Override
+public void run(){
+
+}
+
+
+}
