@@ -21,3 +21,4 @@ public class ThreadSm extends Thread {
 
 //Μεθοδος για έλεγχος των thread συμφωνα με την εκφωνηση
 
+//Μεθοδος run που θα εκτελει τα νηματα
