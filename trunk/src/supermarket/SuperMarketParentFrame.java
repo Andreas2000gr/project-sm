@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package supermarket;
 
 import java.util.Arrays;
@@ -19,27 +18,30 @@ import javax.swing.JOptionPane;
  * @author Panagis
  */
 public class SuperMarketParentFrame extends javax.swing.JFrame {
-    
+
     //Hard-coded admin credentials!!!
-    private static String adminUn  = "admin";
-    private static String adminPw  = "admin";
+    private static String adminUn = "admin";
+    private static String adminPw = "admin";
+
     public static String getAdminUn() {
         return adminUn;
     }
+
     public static String getAdminPw() {
         return adminPw;
     }
-    
+
     private final DBmanager db = new DBmanager();
     public Customer cust; //Μεταβλητή που θα κρατήσει τον πελάτη και θα τον πασάρει σε κάθε JPanel
-    private EntityManager loc = db.getLoc();  
-    private EntityManager ext = db.getExt(); 
+    private EntityManager loc = db.getLoc();
+    private EntityManager ext = db.getExt();
 
     public JPanel pnl = new WelcomePanel(this); //Αρχική εικόνα κεντρικού panel
     public JPanel brd = new BorderPanel(this);
+
     /**
-    * Creates new form superMarketParentFrame
-    */
+     * Creates new form superMarketParentFrame
+     */
     public SuperMarketParentFrame() {
         initComponents();
         this.jPanel6.add(pnl);
@@ -47,60 +49,63 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
         this.loc = db.getLoc();
         this.ext = db.getExt();
     }
-        
 
-    
+    public EntityManager getLoc() {
+        return loc;
+    }
+
     /**
-     * Όταν κληθεί αφαιρεί το component που υπάρχει στην κεντρική περιοχή και προσθέτει το νέο
-     * @param 
+     * Όταν κληθεί αφαιρεί το component που υπάρχει στην κεντρική περιοχή και
+     * προσθέτει το νέο
+     *
+     * @param
      */
-    public void addPanelInMain(){
+    public void addPanelInMain() {
         jPanel6.removeAll();
         jPanel6.add(pnl);
         jPanel6.repaint();
         jPanel6.revalidate();
     }
-    
-    public void addPanelInLeftBorder(){
+
+    public void addPanelInLeftBorder() {
         jPanel2.removeAll();
         jPanel2.add(brd);
         jPanel2.repaint();
         jPanel2.revalidate();
     }
-    
-    public boolean validateCredentials(String un, char[] pw){
-        if (un.equals(adminUn) && Arrays.equals(pw,adminPw.toCharArray())) {
+
+    public boolean validateCredentials(String un, char[] pw) {
+        if (un.equals(adminUn) && Arrays.equals(pw, adminPw.toCharArray())) {
             pnl = new MainPanel(this);
             return true;
-        } 
+        }
         try {
             loc.getTransaction().begin();
             Query q = loc.createNamedQuery("Customer.findByIdPassword");//Χρήση του προκατασκευασμένου query
             q.setParameter("cardno", un);
             q.setParameter("password", new String(pw)); //Μετατροπή του char[]->String
-            cust = (Customer)q.getSingleResult();
+            cust = (Customer) q.getSingleResult();
             pnl = new CustMainPanel(this);
             loc.close();
             return false;
         } catch (NoResultException e) { //Σε περίπτωση που δεν υπάρχει αυτή η κάρτα
-                JOptionPane.showMessageDialog(null, "Λάθος Στοιχεία Εισόδου...");
-                loc.getTransaction().rollback(); //Δεν ξεχνάμε να κλείσουμε το transaction!!!!
-                return true;
+            JOptionPane.showMessageDialog(null, "Λάθος Στοιχεία Εισόδου...");
+            loc.getTransaction().rollback(); //Δεν ξεχνάμε να κλείσουμε το transaction!!!!
+            return true;
         } catch (NonUniqueResultException e) { //Για να πιάσουμε δύο ίδιες κάρτες εφόσον δεν είναι μοναδικές
-                JOptionPane.showMessageDialog(null, "Όχι μοναδικός χρήστης...");
-                loc.getTransaction().rollback();
-                return true;
+            JOptionPane.showMessageDialog(null, "Όχι μοναδικός χρήστης...");
+            loc.getTransaction().rollback();
+            return true;
         } catch (Exception e) { //Just in case...
-                JOptionPane.showMessageDialog(null, "Σφάλμα βάσης...");
-                loc.getTransaction().rollback();
-                return true;
+            JOptionPane.showMessageDialog(null, "Σφάλμα βάσης...");
+            loc.getTransaction().rollback();
+            return true;
         } finally {
             return true;
         }
 
-
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -214,18 +219,18 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     // METHOD:: UPDATE CUSTOMER'S PASSWORD
-    public void CUSTOMER_UPDATE_PASSWORD(Customer customer) {
+    public void CUSTOMER_UPDATE_PASSWORD(Customer customer, EntityManager loc) {
         try {
             // αρχικοποίηση transaction
             loc.getTransaction().begin();
             loc.persist(customer);
             loc.getTransaction().commit();
-          //  return true;
+            //  return true;
         } catch (Exception e) {
             e.printStackTrace();
             loc.getTransaction().rollback();
-          //  return false;
+            //  return false;
         }
-    }     
+    }
 
 }
