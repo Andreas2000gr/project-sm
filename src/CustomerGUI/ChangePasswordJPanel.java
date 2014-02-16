@@ -19,7 +19,7 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
     private SuperMarketParentFrame ParentFrame;
     private Customer Usr;
     private EntityManager loc;
-    
+
     /**
      * Creates new form ChangePasswordJPanel
      */
@@ -255,7 +255,7 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
         try {
             Usr.setPassword(usrNEWFINAL_PASSWORD);
             JOptionPane.showMessageDialog(null, "NEW PASSWORD=" + Usr.getPassword());
-            ParentFrame.CUSTOMER_UPDATE_PASSWORD(Usr,loc);
+            ParentFrame.CUSTOMER_UPDATE_PASSWORD(Usr, loc);
             ParentFrame.setEnabled(true);
             JOptionPane.showMessageDialog(null, "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε στο σύστημα.");
         } catch (Exception e) {
