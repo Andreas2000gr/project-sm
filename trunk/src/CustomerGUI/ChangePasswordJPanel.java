@@ -5,6 +5,8 @@
  */
 package CustomerGUI;
 
+import LocalDB.Customer;
+import javax.persistence.EntityManager;
 import javax.swing.JOptionPane;
 import supermarket.SuperMarketParentFrame;
 
@@ -14,19 +16,24 @@ import supermarket.SuperMarketParentFrame;
  */
 public class ChangePasswordJPanel extends javax.swing.JPanel {
 
-    private final SuperMarketParentFrame frame;
-
+    private SuperMarketParentFrame ParentFrame;
+    private Customer Usr;
+    private EntityManager loc;
+    
     /**
      * Creates new form ChangePasswordJPanel
      */
-    public ChangePasswordJPanel(SuperMarketParentFrame frame) {
+    public ChangePasswordJPanel(SuperMarketParentFrame ParentFrame) {
         initComponents();
-        this.frame = frame;
+        this.ParentFrame = ParentFrame;
+        this.Usr = ParentFrame.cust;
+        this.loc = ParentFrame.getLoc();
+
         /* εντοπίζουμε τον χρήστη και αρχικοποιούμε τα πεδία jtexfields
          της φόρμας, ώστε να εμφανίζεται η πληροφορία.*/
-        usrLAST_NAME.setText(frame.cust.getLastName().toString());
-        usrFIRST_NAME.setText(frame.cust.getFirstName().toString());
-        usrPointsCardNum.setText(frame.cust.getPointsCardNumber().toString());
+        usrLAST_NAME.setText(ParentFrame.cust.getLastName().toString());
+        usrFIRST_NAME.setText(ParentFrame.cust.getFirstName().toString());
+        usrPointsCardNum.setText(ParentFrame.cust.getPointsCardNumber().toString());
 
         /* Τα παρακάτω πεδία δε μπορεί να επεξεργαστεί ο χρήστης */
         usrLAST_NAME.setEditable(false);
@@ -208,39 +215,54 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_ReturnToMainCustomerFormActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-
-        char[] usrPASSWORD = usrOLD_PASSWORD.getPassword();
+        // διαβάζουμε τον ισχύον κωδικό πρόσβασης, που πληκτολόγησε ο χρήστης
+        char[] usrOldPASSWORD = usrOLD_PASSWORD.getPassword();
         String usrFINAL_PASSWORD = "";
-        for (char x : usrPASSWORD) {
+        for (char x : usrOldPASSWORD) {
             usrFINAL_PASSWORD += x;
         }
-        
+        // διαβάζουμε τον νέο κωδικό πρόσβασης, που πληκτολόγησε ο χρήστης
         char[] usrNewPASSWORD = usrNEW_PASSWORD.getPassword();
         String usrNEWFINAL_PASSWORD = "";
         for (char x : usrNewPASSWORD) {
             usrNEWFINAL_PASSWORD += x;
-        }        
-
+        }
+        // διαβάζουμε τον νέο κωδικό πρόσβασης, που πληκτολόγησε ο χρήστης - 2η φορά (επιβεβαίωση)
         char[] usrConfirmedPASSWORD = usrNEW_PASSWORD_Confirm.getPassword();
         String usrConfirmedFINAL_PASSWORD = "";
         for (char x : usrConfirmedPASSWORD) {
             usrConfirmedFINAL_PASSWORD += x;
-        }  
-        
-        if (!frame.cust.getPassword().equals(usrFINAL_PASSWORD)) {
+        }
+
+        // αν ο κωδικό πρόσβασης που εινα αποθηκευμένος στη ΒΔ
+        // δεν ταιριάζει με τον κωδικό πρόσβασης που πληκτρολόγησε ο χρήστης
+        // τότε εμφανίζει μήνυμα σφάλματος
+        if (!Usr.getPassword().equals(usrFINAL_PASSWORD)) {
             this.repaint();
             usrOLD_PASSWORD.requestFocus();
             JOptionPane.showMessageDialog(null, "Λανθασμένος κωδικός πρόσβασης.");
-        } else {
-            //ελέγχουμε εαν το νέο και επιβεβαιωμένο password ταιριάζουν
-            if (!usrNEWFINAL_PASSWORD.equals(usrConfirmedFINAL_PASSWORD)) {
+            return;
+        }
+        //ελέγχουμε εαν το νέο και επιβεβαιωμένο password ταιριάζουν
+        if (!usrNEWFINAL_PASSWORD.equals(usrConfirmedFINAL_PASSWORD)
+                || usrNEWFINAL_PASSWORD.equals("")) {
             this.repaint();
             usrOLD_PASSWORD.requestFocus();
-            JOptionPane.showMessageDialog(null, "Οι δυο νέοι κωδικοί δεν ταιριάζουν.");
+            JOptionPane.showMessageDialog(null, "Ο νέος κωδικός πρόσβασης δεν είναι εφικτό να επιβεβαιωθεί.");
+            return;
         }
-            
+
+        try {
+            Usr.setPassword(usrNEWFINAL_PASSWORD);
+            JOptionPane.showMessageDialog(null, "NEW PASSWORD=" + Usr.getPassword());
+            ParentFrame.CUSTOMER_UPDATE_PASSWORD(Usr,loc);
+            ParentFrame.setEnabled(true);
+            JOptionPane.showMessageDialog(null, "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε στο σύστημα.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "ERROR!!! " + e.getMessage().toString());
+
         }
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
 
