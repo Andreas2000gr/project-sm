@@ -212,4 +212,20 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables
+
+    // METHOD:: UPDATE CUSTOMER'S PASSWORD
+    public void CUSTOMER_UPDATE_PASSWORD(Customer customer) {
+        try {
+            // αρχικοποίηση transaction
+            loc.getTransaction().begin();
+            loc.persist(customer);
+            loc.getTransaction().commit();
+          //  return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            loc.getTransaction().rollback();
+          //  return false;
+        }
+    }     
+
 }
