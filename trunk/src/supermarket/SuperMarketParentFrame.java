@@ -219,11 +219,22 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     // METHOD:: UPDATE CUSTOMER'S PASSWORD
-    public void CUSTOMER_UPDATE_PASSWORD(Customer customer, EntityManager loc) {
+    public void CUSTOMER_UPDATE_PASSWORD(Customer customer) {
         try {
             // αρχικοποίηση transaction
+            if(!loc.getTransaction().isActive())
             loc.getTransaction().begin();
+            
+            System.out.println(2);
             loc.persist(customer);
+            
+            System.out.println(3);
+    if (loc.getTransaction().isActive()){
+        System.out.println("IS ACTIVE");
+    } else {
+        System.out.println("NO ACTIVE");
+    }
+    
             loc.getTransaction().commit();
             //  return true;
         } catch (Exception e) {
