@@ -8,6 +8,7 @@ package CustomerGUI;
 import LocalDB.Customer;
 import javax.persistence.EntityManager;
 import javax.swing.JOptionPane;
+import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
 
 /**
@@ -16,6 +17,7 @@ import supermarket.SuperMarketParentFrame;
  */
 public class ChangePasswordJPanel extends javax.swing.JPanel {
 
+    private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
     private Customer Usr;
     private EntityManager loc;
@@ -27,7 +29,7 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
         initComponents();
         this.ParentFrame = ParentFrame;
         this.Usr = ParentFrame.cust;
-        this.loc = ParentFrame.getLoc();
+        this.loc = db.getLoc();
 
         /* εντοπίζουμε τον χρήστη και αρχικοποιούμε τα πεδία jtexfields
          της φόρμας, ώστε να εμφανίζεται η πληροφορία.*/
@@ -255,7 +257,7 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
         try {
             Usr.setPassword(usrNEWFINAL_PASSWORD);
             JOptionPane.showMessageDialog(null, "NEW PASSWORD=" + Usr.getPassword());
-            ParentFrame.CUSTOMER_UPDATE_PASSWORD(Usr);
+            db.CUSTOMER_UPDATE_PASSWORD(Usr);
             ParentFrame.setEnabled(true);
             JOptionPane.showMessageDialog(null, "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε στο σύστημα.");
         } catch (Exception e) {
