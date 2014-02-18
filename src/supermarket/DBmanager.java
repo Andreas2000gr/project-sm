@@ -50,17 +50,7 @@ public class DBmanager {
             if (!getLoc().getTransaction().isActive()) {
                 getLoc().getTransaction().begin();
             }
-
-            System.out.println(2);
-            getLoc().persist(customer);
-
-            System.out.println(3);
-            if (getLoc().getTransaction().isActive()) {
-                System.out.println("IS ACTIVE");
-            } else {
-                System.out.println("NO ACTIVE");
-            }
-
+            getLoc().merge(customer);
             getLoc().getTransaction().commit();
             //  return true;
         } catch (Exception e) {
