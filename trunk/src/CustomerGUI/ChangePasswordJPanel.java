@@ -6,7 +6,6 @@
 package CustomerGUI;
 
 import LocalDB.Customer;
-import javax.persistence.EntityManager;
 import javax.swing.JOptionPane;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
@@ -20,7 +19,6 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
     private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
     private Customer Usr;
-    private EntityManager loc;
 
     /**
      * Creates new form ChangePasswordJPanel
@@ -29,7 +27,6 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
         initComponents();
         this.ParentFrame = ParentFrame;
         this.Usr = ParentFrame.cust;
-        this.loc = db.getLoc();
 
         /* εντοπίζουμε τον χρήστη και αρχικοποιούμε τα πεδία jtexfields
          της φόρμας, ώστε να εμφανίζεται η πληροφορία.*/
