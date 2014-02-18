@@ -80,12 +80,12 @@
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="ADDRESS" alignment="0" max="32767" attributes="0"/>
+                      <Component id="usrADDRESS" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="CUSTOMER_ID" alignment="0" min="-2" pref="57" max="-2" attributes="0"/>
-                              <Component id="FIRST_NAME" alignment="0" min="-2" pref="144" max="-2" attributes="0"/>
-                              <Component id="LAST_NAME" alignment="0" min="-2" pref="184" max="-2" attributes="0"/>
+                              <Component id="usrPointsCardNum" alignment="0" min="-2" pref="57" max="-2" attributes="0"/>
+                              <Component id="usrFIRST_NAME" alignment="0" min="-2" pref="144" max="-2" attributes="0"/>
+                              <Component id="usrLAST_NAME" alignment="0" min="-2" pref="184" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
@@ -100,21 +100,21 @@
                   <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="CUSTOMER_ID" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="usrPointsCardNum" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="LAST_NAME" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="usrLAST_NAME" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="FIRST_NAME" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="usrFIRST_NAME" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="ADDRESS" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="usrADDRESS" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="16" max="32767" attributes="0"/>
@@ -143,7 +143,7 @@
             <Property name="text" type="java.lang.String" value="&#x394;&#x3b9;&#x3b5;&#x3cd;&#x3b8;&#x3c5;&#x3bd;&#x3c3;&#x3b7;:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="CUSTOMER_ID">
+        <Component class="javax.swing.JTextField" name="usrPointsCardNum">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -153,17 +153,17 @@
             <Property name="name" type="java.lang.String" value="" noResource="true"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="LAST_NAME">
+        <Component class="javax.swing.JTextField" name="usrLAST_NAME">
           <Properties>
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="ADDRESS">
+        <Component class="javax.swing.JTextField" name="usrADDRESS">
           <Properties>
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="FIRST_NAME">
+        <Component class="javax.swing.JTextField" name="usrFIRST_NAME">
           <Properties>
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
@@ -193,10 +193,10 @@
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="OWNER_NAME" alignment="0" max="32767" attributes="0"/>
-                      <Component id="CARD_NUMBER" alignment="0" max="32767" attributes="0"/>
+                      <Component id="usrOWNER_NAME" alignment="0" max="32767" attributes="0"/>
+                      <Component id="usrCARD_NUMBER" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="CVV" min="-2" pref="107" max="-2" attributes="0"/>
+                          <Component id="usrCVV" min="-2" pref="107" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                       <Component id="BankList" alignment="0" max="32767" attributes="0"/>
@@ -216,7 +216,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="OWNER_NAME" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="usrOWNER_NAME" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -226,9 +226,9 @@
                           <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="CARD_NUMBER" min="-2" max="-2" attributes="0"/>
+                          <Component id="usrCARD_NUMBER" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="CVV" min="-2" max="-2" attributes="0"/>
+                          <Component id="usrCVV" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace pref="24" max="32767" attributes="0"/>
@@ -258,17 +258,17 @@
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="OWNER_NAME">
+        <Component class="javax.swing.JTextField" name="usrOWNER_NAME">
           <Properties>
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="CVV">
+        <Component class="javax.swing.JTextField" name="usrCVV">
           <Properties>
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="CARD_NUMBER">
+        <Component class="javax.swing.JTextField" name="usrCARD_NUMBER">
           <Properties>
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>

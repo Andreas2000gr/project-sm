@@ -50,7 +50,7 @@ public class DBmanager {
             if (!getLoc().getTransaction().isActive()) {
                 getLoc().getTransaction().begin();
             }
-            getLoc().merge(customer);
+            getLoc().merge(customer);//update customer
             getLoc().getTransaction().commit();
             //  return true;
         } catch (Exception e) {
