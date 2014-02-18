@@ -13,6 +13,11 @@ import supermarket.SuperMarketParentFrame;
 /**
  *
  * @author Euh
+ *
+ * Αλλαγή κωδικού: Θα εμφανίζει φόρμα η οποία θα ζητάει τον παλιό και το νέο
+ * κωδικό και θα κάνει την αλλαγή. Αν ο παλιός κωδικός δεν είναι σωστός δε θα
+ * επιτρέπεται η αλλαγή.
+ *
  */
 public class ChangePasswordJPanel extends javax.swing.JPanel {
 
@@ -236,15 +241,32 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
         // αν ο κωδικό πρόσβασης που εινα αποθηκευμένος στη ΒΔ
         // δεν ταιριάζει με τον κωδικό πρόσβασης που πληκτρολόγησε ο χρήστης
         // τότε εμφανίζει μήνυμα σφάλματος
+        /*Αν ο παλιός κωδικός δεν είναι σωστός δε θα επιτρέπεται η αλλαγή.*/
         if (!Usr.getPassword().equals(usrFINAL_PASSWORD)) {
             this.repaint();
             usrOLD_PASSWORD.requestFocus();
             JOptionPane.showMessageDialog(null, "Λανθασμένος κωδικός πρόσβασης.");
             return;
         }
+
+        /*Αν ο νέος κωδικός είναι empty string, τότε δε θα επιτρέπεται η ενημέρωση */
+        if (usrNEWFINAL_PASSWORD.equals("")) {
+            this.repaint();
+            usrOLD_PASSWORD.requestFocus();
+            JOptionPane.showMessageDialog(null, "Ο νέος κωδικός, δεν μπορεί να περιέχει κενή τιμή.");
+            return;
+        }
+
+        /*Ο νέος κωδικός, δεν μπορεί να περιέχει περισσότερους από 8 χαρακτήρες */
+        if (usrNEWFINAL_PASSWORD.length() > 8) {
+            this.repaint();
+            usrOLD_PASSWORD.requestFocus();
+            JOptionPane.showMessageDialog(null, "Ο νέος κωδικός, δεν μπορεί να περιέχει περισσότερους από 8 χαρακτήρες.");
+            return;
+        }
+
         //ελέγχουμε εαν το νέο και επιβεβαιωμένο password ταιριάζουν
-        if (!usrNEWFINAL_PASSWORD.equals(usrConfirmedFINAL_PASSWORD)
-                || usrNEWFINAL_PASSWORD.equals("")) {
+        if (!usrNEWFINAL_PASSWORD.equals(usrConfirmedFINAL_PASSWORD)) {
             this.repaint();
             usrOLD_PASSWORD.requestFocus();
             JOptionPane.showMessageDialog(null, "Ο νέος κωδικός πρόσβασης δεν είναι εφικτό να επιβεβαιωθεί.");
@@ -253,13 +275,11 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
 
         try {
             Usr.setPassword(usrNEWFINAL_PASSWORD);
-            JOptionPane.showMessageDialog(null, "NEW PASSWORD=" + Usr.getPassword());
             db.CUSTOMER_UPDATE_PASSWORD(Usr);
             ParentFrame.setEnabled(true);
             JOptionPane.showMessageDialog(null, "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε στο σύστημα.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "ERROR!!! " + e.getMessage().toString());
-
         }
 
     }//GEN-LAST:event_jButton2ActionPerformed
