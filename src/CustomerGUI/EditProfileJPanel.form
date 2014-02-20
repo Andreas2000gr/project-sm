@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.persistence.EntityManager" name="entityManager">
+      <Properties>
+        <Property name="persistenceUnit" type="java.lang.String" value="SuperMarket-external-PU"/>
+      </Properties>
+    </Component>
+    <Component class="javax.persistence.Query" name="externalBankQuery">
+      <Properties>
+        <Property name="query" type="java.lang.String" value="SELECT e FROM ExternalBank e"/>
+        <Property name="entityManager" type="java.lang.Object" editor="org.netbeans.modules.form.j2ee.J2EEPropertyModifier$EMProperty$EntityManagerEditor">
+          <ComponentRef name="entityManager"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="java.beans.Beans.isDesignTime() ? null : entityManager.createQuery(&quot;SELECT e.name FROM ExternalBank e&quot;)"/>
+      </AuxValues>
+    </Component>
+    <Component class="java.util.List" name="externalBankList">
+      <Properties>
+        <Property name="query" type="java.lang.Object" editor="org.netbeans.modules.form.j2ee.J2EEPropertyModifier$QueryBeanProperty$QueryEditor">
+          <ComponentRef name="externalBankQuery"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;externalDB.ExternalBank&gt;"/>
+      </AuxValues>
+    </Component>
+  </NonVisualComponents>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -83,7 +111,7 @@
                       <Component id="usrADDRESS" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="usrPointsCardNum" alignment="0" min="-2" pref="57" max="-2" attributes="0"/>
+                              <Component id="usrCUSTOMER_ID" alignment="0" min="-2" pref="57" max="-2" attributes="0"/>
                               <Component id="usrFIRST_NAME" alignment="0" min="-2" pref="144" max="-2" attributes="0"/>
                               <Component id="usrLAST_NAME" alignment="0" min="-2" pref="184" max="-2" attributes="0"/>
                           </Group>
@@ -100,7 +128,7 @@
                   <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="usrPointsCardNum" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="usrCUSTOMER_ID" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -143,7 +171,7 @@
             <Property name="text" type="java.lang.String" value="&#x394;&#x3b9;&#x3b5;&#x3cd;&#x3b8;&#x3c5;&#x3bd;&#x3c3;&#x3b7;:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="usrPointsCardNum">
+        <Component class="javax.swing.JTextField" name="usrCUSTOMER_ID">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -199,7 +227,7 @@
                           <Component id="usrCVV" min="-2" pref="107" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="BankList" alignment="0" max="32767" attributes="0"/>
+                      <Component id="ExternalBankList" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -211,7 +239,7 @@
                   <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="BankList" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="ExternalBankList" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -273,10 +301,21 @@
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JComboBox" name="BankList">
+        <Component class="javax.swing.JComboBox" name="ExternalBankList">
           <Properties>
-            <Property name="name" type="java.lang.String" value="BankList" noResource="true"/>
+            <Property name="name" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="&quot;ExternalBankList&quot;" type="code"/>
+            </Property>
           </Properties>
+          <BindingProperties>
+            <BindingProperty name="elements" source="externalBankList" target="ExternalBankList" targetPath="elements" updateStrategy="0" immediately="false"/>
+          </BindingProperties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ExternalBankListActionPerformed"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JComboBox()"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

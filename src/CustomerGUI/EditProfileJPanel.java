@@ -6,20 +6,27 @@
 package CustomerGUI;
 
 import LocalDB.Customer;
+import externalDB.CreditCardAuthority;
 import javax.swing.JOptionPane;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
 
-
 /**
  *
- * @author Euh
+ * @author Euh Επεξεργασία προφίλ: Θα ανοίγει κατάλληλη φόρμα που θα εμφανίζει
+ * τα ήδη καταχωρημένα στοιχεία του πελάτη σε επεξεργάσιμα πεδία, ενώ κάτω από
+ * τη φόρμα θα υπάρχουν κουμπιά «Τροποποίηση» και «Διαγραφή». Αν πατηθεί το
+ * κουμπί τροποποίηση, οι όποιες αλλαγές έχει κάνει ο χρήστης στα στοιχεία του
+ * θα αποθηκεύονται στη βάση. Αν πατηθεί το διαγραφή, θα διαγράφεται ο
+ * λογαριασμός του πελάτη ύστερα από προειδοποιητικό μήνυμα επιβεβαίωσης και ο
+ * χρήστης θα αποσυνδέεται αυτόματα από την εφαρμογή.
  */
 public class EditProfileJPanel extends javax.swing.JPanel {
 
     private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
     private Customer Usr;
+    private CreditCardAuthority CreditCard;
 
     /**
      * Creates new form EditProfileJPanel
@@ -28,7 +35,23 @@ public class EditProfileJPanel extends javax.swing.JPanel {
         initComponents();
         this.ParentFrame = ParentFrame;
         this.Usr = ParentFrame.cust;
+        this.CreditCard=CreditCard;
 
+        /* εντοπίζουμε τον χρήστη και αρχικοποιούμε τα πεδία jtexfields
+         της φόρμας, ώστε να εμφανίζεται η πληροφορία.*/
+        usrCUSTOMER_ID.setText(ParentFrame.cust.getCustomerId().toString());
+        usrLAST_NAME.setText(ParentFrame.cust.getLastName().toString());
+        usrFIRST_NAME.setText(ParentFrame.cust.getFirstName().toString());
+        usrADDRESS.setText(ParentFrame.cust.getAddress().toString());
+        
+        /* EXTERNAL DATABASE */
+        //usrOWNER_NAME.setText(ParentFrame.cust.);ParentFrame.cust.getCreditCardId()
+      //  ParentFrame.cust.getCreditCardId();
+        
+        
+    CreditCard.setPkCardId(ParentFrame.cust.getCreditCardId());
+     //   JOptionPane.showMessageDialog(null, "xxxx === "+CreditCard.getOwnerName());
+        
     }
 
     /**
@@ -39,13 +62,17 @@ public class EditProfileJPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
+        entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("SuperMarket-external-PU").createEntityManager();
+        externalBankQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT e.name FROM ExternalBank e");
+        externalBankList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : externalBankQuery.getResultList();
         jPanel3 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        usrPointsCardNum = new javax.swing.JTextField();
+        usrCUSTOMER_ID = new javax.swing.JTextField();
         usrLAST_NAME = new javax.swing.JTextField();
         usrADDRESS = new javax.swing.JTextField();
         usrFIRST_NAME = new javax.swing.JTextField();
@@ -57,7 +84,7 @@ public class EditProfileJPanel extends javax.swing.JPanel {
         usrOWNER_NAME = new javax.swing.JTextField();
         usrCVV = new javax.swing.JTextField();
         usrCARD_NUMBER = new javax.swing.JTextField();
-        BankList = new javax.swing.JComboBox();
+        ExternalBankList = new javax.swing.JComboBox();
         ReturnToMainCustomerForm = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -72,10 +99,10 @@ public class EditProfileJPanel extends javax.swing.JPanel {
 
         jLabel12.setText("Διεύθυνση:");
 
-        usrPointsCardNum.setEditable(false);
-        usrPointsCardNum.setBackground(new java.awt.Color(204, 204, 204));
-        usrPointsCardNum.setToolTipText("");
-        usrPointsCardNum.setName(""); // NOI18N
+        usrCUSTOMER_ID.setEditable(false);
+        usrCUSTOMER_ID.setBackground(new java.awt.Color(204, 204, 204));
+        usrCUSTOMER_ID.setToolTipText("");
+        usrCUSTOMER_ID.setName(""); // NOI18N
 
         usrLAST_NAME.setToolTipText("");
 
@@ -99,7 +126,7 @@ public class EditProfileJPanel extends javax.swing.JPanel {
                     .addComponent(usrADDRESS)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(usrPointsCardNum, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(usrCUSTOMER_ID, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(usrFIRST_NAME, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(usrLAST_NAME, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -111,7 +138,7 @@ public class EditProfileJPanel extends javax.swing.JPanel {
                 .addGap(23, 23, 23)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(usrPointsCardNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(usrCUSTOMER_ID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
@@ -145,7 +172,16 @@ public class EditProfileJPanel extends javax.swing.JPanel {
 
         usrCARD_NUMBER.setToolTipText("");
 
-        BankList.setName("BankList"); // NOI18N
+        ExternalBankList.setName("ExternalBankList");
+
+        org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, externalBankList, ExternalBankList);
+        bindingGroup.addBinding(jComboBoxBinding);
+
+        ExternalBankList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ExternalBankListActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -165,7 +201,7 @@ public class EditProfileJPanel extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(usrCVV, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(BankList, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(ExternalBankList, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -174,7 +210,7 @@ public class EditProfileJPanel extends javax.swing.JPanel {
                 .addGap(23, 23, 23)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(BankList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ExternalBankList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -251,6 +287,8 @@ public class EditProfileJPanel extends javax.swing.JPanel {
                         .addComponent(jButton1))
                     .addContainerGap()))
         );
+
+        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
     private void ReturnToMainCustomerFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnToMainCustomerFormActionPerformed
@@ -265,10 +303,17 @@ public class EditProfileJPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void ExternalBankListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExternalBankListActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ExternalBankListActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox BankList;
+    private javax.swing.JComboBox ExternalBankList;
     private javax.swing.JButton ReturnToMainCustomerForm;
+    private javax.persistence.EntityManager entityManager;
+    private java.util.List<externalDB.ExternalBank> externalBankList;
+    private javax.persistence.Query externalBankQuery;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -283,10 +328,11 @@ public class EditProfileJPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JTextField usrADDRESS;
     private javax.swing.JTextField usrCARD_NUMBER;
+    private javax.swing.JTextField usrCUSTOMER_ID;
     private javax.swing.JTextField usrCVV;
     private javax.swing.JTextField usrFIRST_NAME;
     private javax.swing.JTextField usrLAST_NAME;
     private javax.swing.JTextField usrOWNER_NAME;
-    private javax.swing.JTextField usrPointsCardNum;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
