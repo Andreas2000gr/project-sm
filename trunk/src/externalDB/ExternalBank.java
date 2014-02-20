@@ -6,6 +6,8 @@
 
 package externalDB;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
@@ -18,6 +20,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -33,6 +36,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "ExternalBank.findByBankId", query = "SELECT e FROM ExternalBank e WHERE e.bankId = :bankId"),
     @NamedQuery(name = "ExternalBank.findByName", query = "SELECT e FROM ExternalBank e WHERE e.name = :name")})
 public class ExternalBank implements Serializable {
+    @Transient
+    private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,7 +61,9 @@ public class ExternalBank implements Serializable {
     }
 
     public void setBankId(Integer bankId) {
+        Integer oldBankId = this.bankId;
         this.bankId = bankId;
+        changeSupport.firePropertyChange("bankId", oldBankId, bankId);
     }
 
     public String getName() {
@@ -64,7 +71,9 @@ public class ExternalBank implements Serializable {
     }
 
     public void setName(String name) {
+        String oldName = this.name;
         this.name = name;
+        changeSupport.firePropertyChange("name", oldName, name);
     }
 
     @XmlTransient
@@ -99,6 +108,14 @@ public class ExternalBank implements Serializable {
     @Override
     public String toString() {
         return "externalDB.ExternalBank[ bankId=" + bankId + " ]";
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        changeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        changeSupport.removePropertyChangeListener(listener);
     }
     
 }

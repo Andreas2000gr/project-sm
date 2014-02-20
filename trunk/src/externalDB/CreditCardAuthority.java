@@ -6,6 +6,8 @@
 
 package externalDB;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -18,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -34,6 +37,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CreditCardAuthority.findByNumber", query = "SELECT c FROM CreditCardAuthority c WHERE c.number = :number"),
     @NamedQuery(name = "CreditCardAuthority.findByOwnerName", query = "SELECT c FROM CreditCardAuthority c WHERE c.ownerName = :ownerName")})
 public class CreditCardAuthority implements Serializable {
+    @Transient
+    private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,7 +67,9 @@ public class CreditCardAuthority implements Serializable {
     }
 
     public void setPkCardId(Integer pkCardId) {
+        Integer oldPkCardId = this.pkCardId;
         this.pkCardId = pkCardId;
+        changeSupport.firePropertyChange("pkCardId", oldPkCardId, pkCardId);
     }
 
     public String getCvv() {
@@ -70,7 +77,9 @@ public class CreditCardAuthority implements Serializable {
     }
 
     public void setCvv(String cvv) {
+        String oldCvv = this.cvv;
         this.cvv = cvv;
+        changeSupport.firePropertyChange("cvv", oldCvv, cvv);
     }
 
     public String getNumber() {
@@ -78,7 +87,9 @@ public class CreditCardAuthority implements Serializable {
     }
 
     public void setNumber(String number) {
+        String oldNumber = this.number;
         this.number = number;
+        changeSupport.firePropertyChange("number", oldNumber, number);
     }
 
     public String getOwnerName() {
@@ -86,7 +97,9 @@ public class CreditCardAuthority implements Serializable {
     }
 
     public void setOwnerName(String ownerName) {
+        String oldOwnerName = this.ownerName;
         this.ownerName = ownerName;
+        changeSupport.firePropertyChange("ownerName", oldOwnerName, ownerName);
     }
 
     public ExternalBank getBank() {
@@ -94,7 +107,9 @@ public class CreditCardAuthority implements Serializable {
     }
 
     public void setBank(ExternalBank bank) {
+        ExternalBank oldBank = this.bank;
         this.bank = bank;
+        changeSupport.firePropertyChange("bank", oldBank, bank);
     }
 
     @Override
@@ -120,6 +135,14 @@ public class CreditCardAuthority implements Serializable {
     @Override
     public String toString() {
         return "externalDB.CreditCardAuthority[ pkCardId=" + pkCardId + " ]";
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        changeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        changeSupport.removePropertyChangeListener(listener);
     }
     
 }
