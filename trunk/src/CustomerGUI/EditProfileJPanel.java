@@ -7,6 +7,9 @@ package CustomerGUI;
 
 import LocalDB.Customer;
 import externalDB.CreditCardAuthority;
+import java.util.Collection;
+import java.util.List;
+import javax.persistence.TypedQuery;
 import javax.swing.JOptionPane;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
@@ -35,7 +38,7 @@ public class EditProfileJPanel extends javax.swing.JPanel {
         initComponents();
         this.ParentFrame = ParentFrame;
         this.Usr = ParentFrame.cust;
-        this.CreditCard=CreditCard;
+        this.CreditCard = CreditCard;
 
         /* εντοπίζουμε τον χρήστη και αρχικοποιούμε τα πεδία jtexfields
          της φόρμας, ώστε να εμφανίζεται η πληροφορία.*/
@@ -43,15 +46,34 @@ public class EditProfileJPanel extends javax.swing.JPanel {
         usrLAST_NAME.setText(ParentFrame.cust.getLastName().toString());
         usrFIRST_NAME.setText(ParentFrame.cust.getFirstName().toString());
         usrADDRESS.setText(ParentFrame.cust.getAddress().toString());
-        
+
         /* EXTERNAL DATABASE */
-        //usrOWNER_NAME.setText(ParentFrame.cust.);ParentFrame.cust.getCreditCardId()
-      //  ParentFrame.cust.getCreditCardId();
+        CreditCardAuthority creditcard = getCreditCardAuthority(ParentFrame.cust.getCreditCardId());
+        
+        if (!creditcard.equals(null)) {
+            usrOWNER_NAME.setText(creditcard.getOwnerName().toString());
+            usrCARD_NUMBER.setText(creditcard.getNumber().toString());
+            usrCVV.setText(creditcard.getCvv().toString());
+        }
         
         
-    CreditCard.setPkCardId(ParentFrame.cust.getCreditCardId());
-     //   JOptionPane.showMessageDialog(null, "xxxx === "+CreditCard.getOwnerName());
-        
+
+    }
+
+    //Method:: to get credit card id
+    private CreditCardAuthority getCreditCardAuthority(Integer CREDIT_CARD_ID) {
+
+        TypedQuery<CreditCardAuthority> QueryCreditfindByPkCardId = db.getExt().createNamedQuery("CreditCardAuthority.findByPkCardId", CreditCardAuthority.class);
+        QueryCreditfindByPkCardId.setParameter("pkCardId", CREDIT_CARD_ID);//set dynamic data for query
+        List<CreditCardAuthority> CreditCardList = QueryCreditfindByPkCardId.getResultList();
+
+        if (CreditCardList.size() != 1) {
+            return null;
+        } else {
+            // Εφόσον βρεθεί μοναδικό αποτέλεσμα το επιστρέφουμε.
+            CreditCardAuthority c = CreditCardList.get(0);
+            return c;
+        }
     }
 
     /**
