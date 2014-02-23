@@ -14,6 +14,7 @@ import javax.persistence.TypedQuery;
 import javax.swing.JOptionPane;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
+import supermarket.WelcomePanel;
 
 /**
  *
@@ -324,7 +325,8 @@ public class EditProfileJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ReturnToMainCustomerFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnToMainCustomerFormActionPerformed
-
+        ParentFrame.pnl = new WelcomePanel(this.ParentFrame);
+        ParentFrame.addPanelInMain();
     }//GEN-LAST:event_ReturnToMainCustomerFormActionPerformed
 
     // METHOD: START check if value is integer
@@ -441,6 +443,8 @@ public class EditProfileJPanel extends javax.swing.JPanel {
         }
 
         ParentFrame.setEnabled(true);
+        this.revalidate();
+        this.repaint();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -462,6 +466,9 @@ public class EditProfileJPanel extends javax.swing.JPanel {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Απέτυχε! η διαγραφή των στοιχείων του πελάτη.");
         }
+
+        ParentFrame.pnl = new WelcomePanel(this.ParentFrame);
+        ParentFrame.addPanelInMain();
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
