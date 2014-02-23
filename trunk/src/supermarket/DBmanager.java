@@ -60,15 +60,15 @@ public class DBmanager {
             //  return false;
         }
     }
-    
-    // METHOD:: UPDATE CUSTOMER'S PASSWORD
-    public void UPDATE_CREDIT_CARD(CreditCardAuthority CreditCard) {
+    //METHOD: DELETE CUSTOMER
+    public void DELETE_CUSTOMER(Customer customer) {
         try {
             // αρχικοποίηση transaction
             if (!getLoc().getTransaction().isActive()) {
                 getLoc().getTransaction().begin();
             }
-            getLoc().merge(CreditCard);//update customer
+            getLoc().merge(customer);
+            getLoc().remove(customer);//update customer
             getLoc().getTransaction().commit();
             //  return true;
         } catch (Exception e) {
@@ -77,5 +77,36 @@ public class DBmanager {
             //  return false;
         }
     }    
-
+    // METHOD:: UPDATE CUSTOMER'S PASSWORD
+    public void UPDATE_CREDIT_CARD(CreditCardAuthority CreditCard) {
+        try {
+            // αρχικοποίηση transaction
+            if (!getExt().getTransaction().isActive()) {
+                getExt().getTransaction().begin();
+            }
+            getExt().merge(CreditCard);//update customer
+            getExt().getTransaction().commit();
+            //  return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            getExt().getTransaction().rollback();
+            //  return false;
+        }
+    }    
+    //METHOD: DELETE CREDIT CARD
+    public void DELETE_CREDIT_CARD(CreditCardAuthority CreditCard) {
+        try {
+            // αρχικοποίηση transaction
+            if (!getExt().getTransaction().isActive()) {
+                getExt().getTransaction().begin();
+            }
+            getExt().remove(CreditCard);//update customer
+            getExt().getTransaction().commit();
+            //  return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            getExt().getTransaction().rollback();
+            //  return false;
+        }
+    }
 }

@@ -310,9 +310,6 @@
           <BindingProperties>
             <BindingProperty name="elements" source="externalBankList" target="ExternalBankList" targetPath="elements" updateStrategy="0" immediately="false"/>
           </BindingProperties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ExternalBankListActionPerformed"/>
-          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JComboBox()"/>
           </AuxValues>

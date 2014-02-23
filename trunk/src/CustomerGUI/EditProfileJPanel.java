@@ -7,6 +7,7 @@ package CustomerGUI;
 
 import LocalDB.Customer;
 import externalDB.CreditCardAuthority;
+import externalDB.ExternalBank;
 import java.util.Collection;
 import java.util.List;
 import javax.persistence.TypedQuery;
@@ -16,13 +17,15 @@ import supermarket.SuperMarketParentFrame;
 
 /**
  *
- * @author Euh Επεξεργασία προφίλ: Θα ανοίγει κατάλληλη φόρμα που θα εμφανίζει
- * τα ήδη καταχωρημένα στοιχεία του πελάτη σε επεξεργάσιμα πεδία, ενώ κάτω από
- * τη φόρμα θα υπάρχουν κουμπιά «Τροποποίηση» και «Διαγραφή». Αν πατηθεί το
- * κουμπί τροποποίηση, οι όποιες αλλαγές έχει κάνει ο χρήστης στα στοιχεία του
- * θα αποθηκεύονται στη βάση. Αν πατηθεί το διαγραφή, θα διαγράφεται ο
- * λογαριασμός του πελάτη ύστερα από προειδοποιητικό μήνυμα επιβεβαίωσης και ο
- * χρήστης θα αποσυνδέεται αυτόματα από την εφαρμογή.
+ * @author Euh
+ *
+ * Επεξεργασία προφίλ: Θα ανοίγει κατάλληλη φόρμα που θα εμφανίζει τα ήδη
+ * καταχωρημένα στοιχεία του πελάτη σε επεξεργάσιμα πεδία, ενώ κάτω από τη φόρμα
+ * θα υπάρχουν κουμπιά «Τροποποίηση» και «Διαγραφή». Αν πατηθεί το κουμπί
+ * τροποποίηση, οι όποιες αλλαγές έχει κάνει ο χρήστης στα στοιχεία του θα
+ * αποθηκεύονται στη βάση. Αν πατηθεί το διαγραφή, θα διαγράφεται ο λογαριασμός
+ * του πελάτη ύστερα από προειδοποιητικό μήνυμα επιβεβαίωσης και ο χρήστης θα
+ * αποσυνδέεται αυτόματα από την εφαρμογή.
  */
 public class EditProfileJPanel extends javax.swing.JPanel {
 
@@ -57,7 +60,7 @@ public class EditProfileJPanel extends javax.swing.JPanel {
         }
     }
 
-    //Method:: to get credit card id
+    //Method:: to get credit card 
     private CreditCardAuthority getCreditCardAuthority(Integer CREDIT_CARD_ID) {
 
         TypedQuery<CreditCardAuthority> QueryCreditfindByPkCardId = db.getExt().createNamedQuery("CreditCardAuthority.findByPkCardId", CreditCardAuthority.class);
@@ -70,6 +73,22 @@ public class EditProfileJPanel extends javax.swing.JPanel {
             // Εφόσον βρεθεί μοναδικό αποτέλεσμα το επιστρέφουμε.
             CreditCardAuthority c = CreditCardList.get(0);
             return c;
+        }
+    }
+
+    //Method:: to get bank 
+    private ExternalBank getExternalBank(String BankName) {
+
+        TypedQuery<ExternalBank> Query = db.getExt().createNamedQuery("ExternalBank.findByName", ExternalBank.class);
+        Query.setParameter("name", BankName);//set dynamic data for query
+        List<ExternalBank> extBank = Query.getResultList();
+
+        if (extBank.size() != 1) {
+            return null;
+        } else {
+            // Εφόσον βρεθεί μοναδικό αποτέλεσμα το επιστρέφουμε.
+            ExternalBank b = extBank.get(0);
+            return b;
         }
     }
 
@@ -196,12 +215,6 @@ public class EditProfileJPanel extends javax.swing.JPanel {
         org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, externalBankList, ExternalBankList);
         bindingGroup.addBinding(jComboBoxBinding);
 
-        ExternalBankList.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ExternalBankListActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -314,18 +327,46 @@ public class EditProfileJPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_ReturnToMainCustomerFormActionPerformed
 
+    // METHOD: START check if value is integer
+    public static boolean isInteger(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        Integer CHARACTERS_ALLOWED;
+
         if (usrLAST_NAME.equals("")) {
             JOptionPane.showMessageDialog(null, "Το επώνυμο πελάτη δε μπορεί να είναι κενό.");
             return;
         }
+        CHARACTERS_ALLOWED = 40;
+        if (usrLAST_NAME.getText().length() > CHARACTERS_ALLOWED) {
+            JOptionPane.showMessageDialog(null, "Το επώνυμο πελάτη δε μπορεί να περιέχει περισσότερους από " + CHARACTERS_ALLOWED + " χαρακτήρες.");
+            return;
+        }
+
         if (usrFIRST_NAME.equals("")) {
             JOptionPane.showMessageDialog(null, "Το όνομα πελάτη δε μπορεί να είναι κενό.");
             return;
         }
+        CHARACTERS_ALLOWED = 30;
+        if (usrFIRST_NAME.getText().length() > CHARACTERS_ALLOWED) {
+            JOptionPane.showMessageDialog(null, "Το όνομα πελάτη δε μπορεί να περιέχει περισσότερους από " + CHARACTERS_ALLOWED + " χαρακτήρες.");
+            return;
+        }
+
         if (usrADDRESS.equals("")) {
             JOptionPane.showMessageDialog(null, "Η διεύθυνση πελάτη δε μπορεί να είναι κενό.");
+            return;
+        }
+        CHARACTERS_ALLOWED = 50;
+        if (usrADDRESS.getText().length() > CHARACTERS_ALLOWED) {
+            JOptionPane.showMessageDialog(null, "Η διεύθυνση πελάτη δε μπορεί να περιέχει περισσότερους από " + CHARACTERS_ALLOWED + " χαρακτήρες.");
             return;
         }
 
@@ -333,38 +374,95 @@ public class EditProfileJPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Το ονοματεπώνυμο κατόχου της κάρτας δε μπορεί να είναι κενό.");
             return;
         }
+        CHARACTERS_ALLOWED = 255;
+        if (usrOWNER_NAME.getText().length() > CHARACTERS_ALLOWED) {
+            JOptionPane.showMessageDialog(null, "Το ονοματεπώνυμο κατόχου της κάρτας δε μπορεί να περιέχει περισσότερους από " + CHARACTERS_ALLOWED + " χαρακτήρες.");
+            return;
+        }
+
         if (usrCARD_NUMBER.equals("")) {
             JOptionPane.showMessageDialog(null, "Ο αριθμός της κάρτας δε μπορεί να είναι κενό.");
             return;
         }
+        CHARACTERS_ALLOWED = 16;
+        if (usrCARD_NUMBER.getText().length() != CHARACTERS_ALLOWED) {
+            JOptionPane.showMessageDialog(null, "Ο αριθμός της κάρτας πρέπει να ακριβώς " + CHARACTERS_ALLOWED + " χαρακτήρες.");
+            return;
+        }
+
+        if (!isInteger(usrCARD_NUMBER.getText().substring(0, 4))
+                || !usrCARD_NUMBER.getText().substring(4, 5).equals("-")
+                || !isInteger(usrCARD_NUMBER.getText().substring(5, 11))
+                || !usrCARD_NUMBER.getText().substring(11, 12).equals("-")
+                || !isInteger(usrCARD_NUMBER.getText().substring(12, 15))) {
+            JOptionPane.showMessageDialog(null, "Ο αριθμός της κάρτας πρέπει να έχει τη μορφή XXXX-XXXXXX-XXXX");
+            return;
+        }
+
         if (usrCVV.equals("")) {
             JOptionPane.showMessageDialog(null, "Το CVV της κάρτας δε μπορεί να είναι κενό.");
             return;
         }
+        if (!isInteger(usrCVV.getText())) {
+            JOptionPane.showMessageDialog(null, "Το CVV της κάρτας πρέπει να είναι ακέραιος αριθμός.");
+            return;
+        }
+        CHARACTERS_ALLOWED = 3;
+        if (usrCVV.getText().length() != CHARACTERS_ALLOWED) {
+            JOptionPane.showMessageDialog(null, "Το CVV της κάρτας πρέπει να ακριβώς " + CHARACTERS_ALLOWED + " ψηφία.");
+            return;
+        }
+
+        ExternalBank bank = getExternalBank(ExternalBankList.getSelectedItem().toString());
+        if (bank == null) {
+            JOptionPane.showMessageDialog(null, "Επιλέξτε μια από τις διαθέσιμες τράπεζες.");
+            return;
+        }
 
         try {
+            //update customer info
             Usr.setLastName(usrLAST_NAME.getText());
             Usr.setFirstName(usrFIRST_NAME.getText());
             Usr.setAddress(usrADDRESS.getText());
-            
+
             db.UPDATE_CUSTOMER(Usr);
-            
-            ParentFrame.setEnabled(true);
-            JOptionPane.showMessageDialog(null, "Τα στοιχεία του πελάτη ενημερώθηκαν επιτυχώς");
+
+            //update credit card info
+            CreditCard.setOwnerName(usrOWNER_NAME.getText());
+            CreditCard.setNumber(usrCARD_NUMBER.getText());
+            CreditCard.setCvv(usrCVV.getText());
+            CreditCard.setBank(bank);
+
+            db.UPDATE_CREDIT_CARD(CreditCard);
+
+            JOptionPane.showMessageDialog(null, "Τα στοιχεία του πελάτη ενημερώθηκαν επιτυχώς.");
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "ERROR!!! " + e.getMessage().toString());
+            JOptionPane.showMessageDialog(this, "Απέτυχε! η ενημέρωση των στοιχείων του πελάτη.");
         }
 
-
+        ParentFrame.setEnabled(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        //επιβεβαίωση διαγραφής λογαριασμού πελάτη
+        int UsrChoice = JOptionPane.showConfirmDialog(this, "Οριστική διαγραφή του λογαριασμού πελάτη;.", "Διαγραφή Λογαριασμού", JOptionPane.YES_NO_OPTION
+        );
+        if (UsrChoice != 0) {
+            return; //κλείσιμο παραθύρου
+        }
 
-    private void ExternalBankListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExternalBankListActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ExternalBankListActionPerformed
+        try {
+            //ΟΡΙΣΤΙΚΗ ΔΙΑΓΡΑΦΗ ΠΕΛΑΤΗ ΑΠΟ ΤΗ ΒΑΣΗ ΔΕΔΕΟΜΕΝΩΝ
+            Customer customer = db.getLoc().find(Customer.class, Usr.getCustomerId());
+            db.DELETE_CUSTOMER(customer);
+            //ΟΡΙΣΤΙΚΗ ΔΙΑΓΡΑΦΗ ΠΙΣΤΩΤΙΚΗΣ ΚΑΡΤΑΣ ΑΠΟ ΤΗ ΒΑΣΗ ΔΕΔΟΜΕΝΩΝ
+            CreditCardAuthority credit = db.getExt().find(CreditCardAuthority.class, CreditCard.getPkCardId());
+            db.DELETE_CREDIT_CARD(credit);
+            JOptionPane.showMessageDialog(null, "Ο λογαριασμός διεγράφη οριστικά από το σύστημα.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Απέτυχε! η διαγραφή των στοιχείων του πελάτη.");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
