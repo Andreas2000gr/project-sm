@@ -44,7 +44,7 @@ public class DBmanager {
     }
 
     // METHOD:: UPDATE CUSTOMER'S PASSWORD
-    public void CUSTOMER_UPDATE_PASSWORD(Customer customer) {
+    public void UPDATE_CUSTOMER(Customer customer) {
         try {
             // αρχικοποίηση transaction
             if (!getLoc().getTransaction().isActive()) {
