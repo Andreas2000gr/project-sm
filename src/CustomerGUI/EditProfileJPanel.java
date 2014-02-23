@@ -49,15 +49,12 @@ public class EditProfileJPanel extends javax.swing.JPanel {
 
         /* EXTERNAL DATABASE */
         CreditCardAuthority creditcard = getCreditCardAuthority(ParentFrame.cust.getCreditCardId());
-        
+
         if (!creditcard.equals(null)) {
             usrOWNER_NAME.setText(creditcard.getOwnerName().toString());
             usrCARD_NUMBER.setText(creditcard.getNumber().toString());
             usrCVV.setText(creditcard.getCvv().toString());
         }
-        
-        
-
     }
 
     //Method:: to get credit card id
@@ -319,6 +316,46 @@ public class EditProfileJPanel extends javax.swing.JPanel {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        if (usrLAST_NAME.equals("")) {
+            JOptionPane.showMessageDialog(null, "Το επώνυμο πελάτη δε μπορεί να είναι κενό.");
+            return;
+        }
+        if (usrFIRST_NAME.equals("")) {
+            JOptionPane.showMessageDialog(null, "Το όνομα πελάτη δε μπορεί να είναι κενό.");
+            return;
+        }
+        if (usrADDRESS.equals("")) {
+            JOptionPane.showMessageDialog(null, "Η διεύθυνση πελάτη δε μπορεί να είναι κενό.");
+            return;
+        }
+
+        if (usrOWNER_NAME.equals("")) {
+            JOptionPane.showMessageDialog(null, "Το ονοματεπώνυμο κατόχου της κάρτας δε μπορεί να είναι κενό.");
+            return;
+        }
+        if (usrCARD_NUMBER.equals("")) {
+            JOptionPane.showMessageDialog(null, "Ο αριθμός της κάρτας δε μπορεί να είναι κενό.");
+            return;
+        }
+        if (usrCVV.equals("")) {
+            JOptionPane.showMessageDialog(null, "Το CVV της κάρτας δε μπορεί να είναι κενό.");
+            return;
+        }
+
+        try {
+            Usr.setLastName(usrLAST_NAME.getText());
+            Usr.setFirstName(usrFIRST_NAME.getText());
+            Usr.setAddress(usrADDRESS.getText());
+            
+            db.UPDATE_CUSTOMER(Usr);
+            
+            ParentFrame.setEnabled(true);
+            JOptionPane.showMessageDialog(null, "Τα στοιχεία του πελάτη ενημερώθηκαν επιτυχώς");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "ERROR!!! " + e.getMessage().toString());
+        }
+
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

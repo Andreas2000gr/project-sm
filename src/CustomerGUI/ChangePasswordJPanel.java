@@ -275,7 +275,7 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
 
         try {
             Usr.setPassword(usrNEWFINAL_PASSWORD);
-            db.CUSTOMER_UPDATE_PASSWORD(Usr);
+            db.UPDATE_CUSTOMER(Usr);
             ParentFrame.setEnabled(true);
             JOptionPane.showMessageDialog(null, "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε στο σύστημα.");
         } catch (Exception e) {
