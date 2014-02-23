@@ -6,6 +6,7 @@
 package supermarket;
 
 import LocalDB.Customer;
+import externalDB.CreditCardAuthority;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -60,6 +61,21 @@ public class DBmanager {
         }
     }
     
-    
+    // METHOD:: UPDATE CUSTOMER'S PASSWORD
+    public void UPDATE_CREDIT_CARD(CreditCardAuthority CreditCard) {
+        try {
+            // αρχικοποίηση transaction
+            if (!getLoc().getTransaction().isActive()) {
+                getLoc().getTransaction().begin();
+            }
+            getLoc().merge(CreditCard);//update customer
+            getLoc().getTransaction().commit();
+            //  return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            getLoc().getTransaction().rollback();
+            //  return false;
+        }
+    }    
 
 }
