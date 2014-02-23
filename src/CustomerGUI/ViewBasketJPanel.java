@@ -6,17 +6,26 @@
 
 package CustomerGUI;
 
+import LocalDB.Customer;
+import supermarket.DBmanager;
+import supermarket.SuperMarketParentFrame;
+
 /**
  *
  * @author Euh
  */
 public class ViewBasketJPanel extends javax.swing.JPanel {
+private final DBmanager db = new DBmanager();
+    private SuperMarketParentFrame ParentFrame;
+    private Customer Usr;
 
     /**
      * Creates new form ViewBasketJPanel
      */
     public ViewBasketJPanel() {
-        initComponents();
+             initComponents();
+        this.ParentFrame = ParentFrame;
+        this.Usr = ParentFrame.cust;
     }
 
     /**
@@ -245,7 +254,8 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void ReturnToMainCustomerFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnToMainCustomerFormActionPerformed
-
+        ParentFrame.pnl = new CustMainPanel(this.ParentFrame);
+        ParentFrame.addPanelInMain();
     }//GEN-LAST:event_ReturnToMainCustomerFormActionPerformed
 
 

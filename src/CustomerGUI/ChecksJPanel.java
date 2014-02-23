@@ -6,17 +6,26 @@
 
 package CustomerGUI;
 
+import LocalDB.Customer;
+import supermarket.DBmanager;
+import supermarket.SuperMarketParentFrame;
+
 /**
  *
  * @author Euh
  */
 public class ChecksJPanel extends javax.swing.JPanel {
+private final DBmanager db = new DBmanager();
+    private SuperMarketParentFrame ParentFrame;
+    private Customer Usr;
 
     /**
      * Creates new form ChecksJPanel
      */
     public ChecksJPanel() {
-        initComponents();
+             initComponents();
+        this.ParentFrame = ParentFrame;
+        this.Usr = ParentFrame.cust;
     }
 
     /**
@@ -27,11 +36,25 @@ public class ChecksJPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         ReturnToMainCustomerForm = new javax.swing.JButton();
 
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+
+        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("");
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jTable1, eLProperty, jTable1);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();
         jScrollPane1.setViewportView(jTable1);
 
         ReturnToMainCustomerForm.setText("επιστροφή");
@@ -68,10 +91,13 @@ public class ChecksJPanel extends javax.swing.JPanel {
                     .addComponent(ReturnToMainCustomerForm)
                     .addContainerGap()))
         );
+
+        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
     private void ReturnToMainCustomerFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnToMainCustomerFormActionPerformed
-
+        ParentFrame.pnl = new CustMainPanel(this.ParentFrame);
+        ParentFrame.addPanelInMain();
     }//GEN-LAST:event_ReturnToMainCustomerFormActionPerformed
 
 
@@ -79,5 +105,6 @@ public class ChecksJPanel extends javax.swing.JPanel {
     private javax.swing.JButton ReturnToMainCustomerForm;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
