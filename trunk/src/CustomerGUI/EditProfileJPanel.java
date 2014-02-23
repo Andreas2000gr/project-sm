@@ -325,7 +325,7 @@ public class EditProfileJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ReturnToMainCustomerFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnToMainCustomerFormActionPerformed
-        ParentFrame.pnl = new WelcomePanel(this.ParentFrame);
+        ParentFrame.pnl = new CustMainPanel(this.ParentFrame);
         ParentFrame.addPanelInMain();
     }//GEN-LAST:event_ReturnToMainCustomerFormActionPerformed
 

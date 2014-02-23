@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package CustomerGUI;
+
+import LocalDB.Customer;
+import supermarket.DBmanager;
+import supermarket.SuperMarketParentFrame;
 
 /**
  *
@@ -12,11 +15,17 @@ package CustomerGUI;
  */
 public class PurchaseJPanel extends javax.swing.JPanel {
 
+    private final DBmanager db = new DBmanager();
+    private SuperMarketParentFrame ParentFrame;
+    private Customer Usr;
+
     /**
      * Creates new form PurchaseJPanel
      */
-    public PurchaseJPanel() {
+    public PurchaseJPanel(SuperMarketParentFrame ParentFrame) {
         initComponents();
+        this.ParentFrame = ParentFrame;
+        this.Usr = ParentFrame.cust;
     }
 
     /**
@@ -41,6 +50,11 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         label1 = new java.awt.Label();
 
         jButton3.setText("επιστροφή");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Ολοκλήρωση αγοράς");
 
@@ -124,6 +138,11 @@ public class PurchaseJPanel extends javax.swing.JPanel {
                 .addGap(19, 19, 19))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        ParentFrame.pnl = new CustMainPanel(this.ParentFrame);
+        ParentFrame.addPanelInMain();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

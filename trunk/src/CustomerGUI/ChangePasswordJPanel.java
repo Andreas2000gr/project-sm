@@ -215,7 +215,8 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ReturnToMainCustomerFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnToMainCustomerFormActionPerformed
-
+        ParentFrame.pnl = new CustMainPanel(this.ParentFrame);
+        ParentFrame.addPanelInMain();
     }//GEN-LAST:event_ReturnToMainCustomerFormActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -279,7 +280,7 @@ public class ChangePasswordJPanel extends javax.swing.JPanel {
             ParentFrame.setEnabled(true);
             JOptionPane.showMessageDialog(null, "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε στο σύστημα.");
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "ERROR!!! " + e.getMessage().toString());
+            JOptionPane.showMessageDialog(this, "Απέτυχε! Η ενημέρωση του κωδικού πρόσβασης.");
         }
 
     }//GEN-LAST:event_jButton2ActionPerformed
