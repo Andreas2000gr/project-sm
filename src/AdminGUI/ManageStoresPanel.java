@@ -35,6 +35,8 @@ public class ManageStoresPanel extends javax.swing.JPanel {
 
         jButton5 = new javax.swing.JButton();
 
+        setBorder(javax.swing.BorderFactory.createTitledBorder("Διαχείριση Καταστημάτων"));
+
         jButton5.setText("Επιστροφή");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -47,16 +49,16 @@ public class ManageStoresPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(36, 36, 36)
+                .addContainerGap()
                 .addComponent(jButton5)
-                .addContainerGap(552, Short.MAX_VALUE))
+                .addContainerGap(566, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(365, Short.MAX_VALUE)
+                .addContainerGap(362, Short.MAX_VALUE)
                 .addComponent(jButton5)
-                .addGap(31, 31, 31))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
