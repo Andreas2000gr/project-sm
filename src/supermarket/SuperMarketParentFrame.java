@@ -33,8 +33,8 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
     private final DBmanager db = new DBmanager();
     public Customer cust; //Μεταβλητή που θα κρατήσει τον πελάτη και θα τον πασάρει σε κάθε JPanel
     private EntityManager loc = db.getLoc();  
-    private EntityManager ext = db.getExt(); 
-
+    private EntityManager ext = db.getExt();
+    
     public JPanel pnl = new WelcomePanel(this); //Αρχική εικόνα κεντρικού panel
     public JPanel brd = new BorderPanel(this);
     /**
@@ -47,9 +47,16 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
         this.loc = db.getLoc();
         this.ext = db.getExt();
     }
-        
 
+    public EntityManager getLoc() {
+        return loc;
+    }
+
+    public EntityManager getExt() {
+        return ext;
+    }
     
+      
     /**
      * Όταν κληθεί αφαιρεί το component που υπάρχει στην κεντρική περιοχή και προσθέτει το νέο
      * @param 
