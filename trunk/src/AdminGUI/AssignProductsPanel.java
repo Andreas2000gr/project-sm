@@ -10,7 +10,7 @@ import supermarket.*;
 
 /**
  *
- * @author Orgasmatron
+ * @author Panagis
  */
 public class AssignProductsPanel extends javax.swing.JPanel {
 
