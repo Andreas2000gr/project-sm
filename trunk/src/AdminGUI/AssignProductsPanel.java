@@ -34,6 +34,9 @@ public class AssignProductsPanel extends javax.swing.JPanel {
 
         jButton5 = new javax.swing.JButton();
 
+        setBorder(javax.swing.BorderFactory.createTitledBorder("Ανάθεση Προϊόντων"));
+        setName(""); // NOI18N
+
         jButton5.setText("Επιστροφή");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -46,16 +49,16 @@ public class AssignProductsPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(51, 51, 51)
+                .addContainerGap()
                 .addComponent(jButton5)
-                .addContainerGap(537, Short.MAX_VALUE))
+                .addContainerGap(566, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(356, Short.MAX_VALUE)
+                .addContainerGap(362, Short.MAX_VALUE)
                 .addComponent(jButton5)
-                .addGap(40, 40, 40))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
