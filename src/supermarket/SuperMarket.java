@@ -121,8 +121,8 @@ public class SuperMarket {
     public static void main(String[] args) {
         // Δημιουργούμε το SuperMarket
         SuperMarket sm = new SuperMarket();
-        sm.CleanDB();
-        sm.createStoresAndProducts();
+        //sm.CleanDB();
+        //sm.createStoresAndProducts();
         
         //Schedule a job for the event dispatch thread:
         //creating and showing this application's GUI.

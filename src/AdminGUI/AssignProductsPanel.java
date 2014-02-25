@@ -6,6 +6,10 @@
 
 package AdminGUI;
 
+import LocalDB.Store;
+import java.awt.Component;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 import supermarket.*;
 
 /**
@@ -17,10 +21,13 @@ public class AssignProductsPanel extends javax.swing.JPanel {
     /**
      * Creates new form AssignProductsPanel
      */
+    
     private final SuperMarketParentFrame frame;
+    private Store sto;
     public AssignProductsPanel(SuperMarketParentFrame frame) {
         initComponents();
         this.frame = frame;
+        this.sto = new Store();
     }
 
     /**
@@ -31,10 +38,15 @@ public class AssignProductsPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
+        entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("SuperMarket-local-PU").createEntityManager();
+        storeQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT s FROM Store s");
+        storeList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : storeQuery.getResultList();
         jButton5 = new javax.swing.JButton();
+        StoreSelectComboBox = new javax.swing.JComboBox();
 
-        setBorder(javax.swing.BorderFactory.createTitledBorder("Ανάθεση Προϊόντων"));
+        setBorder(javax.swing.BorderFactory.createTitledBorder("Συσχέτιση Προϊόντων"));
         setName(""); // NOI18N
 
         jButton5.setText("Επιστροφή");
@@ -44,22 +56,61 @@ public class AssignProductsPanel extends javax.swing.JPanel {
             }
         });
 
+        StoreSelectComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(
+                JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Store) {
+                    sto = (Store)value;
+                    setText(sto.getName());
+                }
+                return this;
+            }
+        });
+
+        org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, storeList, StoreSelectComboBox);
+        bindingGroup.addBinding(jComboBoxBinding);
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, storeList, org.jdesktop.beansbinding.ObjectProperty.create(), StoreSelectComboBox, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        bindingGroup.addBinding(binding);
+
+        StoreSelectComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                StoreSelectComboBoxActionPerformed(evt);
+            }
+        });
+        StoreSelectComboBox.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                StoreSelectComboBoxPropertyChange(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton5)
-                .addContainerGap(566, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton5)
+                        .addContainerGap(566, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(StoreSelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(362, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(StoreSelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 331, Short.MAX_VALUE)
                 .addComponent(jButton5)
                 .addContainerGap())
         );
+
+        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -67,8 +118,21 @@ public class AssignProductsPanel extends javax.swing.JPanel {
         frame.addPanelInMain();
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void StoreSelectComboBoxPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_StoreSelectComboBoxPropertyChange
+       
+    }//GEN-LAST:event_StoreSelectComboBoxPropertyChange
+
+    private void StoreSelectComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StoreSelectComboBoxActionPerformed
+        
+    }//GEN-LAST:event_StoreSelectComboBoxActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox StoreSelectComboBox;
+    private javax.persistence.EntityManager entityManager;
     private javax.swing.JButton jButton5;
+    private java.util.List<LocalDB.Store> storeList;
+    private javax.persistence.Query storeQuery;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
