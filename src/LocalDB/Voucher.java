@@ -7,12 +7,23 @@
 package LocalDB;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.util.Date;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Orgasmatron
+ * @author Euh
  */
 @Entity
 @Table(name = "VOUCHER")
@@ -20,18 +31,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Voucher.findAll", query = "SELECT v FROM Voucher v"),
     @NamedQuery(name = "Voucher.findByVoucherId", query = "SELECT v FROM Voucher v WHERE v.voucherId = :voucherId"),
-    @NamedQuery(name = "Voucher.findByVoucherStatus", query = "SELECT v FROM Voucher v WHERE v.voucherStatus = :voucherStatus")})
+    @NamedQuery(name = "Voucher.findByVoucherStatus", query = "SELECT v FROM Voucher v WHERE v.voucherStatus = :voucherStatus"),
+    @NamedQuery(name = "Voucher.findByVoucherDate", query = "SELECT v FROM Voucher v WHERE v.voucherDate = :voucherDate")})
 public class Voucher implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-     //@Basic(optional = false)  έγινε comment καθώς θα χρησιμοποιηθεί ο generator παρακάτω
-    @SequenceGenerator(name="voucher_id", sequenceName="SQ_VOUCHER_ID", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="voucher_id")
+    @Basic(optional = false)
     @Column(name = "VOUCHER_ID")
     private Integer voucherId;
     @Basic(optional = false)
     @Column(name = "VOUCHER_STATUS")
-    private String voucherStatus;
+    private boolean voucherStatus;
+    @Basic(optional = false)
+    @Column(name = "VOUCHER_DATE")
+    @Temporal(TemporalType.DATE)
+    private Date voucherDate;
     @JoinColumn(name = "CUSTOMER", referencedColumnName = "CUSTOMER_ID")
     @ManyToOne(optional = false)
     private Customer customer;
@@ -43,9 +57,10 @@ public class Voucher implements Serializable {
         this.voucherId = voucherId;
     }
 
-    public Voucher(Integer voucherId, String voucherStatus) {
+    public Voucher(Integer voucherId, boolean voucherStatus, Date voucherDate) {
         this.voucherId = voucherId;
         this.voucherStatus = voucherStatus;
+        this.voucherDate = voucherDate;
     }
 
     public Integer getVoucherId() {
@@ -56,12 +71,20 @@ public class Voucher implements Serializable {
         this.voucherId = voucherId;
     }
 
-    public String getVoucherStatus() {
+    public boolean getVoucherStatus() {
         return voucherStatus;
     }
 
-    public void setVoucherStatus(String voucherStatus) {
+    public void setVoucherStatus(boolean voucherStatus) {
         this.voucherStatus = voucherStatus;
+    }
+
+    public Date getVoucherDate() {
+        return voucherDate;
+    }
+
+    public void setVoucherDate(Date voucherDate) {
+        this.voucherDate = voucherDate;
     }
 
     public Customer getCustomer() {

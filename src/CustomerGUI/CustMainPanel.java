@@ -190,7 +190,8 @@ public class CustMainPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_EditProfileButton1ActionPerformed
 
     private void ChecksjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChecksjButtonActionPerformed
-        // TODO add your handling code here:
+        frame.pnl = new ChecksJPanel(this.frame);
+        frame.addPanelInMain();
     }//GEN-LAST:event_ChecksjButtonActionPerformed
 
     private void ChangePasswordjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangePasswordjButtonActionPerformed

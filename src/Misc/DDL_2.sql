@@ -70,7 +70,7 @@ CREATE TABLE "PURCHASE" (
 --------------------------------------------------------------------------------------------------------------
 CREATE TABLE "VOUCHER" (
                       VOUCHER_ID INTEGER NOT NULL,
-                      VOUCHER_STATUS VARCHAR(1) NOT NULL,
+                      VOUCHER_STATUS BOOLEAN NOT NULL,
                       CUSTOMER INTEGER NOT NULL,
                       VOUCHER_DATE DATE not null
                       );

@@ -3,10 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package CustomerGUI;
 
 import LocalDB.Customer;
+import LocalDB.Voucher;
+import java.util.Collection;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
 
@@ -15,17 +18,45 @@ import supermarket.SuperMarketParentFrame;
  * @author Euh
  */
 public class ChecksJPanel extends javax.swing.JPanel {
-private final DBmanager db = new DBmanager();
+
+    private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
     private Customer Usr;
+    private DefaultTableModel DTModel;
+    private Collection<Voucher> Checks;
+
+    //declare the column names
+    private final Object[] columnNames = {"Αριθμός Επιταγής", "Ημερομηνία που κερδήθηκε", "Έγκυρη"};
 
     /**
      * Creates new form ChecksJPanel
      */
-    public ChecksJPanel() {
-             initComponents();
+    public ChecksJPanel(SuperMarketParentFrame ParentFrame) {
+        initComponents();
         this.ParentFrame = ParentFrame;
         this.Usr = ParentFrame.cust;
+
+        this.VouchersTable.removeAll();
+        this.Checks = Usr.getVoucherCollection();
+        this.AvailablePoints.setText(String.valueOf(this.Usr.getAvailablePoints()));
+
+        this.DTModel = new DefaultTableModel(new Object[0][0], columnNames);
+        this.VouchersTable.setModel(this.DTModel);
+
+        for (Voucher v : Checks) {
+            Object[] object = new Object[3];
+            object[0] = v.getVoucherId();
+            object[1] = v.getVoucherDate();
+            object[2] = v.getVoucherStatus();
+
+            if (v.getVoucherStatus()) {
+                object[2] = "Εγκυρη";
+            } else {
+                object[2] = "Ακυρη";
+            }
+        this.DTModel.addRow(object);
+        }
+
     }
 
     /**
@@ -36,26 +67,13 @@ private final DBmanager db = new DBmanager();
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        VouchersTable = new javax.swing.JTable();
         ReturnToMainCustomerForm = new javax.swing.JButton();
+        AvailablePoints = new javax.swing.JTextField();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-
-        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("");
-        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jTable1, eLProperty, jTable1);
-        bindingGroup.addBinding(jTableBinding);
-        jTableBinding.bind();
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(VouchersTable);
 
         ReturnToMainCustomerForm.setText("επιστροφή");
         ReturnToMainCustomerForm.setActionCommand("return");
@@ -65,11 +83,16 @@ private final DBmanager db = new DBmanager();
             }
         });
 
+        AvailablePoints.setText("jTextField1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 671, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(124, 124, 124)
+                .addComponent(AvailablePoints, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(383, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
@@ -82,7 +105,10 @@ private final DBmanager db = new DBmanager();
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 419, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(346, Short.MAX_VALUE)
+                .addComponent(AvailablePoints, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(53, 53, 53))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
@@ -91,8 +117,6 @@ private final DBmanager db = new DBmanager();
                     .addComponent(ReturnToMainCustomerForm)
                     .addContainerGap()))
         );
-
-        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
     private void ReturnToMainCustomerFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnToMainCustomerFormActionPerformed
@@ -102,9 +126,9 @@ private final DBmanager db = new DBmanager();
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField AvailablePoints;
     private javax.swing.JButton ReturnToMainCustomerForm;
+    private javax.swing.JTable VouchersTable;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
