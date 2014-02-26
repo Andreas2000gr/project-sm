@@ -6,6 +6,8 @@
 
 package LocalDB;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.*;
@@ -27,6 +29,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Product.findByPoints", query = "SELECT p FROM Product p WHERE p.points = :points"),
     @NamedQuery(name = "Product.findByPrice", query = "SELECT p FROM Product p WHERE p.price = :price")})
 public class Product implements Serializable {
+    @Transient
+    private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
     private static final long serialVersionUID = 1L;
     @Id
     //@Basic(optional = false)  έγινε comment καθώς θα χρησιμοποιηθεί ο generator παρακάτω
@@ -82,7 +86,9 @@ public class Product implements Serializable {
     }
 
     public void setProductId(Integer productId) {
+        Integer oldProductId = this.productId;
         this.productId = productId;
+        changeSupport.firePropertyChange("productId", oldProductId, productId);
     }
 
     public String getName() {
@@ -90,7 +96,9 @@ public class Product implements Serializable {
     }
 
     public void setName(String name) {
+        String oldName = this.name;
         this.name = name;
+        changeSupport.firePropertyChange("name", oldName, name);
     }
 
     public String getCode() {
@@ -98,7 +106,9 @@ public class Product implements Serializable {
     }
 
     public void setCode(String code) {
+        String oldCode = this.code;
         this.code = code;
+        changeSupport.firePropertyChange("code", oldCode, code);
     }
 
     public int getPoints() {
@@ -106,7 +116,9 @@ public class Product implements Serializable {
     }
 
     public void setPoints(int points) {
+        int oldPoints = this.points;
         this.points = points;
+        changeSupport.firePropertyChange("points", oldPoints, points);
     }
 
     public float getPrice() {
@@ -114,7 +126,9 @@ public class Product implements Serializable {
     }
 
     public void setPrice(float price) {
+        float oldPrice = this.price;
         this.price = price;
+        changeSupport.firePropertyChange("price", oldPrice, price);
     }
 
     @XmlTransient
@@ -158,6 +172,14 @@ public class Product implements Serializable {
     @Override
     public String toString() {
         return "LocalDB.Product[ productId=" + productId + " ]";
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        changeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        changeSupport.removePropertyChangeListener(listener);
     }
     
 }

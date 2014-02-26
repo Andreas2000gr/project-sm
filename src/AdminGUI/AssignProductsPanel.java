@@ -6,10 +6,16 @@
 
 package AdminGUI;
 
+import LocalDB.Product;
 import LocalDB.Store;
 import java.awt.Component;
+import java.util.*;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.ListModel;
 import supermarket.*;
 
 /**
@@ -22,13 +28,37 @@ public class AssignProductsPanel extends javax.swing.JPanel {
      * Creates new form AssignProductsPanel
      */
     
-    private final SuperMarketParentFrame frame;
+    private SuperMarketParentFrame frame = new SuperMarketParentFrame();
     private Store sto;
+    private Collection<Product> prodCol;
     public AssignProductsPanel(SuperMarketParentFrame frame) {
         initComponents();
         this.frame = frame;
         this.sto = new Store();
+        this.prodCol = new ArrayList<>(0);
     }
+    
+    EntityManager loc = frame.getLoc();
+    EntityManager ext = frame.getExt();
+    
+    private List<Product> getAvProdList(Store st){
+            List<Product> avProdCol = new ArrayList<>(0);           
+            try {
+                loc.getTransaction().begin();
+                Query q = loc.createNativeQuery(
+                "SELECT * FROM PRODUCT WHERE PRODUCT_ID NOT IN (SELECT PRODUCT FROM STORE_PRODUCT WHERE STORE="+st.getStoreId().toString()+")"        
+                ,st.getProductCollection().getClass());
+                avProdCol = q.getResultList();
+                loc.close();
+                return avProdCol;
+            } catch (Exception e) {
+                avProdCol.clear();
+                loc.getTransaction().rollback();
+                return avProdCol;
+            }
+    }
+    
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -43,8 +73,19 @@ public class AssignProductsPanel extends javax.swing.JPanel {
         entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("SuperMarket-local-PU").createEntityManager();
         storeQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT s FROM Store s");
         storeList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : storeQuery.getResultList();
+        storeQuery1 = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT s FROM Store s");
+        storeList1 = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : storeQuery1.getResultList();
+        productQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT p FROM Product p");
+        productList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : productQuery.getResultList();
         jButton5 = new javax.swing.JButton();
         StoreSelectComboBox = new javax.swing.JComboBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        StoreProductsList = new javax.swing.JList();
+        RemoveButton = new javax.swing.JButton();
+        AddButton = new javax.swing.JButton();
+        SaveButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        AvailableProducts = new javax.swing.JList();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Συσχέτιση Προϊόντων"));
         setName(""); // NOI18N
@@ -79,11 +120,32 @@ public class AssignProductsPanel extends javax.swing.JPanel {
                 StoreSelectComboBoxActionPerformed(evt);
             }
         });
-        StoreSelectComboBox.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                StoreSelectComboBoxPropertyChange(evt);
+
+        StoreProductsList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+
+        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${selectedItem.productCollection}");
+        org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, StoreSelectComboBox, eLProperty, StoreProductsList);
+        jListBinding.setDetailBinding(org.jdesktop.beansbinding.ELProperty.create("${name}"));
+        bindingGroup.addBinding(jListBinding);
+
+        jScrollPane1.setViewportView(StoreProductsList);
+
+        RemoveButton.setText("<-");
+
+        AddButton.setText("->");
+        AddButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddButtonActionPerformed(evt);
             }
         });
+
+        SaveButton.setText("Αποθήκευση");
+
+        jScrollPane2.setViewportView(AvailableProducts);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -94,19 +156,42 @@ public class AssignProductsPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton5)
-                        .addContainerGap(566, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(SaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(StoreSelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addComponent(StoreSelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(AddButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(RemoveButton, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(StoreSelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 331, Short.MAX_VALUE)
-                .addComponent(jButton5)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(112, 112, 112)
+                        .addComponent(AddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(RemoveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1))
+                        .addGap(13, 13, 13)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton5)
+                    .addComponent(SaveButton))
                 .addContainerGap())
         );
 
@@ -118,21 +203,38 @@ public class AssignProductsPanel extends javax.swing.JPanel {
         frame.addPanelInMain();
     }//GEN-LAST:event_jButton5ActionPerformed
 
-    private void StoreSelectComboBoxPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_StoreSelectComboBoxPropertyChange
-       
-    }//GEN-LAST:event_StoreSelectComboBoxPropertyChange
+    private void AddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_AddButtonActionPerformed
 
     private void StoreSelectComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StoreSelectComboBoxActionPerformed
-        
+        DefaultListModel model = new DefaultListModel();
+        Iterator iter = getAvProdList(sto).iterator();
+        while (iter.hasNext()) {
+            model.addElement(iter.next());
+        }
+        AvailableProducts = new JList(model);
+        repaint();
     }//GEN-LAST:event_StoreSelectComboBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AddButton;
+    private javax.swing.JList AvailableProducts;
+    private javax.swing.JButton RemoveButton;
+    private javax.swing.JButton SaveButton;
+    private javax.swing.JList StoreProductsList;
     private javax.swing.JComboBox StoreSelectComboBox;
     private javax.persistence.EntityManager entityManager;
     private javax.swing.JButton jButton5;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private java.util.List<LocalDB.Product> productList;
+    private javax.persistence.Query productQuery;
     private java.util.List<LocalDB.Store> storeList;
+    private java.util.List<LocalDB.Store> storeList1;
     private javax.persistence.Query storeQuery;
+    private javax.persistence.Query storeQuery1;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
