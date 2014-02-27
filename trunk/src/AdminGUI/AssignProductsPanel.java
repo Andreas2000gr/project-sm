@@ -14,8 +14,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.ListModel;
 import supermarket.*;
 
 /**
@@ -112,7 +112,7 @@ public class AssignProductsPanel extends javax.swing.JPanel {
 
         org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, storeList, StoreSelectComboBox);
         bindingGroup.addBinding(jComboBoxBinding);
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, storeList, org.jdesktop.beansbinding.ObjectProperty.create(), StoreSelectComboBox, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, StoreSelectComboBox, org.jdesktop.beansbinding.ELProperty.create("${selectedItem.name}"), StoreSelectComboBox, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
 
         StoreSelectComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -145,6 +145,17 @@ public class AssignProductsPanel extends javax.swing.JPanel {
 
         SaveButton.setText("Αποθήκευση");
 
+        AvailableProducts.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (renderer instanceof JLabel && value instanceof Product) {
+
+                    ((JLabel) renderer).setText(((Product) value).getName());
+                }
+                return renderer;
+            }
+        });
         jScrollPane2.setViewportView(AvailableProducts);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -208,12 +219,8 @@ public class AssignProductsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_AddButtonActionPerformed
 
     private void StoreSelectComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StoreSelectComboBoxActionPerformed
-        DefaultListModel model = new DefaultListModel();
-        Iterator iter = getAvProdList(sto).iterator();
-        while (iter.hasNext()) {
-            model.addElement(iter.next());
-        }
-        AvailableProducts = new JList(model);
+        prodCol = getAvProdList(sto);
+        AvailableProducts = new JList(new Vector<Product>(prodCol));
         repaint();
     }//GEN-LAST:event_StoreSelectComboBoxActionPerformed
 
