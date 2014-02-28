@@ -8,9 +8,7 @@ package CustomerGUI;
 import LocalDB.Customer;
 import LocalDB.Voucher;
 import java.util.Collection;
-import java.util.List;
 import javax.swing.table.DefaultTableModel;
-import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
 
 /**
@@ -19,14 +17,14 @@ import supermarket.SuperMarketParentFrame;
  */
 public class ChecksJPanel extends javax.swing.JPanel {
 
-    private final DBmanager db = new DBmanager();
+    // private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
     private Customer Usr;
     private DefaultTableModel DTModel;
-    private Collection<Voucher> Checks;
+    private Collection<Voucher> voucher;
 
     //declare the column names
-    private final Object[] columnNames = {"Αριθμός Επιταγής", "Ημερομηνία που κερδήθηκε", "Έγκυρη"};
+    private final Object[] columnNames = {"Αριθμός Επιταγής", "Ημερομηνία που κερδήθηκε", "Κατάσταση Επιταγής"};
 
     /**
      * Creates new form ChecksJPanel
@@ -34,16 +32,21 @@ public class ChecksJPanel extends javax.swing.JPanel {
     public ChecksJPanel(SuperMarketParentFrame ParentFrame) {
         initComponents();
         this.ParentFrame = ParentFrame;
-        this.Usr = ParentFrame.cust;
 
+        this.LoadUSRVouchers();
+    }
+
+    public void LoadUSRVouchers() {//φορτώνει τις επιταγές στον jtable από τον πίνακα της βάσης
+        initComponents();
+        this.Usr = ParentFrame.cust;
         this.VouchersTable.removeAll();
-        this.Checks = Usr.getVoucherCollection();
+        this.voucher = Usr.getVoucherCollection();
         this.AvailablePoints.setText(String.valueOf(this.Usr.getAvailablePoints()));
 
         this.DTModel = new DefaultTableModel(new Object[0][0], columnNames);
         this.VouchersTable.setModel(this.DTModel);
 
-        for (Voucher v : Checks) {
+        for (Voucher v : voucher) {
             Object[] object = new Object[3];
             object[0] = v.getVoucherId();
             object[1] = v.getVoucherDate();
@@ -54,7 +57,7 @@ public class ChecksJPanel extends javax.swing.JPanel {
             } else {
                 object[2] = "Ακυρη";
             }
-        this.DTModel.addRow(object);
+            this.DTModel.addRow(object);
         }
 
     }
@@ -72,6 +75,7 @@ public class ChecksJPanel extends javax.swing.JPanel {
         VouchersTable = new javax.swing.JTable();
         ReturnToMainCustomerForm = new javax.swing.JButton();
         AvailablePoints = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
 
         jScrollPane1.setViewportView(VouchersTable);
 
@@ -83,16 +87,18 @@ public class ChecksJPanel extends javax.swing.JPanel {
             }
         });
 
-        AvailablePoints.setText("jTextField1");
+        jLabel1.setText("Διαθέσμοι Πόντοι:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(124, 124, 124)
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(AvailablePoints, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(383, Short.MAX_VALUE))
+                .addContainerGap(408, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
@@ -106,9 +112,11 @@ public class ChecksJPanel extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(346, Short.MAX_VALUE)
-                .addComponent(AvailablePoints, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(53, 53, 53))
+                .addContainerGap(349, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(AvailablePoints, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
@@ -129,6 +137,7 @@ public class ChecksJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField AvailablePoints;
     private javax.swing.JButton ReturnToMainCustomerForm;
     private javax.swing.JTable VouchersTable;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
