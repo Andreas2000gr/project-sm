@@ -11,11 +11,13 @@ import LocalDB.Store;
 import java.awt.Component;
 import java.util.*;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.ListModel;
 import supermarket.*;
 
 /**
@@ -28,37 +30,68 @@ public class AssignProductsPanel extends javax.swing.JPanel {
      * Creates new form AssignProductsPanel
      */
     
-    private SuperMarketParentFrame frame = new SuperMarketParentFrame();
+    private SuperMarketParentFrame frame;
     private Store sto;
-    private Collection<Product> prodCol;
+    private List<Product> avProd;
+    private EntityManager loc;
+    private EntityManager ext;
+    
+//Constructor
     public AssignProductsPanel(SuperMarketParentFrame frame) {
-        initComponents();
         this.frame = frame;
         this.sto = new Store();
-        this.prodCol = new ArrayList<>(0);
+        this.avProd = new ArrayList<>(0);
+        this.loc = frame.getLoc();
+        this.ext = frame.getExt();
+        initComponents();
+        loc.getTransaction().begin();
     }
-    
-    EntityManager loc = frame.getLoc();
-    EntityManager ext = frame.getExt();
+
     
     private List<Product> getAvProdList(Store st){
-            List<Product> avProdCol = new ArrayList<>(0);           
+            List<Product> avProdCol = new ArrayList<>(0);
+            List<Product> allProdCol = new ArrayList<>(0);
             try {
-                loc.getTransaction().begin();
-                Query q = loc.createNativeQuery(
-                "SELECT * FROM PRODUCT WHERE PRODUCT_ID NOT IN (SELECT PRODUCT FROM STORE_PRODUCT WHERE STORE="+st.getStoreId().toString()+")"        
-                ,st.getProductCollection().getClass());
-                avProdCol = q.getResultList();
-                loc.close();
-                return avProdCol;
-            } catch (Exception e) {
+                Query q = loc.createNativeQuery("SELECT * FROM PRODUCT p WHERE PRODUCT_ID NOT IN "
+                        + "(SELECT PRODUCT FROM STORE_PRODUCT WHERE STORE = "
+                        +st.getStoreId().toString()+")",Product.class);
+                allProdCol = q.getResultList();
                 avProdCol.clear();
+                for (Product p : allProdCol) {
+                    if (!st.getProductCollection().contains(p)) {
+                        avProdCol.add(p);
+                    }
+                }
+            return avProdCol;
+            } catch (NoResultException e) {
+                e.printStackTrace();
                 loc.getTransaction().rollback();
-                return avProdCol;
+                avProdCol.clear();
+                return null;
+            } catch (Exception e){
+                e.printStackTrace();
+                loc.getTransaction().rollback();
+                avProdCol.clear();
+                return null;
             }
     }
     
-
+    private void repaintAvProd(Store sto){
+        avProd = getAvProdList(sto);
+        DefaultListModel<Product> model = new DefaultListModel();
+        for (Product p : avProd) {
+            model.addElement(p);
+        }
+        AvailableProducts.setModel(model);
+    }
+    
+    private void repaintStProd(Store sto){
+        DefaultListModel<Product> model = new DefaultListModel();
+        for (Product p : sto.getProductCollection()) {
+            model.addElement(p);
+        }
+        StoreProductsList.setModel(model);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -77,7 +110,7 @@ public class AssignProductsPanel extends javax.swing.JPanel {
         storeList1 = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : storeQuery1.getResultList();
         productQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT p FROM Product p");
         productList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : productQuery.getResultList();
-        jButton5 = new javax.swing.JButton();
+        GoBack = new javax.swing.JButton();
         StoreSelectComboBox = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         StoreProductsList = new javax.swing.JList();
@@ -89,13 +122,15 @@ public class AssignProductsPanel extends javax.swing.JPanel {
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Συσχέτιση Προϊόντων"));
         setName(""); // NOI18N
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton5.setText("Επιστροφή");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        GoBack.setText("Επιστροφή");
+        GoBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                GoBackActionPerformed(evt);
             }
         });
+        add(GoBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(16, 378, -1, -1));
 
         StoreSelectComboBox.setRenderer(new DefaultListCellRenderer() {
             @Override
@@ -105,6 +140,8 @@ public class AssignProductsPanel extends javax.swing.JPanel {
                 if (value instanceof Store) {
                     sto = (Store)value;
                     setText(sto.getName());
+                } else {
+                    setText("Επιλέξτε Κατάστημα...");
                 }
                 return this;
             }
@@ -120,21 +157,39 @@ public class AssignProductsPanel extends javax.swing.JPanel {
                 StoreSelectComboBoxActionPerformed(evt);
             }
         });
+        add(StoreSelectComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(484, 27, 171, -1));
 
         StoreProductsList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        StoreProductsList.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Product) {
+                    setText(((Product)value).getName());
+                }
+                return renderer;
+            }
+        });
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${selectedItem.productCollection}");
         org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, StoreSelectComboBox, eLProperty, StoreProductsList);
-        jListBinding.setDetailBinding(org.jdesktop.beansbinding.ELProperty.create("${name}"));
         bindingGroup.addBinding(jListBinding);
 
         jScrollPane1.setViewportView(StoreProductsList);
 
+        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(397, 65, 258, 300));
+
         RemoveButton.setText("<-");
+        RemoveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RemoveButtonActionPerformed(evt);
+            }
+        });
+        add(RemoveButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(292, 213, 87, 48));
 
         AddButton.setText("->");
         AddButton.addActionListener(new java.awt.event.ActionListener() {
@@ -142,98 +197,127 @@ public class AssignProductsPanel extends javax.swing.JPanel {
                 AddButtonActionPerformed(evt);
             }
         });
+        add(AddButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(292, 159, 87, 48));
 
         SaveButton.setText("Αποθήκευση");
+        SaveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveButtonActionPerformed(evt);
+            }
+        });
+        add(SaveButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(532, 378, 123, -1));
+
+        jScrollPane2.setEnabled(false);
 
         AvailableProducts.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (renderer instanceof JLabel && value instanceof Product) {
-
-                    ((JLabel) renderer).setText(((Product) value).getName());
+                if (value instanceof Product) {
+                    setText(((Product)value).getName());
                 }
                 return renderer;
             }
         });
         jScrollPane2.setViewportView(AvailableProducts);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(SaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(StoreSelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(AddButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(RemoveButton, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(StoreSelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(112, 112, 112)
-                        .addComponent(AddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(RemoveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1))
-                        .addGap(13, 13, 13)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5)
-                    .addComponent(SaveButton))
-                .addContainerGap())
-        );
+        add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(16, 65, -1, 300));
 
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void GoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GoBackActionPerformed
+        if (loc.getTransaction().isActive()) {
+            loc.getTransaction().rollback();
+        }
         frame.pnl = new MainPanel(frame);
         frame.addPanelInMain();
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_GoBackActionPerformed
 
     private void AddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddButtonActionPerformed
-        // TODO add your handling code here:
+        Integer avLstPos = AvailableProducts.getSelectedIndex();
+        if (avLstPos != -1) {
+            if (loc.getTransaction().isActive()) {
+                    try {
+                    List<Product> pr = AvailableProducts.getSelectedValuesList();
+                    sto.getProductCollection().addAll(pr);
+                    for (Product p : pr) {
+                        p.getStoreCollection().add(sto);
+                        loc.merge(p);
+                    }
+                    loc.merge(sto);
+                    StoreSelectComboBoxActionPerformed(null);
+                    } catch (Exception e) {
+                    e.printStackTrace();
+                    loc.getTransaction().rollback();
+                }
+            }
+        }
     }//GEN-LAST:event_AddButtonActionPerformed
 
     private void StoreSelectComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StoreSelectComboBoxActionPerformed
-        prodCol = getAvProdList(sto);
-        AvailableProducts = new JList(new Vector<Product>(prodCol));
-        repaint();
+        if (sto.getStoreId() != null) {
+            sto = (Store)StoreSelectComboBox.getSelectedItem();
+            repaintStProd(sto);
+            repaintAvProd(sto);
+        }
     }//GEN-LAST:event_StoreSelectComboBoxActionPerformed
+
+    private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
+        Object[] options = {"Ναι","Οχι"};
+        Integer choice = JOptionPane.showOptionDialog(null,
+        "Επιβεβαίωση αλλαγών;",
+        null,
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        options,
+        options[0]);
+
+        if (choice == JOptionPane.YES_OPTION){
+            if (loc.getTransaction().isActive()) {
+                try {
+                    loc.getTransaction().commit();
+                    GoBackActionPerformed(null);
+                } catch (Exception e) {
+                        e.printStackTrace();
+                    loc.getTransaction().rollback();            
+                }
+            }
+        } 
+    }//GEN-LAST:event_SaveButtonActionPerformed
+
+    private void RemoveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveButtonActionPerformed
+        Integer avLstPos = StoreProductsList.getSelectedIndex();
+        if (avLstPos != -1) {
+            if (loc.getTransaction().isActive()) {
+                    try {
+                    List<Product> pr = StoreProductsList.getSelectedValuesList();
+                    sto.getProductCollection().removeAll(pr);
+                    for (Product p : pr) {
+                        p.getStoreCollection().remove(sto);
+                        loc.merge(p);
+                    }
+                    loc.merge(sto);
+                    StoreSelectComboBoxActionPerformed(null);
+                    } catch (Exception e) {
+                    e.printStackTrace();
+                    loc.getTransaction().rollback();
+                }
+            }
+        }
+    }//GEN-LAST:event_RemoveButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddButton;
     private javax.swing.JList AvailableProducts;
+    private javax.swing.JButton GoBack;
     private javax.swing.JButton RemoveButton;
     private javax.swing.JButton SaveButton;
     private javax.swing.JList StoreProductsList;
     private javax.swing.JComboBox StoreSelectComboBox;
     private javax.persistence.EntityManager entityManager;
-    private javax.swing.JButton jButton5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private java.util.List<LocalDB.Product> productList;
