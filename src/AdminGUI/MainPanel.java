@@ -40,12 +40,15 @@ public class MainPanel extends javax.swing.JPanel {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
 
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         jButton5.setText("Επιστροφή");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
             }
         });
+        add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 385, -1, -1));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Μενού Διαχείρισης"));
 
@@ -109,29 +112,7 @@ public class MainPanel extends javax.swing.JPanel {
                 .addGap(29, 29, 29))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(168, 168, 168)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jButton5)))
-                .addContainerGap(158, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(54, 54, 54)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(64, 64, 64)
-                .addComponent(jButton5)
-                .addContainerGap())
-        );
+        add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(168, 54, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

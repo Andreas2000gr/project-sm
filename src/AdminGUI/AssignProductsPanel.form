@@ -80,82 +80,30 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-93,0,0,2,-97"/>
   </AuxValues>
 
-  <Layout>
-    <DimensionLayout dim="0">
-      <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="jButton5" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="SaveButton" min="-2" pref="123" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Component id="StoreSelectComboBox" min="-2" pref="171" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <Component id="jScrollPane2" min="-2" pref="258" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="AddButton" max="32767" attributes="0"/>
-                          <Component id="RemoveButton" pref="87" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace pref="18" max="32767" attributes="0"/>
-                      <Component id="jScrollPane1" min="-2" pref="258" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-          </Group>
-      </Group>
-    </DimensionLayout>
-    <DimensionLayout dim="1">
-      <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="StoreSelectComboBox" min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="112" max="-2" attributes="0"/>
-                      <Component id="AddButton" min="-2" pref="48" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="RemoveButton" min="-2" pref="48" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="18" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="jScrollPane2" pref="300" max="32767" attributes="0"/>
-                          <Component id="jScrollPane1" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButton5" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="SaveButton" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-          </Group>
-      </Group>
-    </DimensionLayout>
+  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+    <Property name="useNullLayout" type="boolean" value="false"/>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JButton" name="jButton5">
+    <Component class="javax.swing.JButton" name="GoBack">
       <Properties>
         <Property name="text" type="java.lang.String" value="&#x395;&#x3c0;&#x3b9;&#x3c3;&#x3c4;&#x3c1;&#x3bf;&#x3c6;&#x3ae;"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton5ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="GoBackActionPerformed"/>
       </Events>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+          <AbsoluteConstraints x="16" y="378" width="-1" height="-1"/>
+        </Constraint>
+      </Constraints>
     </Component>
     <Component class="javax.swing.JComboBox" name="StoreSelectComboBox">
       <Properties>
         <Property name="renderer" type="javax.swing.ListCellRenderer" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="new DefaultListCellRenderer() {&#xd;&#xa;           @Override&#xd;&#xa;           public Component getListCellRendererComponent(&#xd;&#xa;                   JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {&#xd;&#xa;               super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);&#xd;&#xa;               if (value instanceof Store) {&#xd;&#xa;                       sto = (Store)value;&#xd;&#xa;                   setText(sto.getName());&#xd;&#xa;               }&#xd;&#xa;               return this;&#xd;&#xa;           }&#xd;&#xa;            }" type="code"/>
+          <Connection code="new DefaultListCellRenderer() {&#xd;&#xa;           @Override&#xd;&#xa;           public Component getListCellRendererComponent(&#xd;&#xa;                   JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {&#xd;&#xa;               super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);&#xd;&#xa;               if (value instanceof Store) {&#xd;&#xa;                       sto = (Store)value;&#xd;&#xa;                   setText(sto.getName());&#xd;&#xa;               } else {&#xd;&#xa;                   setText(&quot;&#x395;&#x3c0;&#x3b9;&#x3bb;&#x3ad;&#x3be;&#x3c4;&#x3b5; &#x39a;&#x3b1;&#x3c4;&#x3ac;&#x3c3;&#x3c4;&#x3b7;&#x3bc;&#x3b1;...&quot;);&#xd;&#xa;               }&#xd;&#xa;               return this;&#xd;&#xa;           }&#xd;&#xa;            }" type="code"/>
         </Property>
       </Properties>
       <BindingProperties>
@@ -165,11 +113,21 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="StoreSelectComboBoxActionPerformed"/>
       </Events>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+          <AbsoluteConstraints x="484" y="27" width="171" height="-1"/>
+        </Constraint>
+      </Constraints>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
       <AuxValues>
         <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
       </AuxValues>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+          <AbsoluteConstraints x="397" y="65" width="258" height="300"/>
+        </Constraint>
+      </Constraints>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
@@ -184,11 +142,12 @@
                 <StringItem index="4" value="Item 5"/>
               </StringArray>
             </Property>
+            <Property name="cellRenderer" type="javax.swing.ListCellRenderer" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="new DefaultListCellRenderer() {&#xd;&#xa;            @Override&#xd;&#xa;            public Component getListCellRendererComponent(JList&lt;?&gt; list, Object value, int index, boolean isSelected, boolean cellHasFocus) {&#xd;&#xa;                Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);&#xd;&#xa;                if (value instanceof Product) {&#xd;&#xa;                   setText(((Product)value).getName());&#xd;&#xa;                }&#xd;&#xa;                return renderer;&#xd;&#xa;            }&#xd;&#xa;        }" type="code"/>
+            </Property>
           </Properties>
           <BindingProperties>
-            <BindingProperty name="elements" source="StoreSelectComboBox" sourcePath="${selectedItem.productCollection}" target="StoreProductsList" targetPath="elements" updateStrategy="0" immediately="false">
-              <BindingParameter name="DISPLAY" value="${name}"/>
-            </BindingProperty>
+            <BindingProperty name="elements" source="StoreSelectComboBox" sourcePath="${selectedItem.productCollection}" target="StoreProductsList" targetPath="elements" updateStrategy="0" immediately="false"/>
           </BindingProperties>
         </Component>
       </SubComponents>
@@ -197,6 +156,14 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="&lt;-"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="RemoveButtonActionPerformed"/>
+      </Events>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+          <AbsoluteConstraints x="292" y="213" width="87" height="48"/>
+        </Constraint>
+      </Constraints>
     </Component>
     <Component class="javax.swing.JButton" name="AddButton">
       <Properties>
@@ -205,23 +172,44 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="AddButtonActionPerformed"/>
       </Events>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+          <AbsoluteConstraints x="292" y="159" width="87" height="48"/>
+        </Constraint>
+      </Constraints>
     </Component>
     <Component class="javax.swing.JButton" name="SaveButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="&#x391;&#x3c0;&#x3bf;&#x3b8;&#x3ae;&#x3ba;&#x3b5;&#x3c5;&#x3c3;&#x3b7;"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SaveButtonActionPerformed"/>
+      </Events>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+          <AbsoluteConstraints x="532" y="378" width="123" height="-1"/>
+        </Constraint>
+      </Constraints>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane2">
+      <Properties>
+        <Property name="enabled" type="boolean" value="false"/>
+      </Properties>
       <AuxValues>
         <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
       </AuxValues>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+          <AbsoluteConstraints x="16" y="65" width="-1" height="300"/>
+        </Constraint>
+      </Constraints>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
         <Component class="javax.swing.JList" name="AvailableProducts">
           <Properties>
             <Property name="cellRenderer" type="javax.swing.ListCellRenderer" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="new DefaultListCellRenderer() {&#xd;&#xa;            @Override&#xd;&#xa;            public Component getListCellRendererComponent(JList&lt;?&gt; list, Object value, int index, boolean isSelected, boolean cellHasFocus) {&#xd;&#xa;                Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);&#xd;&#xa;                if (renderer instanceof JLabel &amp;&amp; value instanceof Product) {&#xd;&#xa;              &#xd;&#xa;                    ((JLabel) renderer).setText(((Product) value).getName());&#xd;&#xa;                }&#xd;&#xa;                return renderer;&#xd;&#xa;            }&#xd;&#xa;        }" type="code"/>
+              <Connection code="new DefaultListCellRenderer() {&#xd;&#xa;            @Override&#xd;&#xa;            public Component getListCellRendererComponent(JList&lt;?&gt; list, Object value, int index, boolean isSelected, boolean cellHasFocus) {&#xd;&#xa;                Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);&#xd;&#xa;                if (value instanceof Product) {&#xd;&#xa;                   setText(((Product)value).getName());&#xd;&#xa;                }&#xd;&#xa;                return renderer;&#xd;&#xa;            }&#xd;&#xa;        }" type="code"/>
             </Property>
           </Properties>
           <AuxValues>
