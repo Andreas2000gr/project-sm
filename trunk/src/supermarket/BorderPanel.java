@@ -40,7 +40,7 @@ public class BorderPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 419, Short.MAX_VALUE)
+            .addGap(0, 421, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
