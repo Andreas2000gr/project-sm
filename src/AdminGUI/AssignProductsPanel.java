@@ -119,6 +119,7 @@ public class AssignProductsPanel extends javax.swing.JPanel {
         SaveButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         AvailableProducts = new javax.swing.JList();
+        CancelButton = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Συσχέτιση Προϊόντων"));
         setName(""); // NOI18N
@@ -223,29 +224,40 @@ public class AssignProductsPanel extends javax.swing.JPanel {
         jScrollPane2.setViewportView(AvailableProducts);
         AvailableProducts.getAccessibleContext().setAccessibleDescription("");
 
+        CancelButton.setText("Ακύρωση");
+        CancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CancelButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(478, 478, 478)
                         .addComponent(StoreSelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(22, 22, 22)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(AddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(RemoveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(22, 22, 22)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(AddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(RemoveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(GoBack))
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(GoBack)
-                        .addGap(433, 433, 433)
-                        .addComponent(SaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(CancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(SaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18))
         );
         layout.setVerticalGroup(
@@ -265,18 +277,37 @@ public class AssignProductsPanel extends javax.swing.JPanel {
                 .addGap(13, 13, 13)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(GoBack)
-                    .addComponent(SaveButton)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(SaveButton)
+                        .addComponent(CancelButton))))
         );
 
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
     private void GoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GoBackActionPerformed
-        if (loc.getTransaction().isActive()) {
-            loc.getTransaction().rollback();
+        Object[] options = {"Ναι","Οχι"};
+        Integer choice = JOptionPane.showOptionDialog(null,
+        "Όλες οι αλλαγές θα χαθούν. Είστε σίγουρος;",
+        "Επαναφορά στο αρχικό μενού.",
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        options,
+        options[0]);
+
+        if (choice == JOptionPane.YES_OPTION){
+            if (loc.getTransaction().isActive()) {
+                try {
+                    loc.getTransaction().rollback();
+                    frame.pnl = new MainPanel(frame);
+                    frame.addPanelInMain();
+                } catch (Exception e) {
+                        e.printStackTrace();
+                    loc.getTransaction().rollback();            
+                }
+            }
         }
-        frame.pnl = new MainPanel(frame);
-        frame.addPanelInMain();
     }//GEN-LAST:event_GoBackActionPerformed
 
     private void AddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddButtonActionPerformed
@@ -323,7 +354,8 @@ public class AssignProductsPanel extends javax.swing.JPanel {
             if (loc.getTransaction().isActive()) {
                 try {
                     loc.getTransaction().commit();
-                    GoBackActionPerformed(null);
+                    frame.pnl = new MainPanel(frame);
+                    frame.addPanelInMain();                    
                 } catch (Exception e) {
                         e.printStackTrace();
                     loc.getTransaction().rollback();            
@@ -353,10 +385,36 @@ public class AssignProductsPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_RemoveButtonActionPerformed
 
+    private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
+        Object[] options = {"Ναι","Οχι"};
+        Integer choice = JOptionPane.showOptionDialog(null,
+        "Ακύρωση αλλαγών;",
+        null,
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        options,
+        options[0]);
+
+        if (choice == JOptionPane.YES_OPTION){
+            if (loc.getTransaction().isActive()) {
+                try {
+                    loc.getTransaction().rollback();
+                    frame.pnl = new AssignProductsPanel(frame);
+                    frame.addPanelInMain();
+                } catch (Exception e) {
+                        e.printStackTrace();
+                    loc.getTransaction().rollback();            
+                }
+            }
+        }
+    }//GEN-LAST:event_CancelButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddButton;
     private javax.swing.JList AvailableProducts;
+    private javax.swing.JButton CancelButton;
     private javax.swing.JButton GoBack;
     private javax.swing.JButton RemoveButton;
     private javax.swing.JButton SaveButton;
