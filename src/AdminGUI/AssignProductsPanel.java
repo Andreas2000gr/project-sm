@@ -45,7 +45,7 @@ public class AssignProductsPanel extends javax.swing.JPanel {
         this.ext = frame.getExt();
         initComponents();
         loc.getTransaction().begin();
-    }
+     }
 
     
     private List<Product> getAvProdList(Store st){
@@ -122,7 +122,6 @@ public class AssignProductsPanel extends javax.swing.JPanel {
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Συσχέτιση Προϊόντων"));
         setName(""); // NOI18N
-        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         GoBack.setText("Επιστροφή");
         GoBack.addActionListener(new java.awt.event.ActionListener() {
@@ -130,7 +129,6 @@ public class AssignProductsPanel extends javax.swing.JPanel {
                 GoBackActionPerformed(evt);
             }
         });
-        add(GoBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(16, 378, -1, -1));
 
         StoreSelectComboBox.setRenderer(new DefaultListCellRenderer() {
             @Override
@@ -157,7 +155,6 @@ public class AssignProductsPanel extends javax.swing.JPanel {
                 StoreSelectComboBoxActionPerformed(evt);
             }
         });
-        add(StoreSelectComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(484, 27, 171, -1));
 
         StoreProductsList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -174,6 +171,9 @@ public class AssignProductsPanel extends javax.swing.JPanel {
                 return renderer;
             }
         });
+        StoreProductsList.setFixedCellHeight(15);
+        StoreProductsList.setFixedCellWidth(250);
+        StoreProductsList.setFocusCycleRoot(true);
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${selectedItem.productCollection}");
         org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, StoreSelectComboBox, eLProperty, StoreProductsList);
@@ -181,15 +181,12 @@ public class AssignProductsPanel extends javax.swing.JPanel {
 
         jScrollPane1.setViewportView(StoreProductsList);
 
-        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(397, 65, 258, 300));
-
         RemoveButton.setText("<-");
         RemoveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 RemoveButtonActionPerformed(evt);
             }
         });
-        add(RemoveButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(292, 213, 87, 48));
 
         AddButton.setText("->");
         AddButton.addActionListener(new java.awt.event.ActionListener() {
@@ -197,7 +194,6 @@ public class AssignProductsPanel extends javax.swing.JPanel {
                 AddButtonActionPerformed(evt);
             }
         });
-        add(AddButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(292, 159, 87, 48));
 
         SaveButton.setText("Αποθήκευση");
         SaveButton.addActionListener(new java.awt.event.ActionListener() {
@@ -205,10 +201,10 @@ public class AssignProductsPanel extends javax.swing.JPanel {
                 SaveButtonActionPerformed(evt);
             }
         });
-        add(SaveButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(532, 378, 123, -1));
 
         jScrollPane2.setEnabled(false);
 
+        AvailableProducts.setAutoscrolls(false);
         AvailableProducts.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -219,9 +215,58 @@ public class AssignProductsPanel extends javax.swing.JPanel {
                 return renderer;
             }
         });
+        AvailableProducts.setDoubleBuffered(true);
+        AvailableProducts.setFixedCellHeight(15);
+        AvailableProducts.setFixedCellWidth(250);
+        AvailableProducts.setFocusCycleRoot(true);
+        AvailableProducts.setVisibleRowCount(-1);
         jScrollPane2.setViewportView(AvailableProducts);
+        AvailableProducts.getAccessibleContext().setAccessibleDescription("");
 
-        add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(16, 65, -1, 300));
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(478, 478, 478)
+                        .addComponent(StoreSelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(22, 22, 22)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(AddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(RemoveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(GoBack)
+                        .addGap(433, 433, 433)
+                        .addComponent(SaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(11, 11, 11)
+                .addComponent(StoreSelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(85, 85, 85)
+                        .addComponent(AddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(2, 2, 2)
+                        .addComponent(RemoveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(13, 13, 13)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(GoBack)
+                    .addComponent(SaveButton)))
+        );
 
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
