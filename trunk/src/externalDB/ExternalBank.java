@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Orgasmatron
+ * @author Panagis
  */
 @Entity
 @Table(name = "EXTERNAL_BANK")

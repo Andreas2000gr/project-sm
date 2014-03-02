@@ -8,7 +8,7 @@ package supermarket;
 import javax.swing.JPanel;
 /**
  *
- * @author Orgasmatron
+ * @author Panagis
  */
 public class WelcomePanel extends javax.swing.JPanel {
 

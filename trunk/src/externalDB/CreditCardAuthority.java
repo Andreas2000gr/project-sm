@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Orgasmatron
+ * @author Panagis
  */
 @Entity
 @Table(name = "CREDIT_CARD_AUTHORITY")
