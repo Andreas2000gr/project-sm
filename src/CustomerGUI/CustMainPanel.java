@@ -201,12 +201,13 @@ public class CustMainPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_ChangePasswordjButtonActionPerformed
 
     private void ViewBasketjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewBasketjButtonActionPerformed
-        // TODO add your handling code here:
+        frame.pnl = new ViewBasketJPanel(this.frame);
+        frame.addPanelInMain();
     }//GEN-LAST:event_ViewBasketjButtonActionPerformed
 
     private void PurchaseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PurchaseButtonActionPerformed
         // TODO add your handling code here:
-        frame.pnl = new EditProfileJPanel(this.frame);
+        frame.pnl = new PurchaseJPanel(this.frame);
         frame.addPanelInMain();
     }//GEN-LAST:event_PurchaseButtonActionPerformed
 
