@@ -8,7 +8,7 @@ package supermarket;
 
 /**
  *
- * @author Orgasmatron
+ * @author Panagis
  */
 public class BorderPanel extends javax.swing.JPanel {
 
