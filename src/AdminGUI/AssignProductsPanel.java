@@ -34,7 +34,6 @@ public class AssignProductsPanel extends javax.swing.JPanel {
     private Store sto;
     private List<Product> avProd;
     private EntityManager loc;
-    private EntityManager ext;
     
 //Constructor
     public AssignProductsPanel(SuperMarketParentFrame frame) {
@@ -42,7 +41,6 @@ public class AssignProductsPanel extends javax.swing.JPanel {
         this.sto = new Store();
         this.avProd = new ArrayList<>(0);
         this.loc = frame.getLoc();
-        this.ext = frame.getExt();
         initComponents();
         loc.getTransaction().begin();
      }
@@ -69,8 +67,7 @@ public class AssignProductsPanel extends javax.swing.JPanel {
                 avProdCol.clear();
                 return null;
             } catch (Exception e){
-                e.printStackTrace();
-                loc.getTransaction().rollback();
+
                 avProdCol.clear();
                 return null;
             }
