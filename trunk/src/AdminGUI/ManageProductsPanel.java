@@ -6,23 +6,40 @@
 
 package AdminGUI;
 
-import supermarket.*;
+import LocalDB.Product;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import supermarket.SuperMarketParentFrame;
 
 /**
  *
- * @author Orgasmatron
+ * @author Panagis
  */
 public class ManageProductsPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form ManageProductsPanel
+     * Creates new form ManageCustomersPanel
      */
     private final SuperMarketParentFrame frame;
+    private EntityManager loc;
+    private Boolean tableChanged = false;
+    private String oldValue;
+    private String newValue;
+    private Integer row;
+    private Integer column;
+    private final List<Product> changedProd = new  ArrayList<>();
+    private Product prod = new Product();
     
     public ManageProductsPanel(SuperMarketParentFrame frame) {
-        initComponents();
+        this.loc = frame.getLoc();
         this.frame = frame;
+        initComponents();
+        loc.getTransaction().begin();
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -32,15 +49,73 @@ public class ManageProductsPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        jButton5 = new javax.swing.JButton();
+        entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("SuperMarket-local-PU").createEntityManager();
+        customerQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT c FROM Customer c");
+        customerList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : customerQuery.getResultList();
+        productQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT p FROM Product p");
+        productList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : productQuery.getResultList();
+        GoBack = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        ProductTable = new javax.swing.JTable();
+        SaveButton = new javax.swing.JButton();
+        NewButton = new javax.swing.JButton();
+        ClearChanges = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Διαχείριση Προϊόντων"));
 
-        jButton5.setText("Επιστροφή");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        GoBack.setText("Επιστροφή");
+        GoBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                GoBackActionPerformed(evt);
+            }
+        });
+
+        ProductTable.getTableHeader().setReorderingAllowed(false);
+
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, productList, ProductTable);
+        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${productId}"));
+        columnBinding.setColumnName("ID");
+        columnBinding.setColumnClass(Integer.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${name}"));
+        columnBinding.setColumnName("Name");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${code}"));
+        columnBinding.setColumnName("Code");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${price}"));
+        columnBinding.setColumnName("Price");
+        columnBinding.setColumnClass(Float.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${points}"));
+        columnBinding.setColumnName("Points");
+        columnBinding.setColumnClass(Integer.class);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();
+        ProductTable.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                ProductTablePropertyChange(evt);
+            }
+        });
+        jScrollPane1.setViewportView(ProductTable);
+        if (ProductTable.getColumnModel().getColumnCount() > 0) {
+            ProductTable.getColumnModel().getColumn(0).setMaxWidth(30);
+        }
+
+        SaveButton.setText("Αποθήκευση");
+        SaveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveButtonActionPerformed(evt);
+            }
+        });
+
+        NewButton.setText("Δημιουργία");
+
+        ClearChanges.setText("Επαναφορά");
+        ClearChanges.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ClearChangesActionPerformed(evt);
             }
         });
 
@@ -50,25 +125,132 @@ public class ManageProductsPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton5)
-                .addContainerGap(566, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(GoBack)
+                        .addGap(233, 233, 233)
+                        .addComponent(ClearChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(NewButton, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(SaveButton, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(362, Short.MAX_VALUE)
-                .addComponent(jButton5)
-                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(SaveButton)
+                            .addComponent(NewButton)
+                            .addComponent(ClearChanges))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(GoBack)
+                        .addGap(11, 11, 11))))
         );
+
+        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        frame.pnl = new MainPanel(frame);
-        frame.addPanelInMain();
-    }//GEN-LAST:event_jButton5ActionPerformed
+    private void GoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GoBackActionPerformed
+        Object[] options = {"Ναι","Οχι"};
+        Integer choice = JOptionPane.showOptionDialog(null,
+        "Όλες οι αλλαγές θα χαθούν. Είστε σίγουρος;",
+        "Επαναφορά στο αρχικό μενού.",
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        options,
+        options[0]);
+
+        if (choice == JOptionPane.YES_OPTION){
+            if (loc.getTransaction().isActive()) {
+                try {
+                    loc.getTransaction().rollback();
+                    frame.pnl = new MainPanel(frame);
+                    frame.addPanelInMain();
+                } catch (Exception e) {
+                        e.printStackTrace();
+                    loc.getTransaction().rollback();
+                    frame.pnl = new MainPanel(frame);
+                    frame.addPanelInMain();
+                }
+            }
+        }
+    }//GEN-LAST:event_GoBackActionPerformed
+
+    private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
+        Object[] options = {"Ναι","Οχι"};
+        Integer choice = JOptionPane.showOptionDialog(null,
+        "Επιβεβαίωση αλλαγών;",
+        null,
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        options,
+        options[0]);
+
+        if (choice == JOptionPane.YES_OPTION){
+            if (loc.getTransaction().isActive()) {
+                try {
+                    loc.getTransaction().commit();
+                    frame.pnl = new MainPanel(frame);
+                    frame.addPanelInMain();                    
+                } catch (Exception e) {
+                        e.printStackTrace();
+                    loc.getTransaction().rollback();            
+                }
+            }
+        } 
+    }//GEN-LAST:event_SaveButtonActionPerformed
+
+    private void ProductTablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_ProductTablePropertyChange
+        if ("tableCellEditor".equals(evt.getPropertyName())) {
+            row = ProductTable.getSelectedRow();
+            column = ProductTable.getSelectedColumn();
+            if (ProductTable.isEditing()) {
+                oldValue = ProductTable.getValueAt(row, column).toString();
+            } else {
+                newValue = ProductTable.getValueAt(row, column).toString();
+                if (!oldValue.equals(newValue)) {
+                    tableChanged = true;
+                    prod = productList.get(ProductTable.convertRowIndexToModel(row));
+                    loc.merge(prod);
+                }
+            }
+        }
+    }//GEN-LAST:event_ProductTablePropertyChange
+
+    private void ClearChangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearChangesActionPerformed
+                try {
+                    loc.getTransaction().rollback();
+                    frame.pnl = new ManageProductsPanel(frame);
+                    frame.addPanelInMain();                    
+                } catch (Exception e) {
+                        e.printStackTrace();
+                    loc.getTransaction().rollback();            
+                }
+    }//GEN-LAST:event_ClearChangesActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton5;
+    private javax.swing.JButton ClearChanges;
+    private javax.swing.JButton GoBack;
+    private javax.swing.JButton NewButton;
+    private javax.swing.JTable ProductTable;
+    private javax.swing.JButton SaveButton;
+    private java.util.List<LocalDB.Customer> customerList;
+    private javax.persistence.Query customerQuery;
+    private javax.persistence.EntityManager entityManager;
+    private javax.swing.JScrollPane jScrollPane1;
+    private java.util.List<LocalDB.Product> productList;
+    private javax.persistence.Query productQuery;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

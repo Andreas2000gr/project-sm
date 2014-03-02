@@ -6,6 +6,8 @@
 
 package LocalDB;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.*;
@@ -33,6 +35,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Customer.findByIdPassword", query = "SELECT c FROM Customer c WHERE c.password = :password and c.pointsCardNumber = :cardno")})
     
 public class Customer implements Serializable {
+    @Transient
+    private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
     private static final long serialVersionUID = 1L;
     @Id
     //@Basic(optional = false)  έγινε comment καθώς θα χρησιμοποιηθεί ο generator παρακάτω
@@ -83,7 +87,9 @@ public class Customer implements Serializable {
     }
 
     public void setCustomerId(Integer customerId) {
+        Integer oldCustomerId = this.customerId;
         this.customerId = customerId;
+        changeSupport.firePropertyChange("customerId", oldCustomerId, customerId);
     }
 
     public String getFirstName() {
@@ -91,7 +97,9 @@ public class Customer implements Serializable {
     }
 
     public void setFirstName(String firstName) {
+        String oldFirstName = this.firstName;
         this.firstName = firstName;
+        changeSupport.firePropertyChange("firstName", oldFirstName, firstName);
     }
 
     public String getLastName() {
@@ -99,7 +107,9 @@ public class Customer implements Serializable {
     }
 
     public void setLastName(String lastName) {
+        String oldLastName = this.lastName;
         this.lastName = lastName;
+        changeSupport.firePropertyChange("lastName", oldLastName, lastName);
     }
 
     public String getAddress() {
@@ -107,7 +117,9 @@ public class Customer implements Serializable {
     }
 
     public void setAddress(String address) {
+        String oldAddress = this.address;
         this.address = address;
+        changeSupport.firePropertyChange("address", oldAddress, address);
     }
 
     public String getPointsCardNumber() {
@@ -115,7 +127,9 @@ public class Customer implements Serializable {
     }
 
     public void setPointsCardNumber(String pointsCardNumber) {
+        String oldPointsCardNumber = this.pointsCardNumber;
         this.pointsCardNumber = pointsCardNumber;
+        changeSupport.firePropertyChange("pointsCardNumber", oldPointsCardNumber, pointsCardNumber);
     }
 
     public Integer getCreditCardId() {
@@ -123,7 +137,9 @@ public class Customer implements Serializable {
     }
 
     public void setCreditCardId(Integer creditCardId) {
+        Integer oldCreditCardId = this.creditCardId;
         this.creditCardId = creditCardId;
+        changeSupport.firePropertyChange("creditCardId", oldCreditCardId, creditCardId);
     }
 
     public int getAvailablePoints() {
@@ -131,7 +147,9 @@ public class Customer implements Serializable {
     }
 
     public void setAvailablePoints(int availablePoints) {
+        int oldAvailablePoints = this.availablePoints;
         this.availablePoints = availablePoints;
+        changeSupport.firePropertyChange("availablePoints", oldAvailablePoints, availablePoints);
     }
 
     public String getPassword() {
@@ -139,7 +157,9 @@ public class Customer implements Serializable {
     }
 
     public void setPassword(String password) {
+        String oldPassword = this.password;
         this.password = password;
+        changeSupport.firePropertyChange("password", oldPassword, password);
     }
 
     @XmlTransient
@@ -183,6 +203,14 @@ public class Customer implements Serializable {
     @Override
     public String toString() {
         return "LocalDB.Customer[ customerId=" + customerId + " ]";
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        changeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        changeSupport.removePropertyChangeListener(listener);
     }
     
 }
