@@ -128,7 +128,10 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JList" name="productlist">
+            <Component class="javax.swing.JList" name="JListAvailableProducts">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="JListAvailableProducts.setAutoscrolls(false);&#xa;&#xa;JListAvailableProducts.setCellRenderer(new DefaultListCellRenderer() {&#xa;    @Override&#xa;    public Component getListCellRendererComponent(JList&lt;?&gt; list, Object value, int index, boolean isSelected, boolean cellHasFocus) {&#xa;        Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);&#xa;        if (value instanceof Product) {&#xa;            setText(((Product)value).getName());&#xa;        }&#xa;        return renderer;&#xa;    }&#xa;});&#xa;&#xa;JListAvailableProducts.setDoubleBuffered(true);"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>

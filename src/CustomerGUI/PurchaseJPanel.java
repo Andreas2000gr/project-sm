@@ -6,11 +6,15 @@
 package CustomerGUI;
 
 import LocalDB.Customer;
+import LocalDB.Product;
 import LocalDB.Store;
 import java.awt.Component;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
@@ -25,6 +29,7 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     private SuperMarketParentFrame ParentFrame;
     private Customer Usr;
     private Store store;
+    private Collection<Product> AvailableProducts;
 
     /**
      * Creates new form PurchaseJPanel
@@ -37,6 +42,13 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         InitializeCBOStore();
     }
 
+    private Collection<Product> getProductsPerStore() {
+        TypedQuery<Product> Query = db.getLoc().createNamedQuery("Product.findAll", Product.class);
+        Collection<Product> AvailableProducts = Query.getResultList();
+
+        return AvailableProducts;
+    }
+
     private void InitializeCBOStore() {//αρχικοποιούμε τις τιμές του combo box όπου εμφανίζονται όλα τα καταστήμα
         JComboBoxStore.removeAllItems();
         TypedQuery<Store> Query = db.getLoc().createNamedQuery("Store.findAll", Store.class);
@@ -45,15 +57,20 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         for (Store s : Stores) {
             JComboBoxStore.addItem(s);
         }
-        
-     
+
         JComboBoxStore.repaint();
     }
 
-     private void InitializeCBOProductStore() {//αρχικοποιούμε τις τιμές του combo box όπου εμφανίζονται όλα τα καταστήμα
-       
-    }   
-    
+    private void InitializeCBOProductStore(Store store) {//αρχικοποιούμε τις τιμές του combo box όπου εμφανίζονται όλα τα καταστήμα
+        this.AvailableProducts = getProductsPerStore();
+        DefaultListModel<Product> ProductsPerStoreModel = new DefaultListModel();
+        for (Product p : store.getProductCollection()) {
+            ProductsPerStoreModel.addElement(p);
+        }
+        JListAvailableProducts.setModel(ProductsPerStoreModel);
+        this.repaint();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -67,7 +84,7 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         jButton4 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        productlist = new javax.swing.JList();
+        JListAvailableProducts = new javax.swing.JList();
         jScrollPane2 = new javax.swing.JScrollPane();
         BasketList = new javax.swing.JList();
         jButton1 = new javax.swing.JButton();
@@ -86,7 +103,21 @@ public class PurchaseJPanel extends javax.swing.JPanel {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Λίστα Προϊόντων"));
 
-        jScrollPane1.setViewportView(productlist);
+        JListAvailableProducts.setAutoscrolls(false);
+
+        JListAvailableProducts.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Product) {
+                    setText(((Product)value).getName());
+                }
+                return renderer;
+            }
+        });
+
+        JListAvailableProducts.setDoubleBuffered(true);
+        jScrollPane1.setViewportView(JListAvailableProducts);
 
         jScrollPane2.setViewportView(BasketList);
 
@@ -191,16 +222,17 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void JComboBoxStoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JComboBoxStoreActionPerformed
-
-       Store store = (Store)JComboBoxStore.getSelectedItem();
-     System.out.println("store.getName()="+store.getName());
-
+        Store store = (Store) JComboBoxStore.getSelectedItem();
+        if (store != null) {
+            InitializeCBOProductStore(store);
+        }
     }//GEN-LAST:event_JComboBoxStoreActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList BasketList;
     private javax.swing.JComboBox JComboBoxStore;
+    private javax.swing.JList JListAvailableProducts;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -209,6 +241,5 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private java.awt.Label label1;
-    private javax.swing.JList productlist;
     // End of variables declaration//GEN-END:variables
 }
