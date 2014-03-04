@@ -5,17 +5,14 @@
  */
 package CustomerGUI;
 
-import LocalDB.Customer;
 import LocalDB.Product;
 import LocalDB.Store;
 import java.awt.Component;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.table.DefaultTableModel;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
 
@@ -27,9 +24,9 @@ public class PurchaseJPanel extends javax.swing.JPanel {
 
     private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
-    private Customer Usr;
     private Store store;
-    private Collection<Product> AvailableProducts;
+    private final Object[] columnNames = {"Όνομα", "Κωδικός", "Πόντοι", "Τιμή"};
+    private DefaultTableModel DTModel;
 
     /**
      * Creates new form PurchaseJPanel
@@ -37,16 +34,8 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     public PurchaseJPanel(SuperMarketParentFrame ParentFrame) {
         initComponents();
         this.ParentFrame = ParentFrame;
-        this.Usr = ParentFrame.cust;
         this.store = new Store();
         InitializeCBOStore();
-    }
-
-    private Collection<Product> getProductsPerStore() {
-        TypedQuery<Product> Query = db.getLoc().createNamedQuery("Product.findAll", Product.class);
-        Collection<Product> AvailableProducts = Query.getResultList();
-
-        return AvailableProducts;
     }
 
     private void InitializeCBOStore() {//αρχικοποιούμε τις τιμές του combo box όπου εμφανίζονται όλα τα καταστήμα
@@ -61,13 +50,18 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         JComboBoxStore.repaint();
     }
 
-    private void InitializeCBOProductStore(Store store) {//αρχικοποιούμε τις τιμές του combo box όπου εμφανίζονται όλα τα καταστήμα
-        this.AvailableProducts = getProductsPerStore();
-        DefaultListModel<Product> ProductsPerStoreModel = new DefaultListModel();
+    private void InitializeJTableProducts(Store store) {
+        this.DTModel = new DefaultTableModel(new Object[0][0], columnNames);
+        this.jTableProducts.setModel(this.DTModel);
         for (Product p : store.getProductCollection()) {
-            ProductsPerStoreModel.addElement(p);
+            Object[] object = new Object[4];
+            object[0] = p.getName();
+            object[1] = p.getCode();
+            object[2] = p.getPoints();
+            object[3] = p.getPrice();
+
+            this.DTModel.addRow(object);
         }
-        JListAvailableProducts.setModel(ProductsPerStoreModel);
         this.repaint();
     }
 
@@ -81,16 +75,13 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        JListAvailableProducts = new javax.swing.JList();
         jScrollPane2 = new javax.swing.JScrollPane();
-        BasketList = new javax.swing.JList();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jTableProducts = new javax.swing.JTable();
         JComboBoxStore = new javax.swing.JComboBox();
         label1 = new java.awt.Label();
+        jButton2 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         jButton3.setText("επιστροφή");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -99,31 +90,20 @@ public class PurchaseJPanel extends javax.swing.JPanel {
             }
         });
 
-        jButton4.setText("Ολοκλήρωση αγοράς");
-
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Λίστα Προϊόντων"));
 
-        JListAvailableProducts.setAutoscrolls(false);
-
-        JListAvailableProducts.setCellRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof Product) {
-                    setText(((Product)value).getName());
-                }
-                return renderer;
+        jTableProducts.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Όνομα", "Κωδικός", "Πόντοι", "Τιμή"
             }
-        });
-
-        JListAvailableProducts.setDoubleBuffered(true);
-        jScrollPane1.setViewportView(JListAvailableProducts);
-
-        jScrollPane2.setViewportView(BasketList);
-
-        jButton1.setText("προσθήκη στο καλάθι");
-
-        jButton2.setText("αφαίρεση από το καλάθι");
+        ));
+        jScrollPane2.setViewportView(jTableProducts);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -131,30 +111,12 @@ public class PurchaseJPanel extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addComponent(jScrollPane2)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addGap(49, 49, 49)
-                            .addComponent(jButton1)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jButton2))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
         );
 
         JComboBoxStore.setRenderer(new DefaultListCellRenderer() {
@@ -179,41 +141,55 @@ public class PurchaseJPanel extends javax.swing.JPanel {
 
         label1.setText("Κατάστημα:");
 
+        jButton2.setLabel("Μετάβαση στο καλάθι");
+
+        jButton1.setText("προσθήκη στο καλάθι");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton4)
-                .addGap(162, 162, 162))
             .addGroup(layout.createSequentialGroup()
-                .addGap(68, 68, 68)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(JComboBoxStore, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(119, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(JComboBoxStore, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(44, 44, 44)
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(JComboBoxStore, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton3)
-                    .addComponent(jButton4))
-                .addGap(19, 19, 19))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton2)
+                        .addComponent(jButton1)))
+                .addGap(12, 12, 12))
         );
+
+        jButton2.getAccessibleContext().setAccessibleName("Μετάβαση στο καλάθι");
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -224,22 +200,24 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     private void JComboBoxStoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JComboBoxStoreActionPerformed
         Store store = (Store) JComboBoxStore.getSelectedItem();
         if (store != null) {
-            InitializeCBOProductStore(store);
+            InitializeJTableProducts(store);
         }
     }//GEN-LAST:event_JComboBoxStoreActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList BasketList;
     private javax.swing.JComboBox JComboBoxStore;
-    private javax.swing.JList JListAvailableProducts;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTableProducts;
     private java.awt.Label label1;
     // End of variables declaration//GEN-END:variables
 }
