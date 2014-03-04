@@ -12,6 +12,7 @@ import java.util.List;
 import javax.persistence.TypedQuery;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
@@ -25,7 +26,7 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
     private Store store;
-    private final Object[] columnNames = {"Όνομα", "Κωδικός", "Πόντοι", "Τιμή"};
+    private final Object[] columnNames = {"Όνομα", "Κωδικός", "Πόντοι", "Τιμή","Προστέθηκε στο καλάθι","Αρ. Τεμαχίων"};
     private DefaultTableModel DTModel;
 
     /**
@@ -33,6 +34,7 @@ public class PurchaseJPanel extends javax.swing.JPanel {
      */
     public PurchaseJPanel(SuperMarketParentFrame ParentFrame) {
         initComponents();
+        jTableProducts.enableInputMethods(false);
         this.ParentFrame = ParentFrame;
         this.store = new Store();
         InitializeCBOStore();
@@ -51,15 +53,18 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     }
 
     private void InitializeJTableProducts(Store store) {
+        jTableProducts.removeAll();
         this.DTModel = new DefaultTableModel(new Object[0][0], columnNames);
         this.jTableProducts.setModel(this.DTModel);
         for (Product p : store.getProductCollection()) {
-            Object[] object = new Object[4];
+            Object[] object = new Object[6];
             object[0] = p.getName();
             object[1] = p.getCode();
             object[2] = p.getPoints();
             object[3] = p.getPrice();
-
+            object[4] = null;
+            object[5] = null;
+            
             this.DTModel.addRow(object);
         }
         this.repaint();
@@ -103,6 +108,9 @@ public class PurchaseJPanel extends javax.swing.JPanel {
                 "Όνομα", "Κωδικός", "Πόντοι", "Τιμή"
             }
         ));
+        jTableProducts.setEditingColumn(0);
+        jTableProducts.setEditingRow(0);
+        jTableProducts.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(jTableProducts);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -142,6 +150,11 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         label1.setText("Κατάστημα:");
 
         jButton2.setLabel("Μετάβαση στο καλάθι");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton1.setText("προσθήκη στο καλάθι");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -209,6 +222,35 @@ public class PurchaseJPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        Object[] Confirmation = {"Ναι", "Οχι"};
+        Integer choiceC = JOptionPane.showOptionDialog(null,
+                "Επιθυμείτει την προσθήκη του προϊόντος στο καλάθι;",
+                "Προσθήκη στο καλάθι",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                Confirmation,
+                Confirmation[0]);
+
+        if (choiceC == JOptionPane.YES_OPTION) {
+            String Quantity;
+            do {
+                Quantity = JOptionPane.showInputDialog(this, "Αριθμός τεμαχίων");
+            } while (!isInteger(Quantity));
+
+        }
+
+    }//GEN-LAST:event_jButton2ActionPerformed
+    // METHOD: START check if value is integer
+    public static boolean isInteger(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox JComboBoxStore;
