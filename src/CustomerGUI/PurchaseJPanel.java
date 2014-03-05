@@ -5,9 +5,14 @@
  */
 package CustomerGUI;
 
+import LocalDB.Customer;
 import LocalDB.Product;
+import LocalDB.ProductPurchase;
+import LocalDB.Purchase;
 import LocalDB.Store;
 import java.awt.Component;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import javax.swing.DefaultListCellRenderer;
@@ -26,21 +31,32 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
     private Store store;
-    private final Object[] columnNames = {"Όνομα", "Κωδικός", "Πόντοι", "Τιμή","Προστέθηκε στο καλάθι","Αρ. Τεμαχίων"};
+    private final Object[] columnNames = {"Όνομα", "Κωδικός", "Πόντοι", "Τιμή", "Προστέθηκε στο καλάθι", "Αρ. Τεμαχίων"};
     private DefaultTableModel DTModel;
+    private List<ProductPurchase> Basket = new ArrayList<ProductPurchase>();
+    private Purchase purchase;
+    private Customer Usr;
 
     /**
-     * Creates new form PurchaseJPanel
+     * Creates new form PurchaseJPanel Πραγματοποίηση αγορών: Θα ανοίγει
+     * κατάλληλη φόρμα στην οποία ο πελάτης θα επιλέγει αρχικά το κατάστημα από
+     * το οποίο θα πραγματοποιήσει τις αγορές του και στη συνέχεια θα
+     * εμφανίζονται όλα τα προϊόντα που είναι διαθέσιμα στο κατάστημα σε μορφή
+     * πίνακα.
      */
     public PurchaseJPanel(SuperMarketParentFrame ParentFrame) {
         initComponents();
-        jTableProducts.enableInputMethods(false);
         this.ParentFrame = ParentFrame;
         this.store = new Store();
+        this.Usr = ParentFrame.cust;
         InitializeCBOStore();
     }
 
-    private void InitializeCBOStore() {//αρχικοποιούμε τις τιμές του combo box όπου εμφανίζονται όλα τα καταστήμα
+    private void InitializeCBOStore() {
+        /**
+         * αρχικοποιούμε τις τιμές του combo box όπου εμφανίζονται όλα τα
+         * καταστήμα**
+         */
         JComboBoxStore.removeAllItems();
         TypedQuery<Store> Query = db.getLoc().createNamedQuery("Store.findAll", Store.class);
         List<Store> Stores = Query.getResultList();
@@ -48,7 +64,6 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         for (Store s : Stores) {
             JComboBoxStore.addItem(s);
         }
-
         JComboBoxStore.repaint();
     }
 
@@ -64,10 +79,26 @@ public class PurchaseJPanel extends javax.swing.JPanel {
             object[3] = p.getPrice();
             object[4] = null;
             object[5] = null;
-            
+
             this.DTModel.addRow(object);
         }
         this.repaint();
+    }
+
+    private void PurchaseProducts(int row, int Quantity) {
+        //Προσθέτουμε στο καλάθι τα προιόντα και την ποσότητά τους
+        Product p = productList.get(jTableProducts.convertRowIndexToModel(row));
+        ProductPurchase ppp = new ProductPurchase();
+        ppp.setProductId(p);
+        ppp.setQuantity(Quantity);
+        
+        Basket.add(ppp);
+        for (Iterator<ProductPurchase> it = Basket.iterator(); it.hasNext();) {
+            ProductPurchase pp2p = it.next();
+            
+            System.out.println("PPP="+pp2p.getProductId());
+        }
+
     }
 
     /**
@@ -78,15 +109,19 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
+        entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("SuperMarket-local-PU").createEntityManager();
+        productQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT p FROM Product p");
+        productList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : productQuery.getResultList();
         jButton3 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTableProducts = new javax.swing.JTable();
         JComboBoxStore = new javax.swing.JComboBox();
         label1 = new java.awt.Label();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        jButtonGoToBasket = new javax.swing.JButton();
+        jButtonAddProductToBasket = new javax.swing.JButton();
 
         jButton3.setText("επιστροφή");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -107,10 +142,38 @@ public class PurchaseJPanel extends javax.swing.JPanel {
             new String [] {
                 "Όνομα", "Κωδικός", "Πόντοι", "Τιμή"
             }
-        ));
-        jTableProducts.setEditingColumn(0);
-        jTableProducts.setEditingRow(0);
+        ){
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+        });
         jTableProducts.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, productList, jTableProducts);
+        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${price}"));
+        columnBinding.setColumnName("Price");
+        columnBinding.setColumnClass(Float.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${points}"));
+        columnBinding.setColumnName("Points");
+        columnBinding.setColumnClass(Integer.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${code}"));
+        columnBinding.setColumnName("Code");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${name}"));
+        columnBinding.setColumnName("Name");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${productId}"));
+        columnBinding.setColumnName("Product Id");
+        columnBinding.setColumnClass(Integer.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${storeCollection}"));
+        columnBinding.setColumnName("Store Collection");
+        columnBinding.setColumnClass(java.util.Collection.class);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();
         jScrollPane2.setViewportView(jTableProducts);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -149,17 +212,17 @@ public class PurchaseJPanel extends javax.swing.JPanel {
 
         label1.setText("Κατάστημα:");
 
-        jButton2.setLabel("Μετάβαση στο καλάθι");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jButtonGoToBasket.setLabel("Μετάβαση στο καλάθι");
+        jButtonGoToBasket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jButtonGoToBasketActionPerformed(evt);
             }
         });
 
-        jButton1.setText("προσθήκη στο καλάθι");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonAddProductToBasket.setText("προσθήκη στο καλάθι");
+        jButtonAddProductToBasket.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonAddProductToBasketActionPerformed(evt);
             }
         });
 
@@ -179,9 +242,9 @@ public class PurchaseJPanel extends javax.swing.JPanel {
                                 .addComponent(JComboBoxStore, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jButton3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
-                        .addComponent(jButton2)
+                        .addComponent(jButtonGoToBasket)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)))
+                        .addComponent(jButtonAddProductToBasket)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -197,12 +260,12 @@ public class PurchaseJPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton3)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton2)
-                        .addComponent(jButton1)))
+                        .addComponent(jButtonGoToBasket)
+                        .addComponent(jButtonAddProductToBasket)))
                 .addGap(12, 12, 12))
         );
 
-        jButton2.getAccessibleContext().setAccessibleName("Μετάβαση στο καλάθι");
+        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -217,12 +280,21 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_JComboBoxStoreActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonAddProductToBasketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddProductToBasketActionPerformed
+        /**
+         * * Ο χρήστης θα έχει τη δυνατότητα να επιλέξει ένα προϊόν και να το
+         * προσθέσει στο καλάθι. **
+         */
 
+        int row = jTableProducts.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Επιλέξτε ένα προϊόν.",
+                    "Σφάλμα",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         Object[] Confirmation = {"Ναι", "Οχι"};
         Integer choiceC = JOptionPane.showOptionDialog(null,
                 "Επιθυμείτει την προσθήκη του προϊόντος στο καλάθι;",
@@ -232,16 +304,43 @@ public class PurchaseJPanel extends javax.swing.JPanel {
                 null,
                 Confirmation,
                 Confirmation[0]);
-
+        /**
+         * * Αν επιλεχθεί η προσθήκη στο καλάθι, εμφανίζεται παράθυρο-διάλογος
+         * ο οποίος επιβεβαιώνει την προσθήκη του προϊόντος στο καλάθι και
+         * ζητάει από το χρήστη να επιλέξει τα ζητούμενα τεμάχια. **
+         */
         if (choiceC == JOptionPane.YES_OPTION) {
-            String Quantity;
-            do {
-                Quantity = JOptionPane.showInputDialog(this, "Αριθμός τεμαχίων");
-            } while (!isInteger(Quantity));
+            Object ChoiceQ = JOptionPane.showInputDialog(
+                    null, "Αριθμός τεμαχίων", "Ποσότητα", JOptionPane.INFORMATION_MESSAGE, null, null, null
+            );
+
+            if (ChoiceQ == null) {
+                //ο χρήστης ακύρωσε τη διαδικασία
+                return;
+            }
+
+            if (!isInteger(ChoiceQ.toString())) {//αν το Input δεν είναι αριθμός, τότε θα εμφανιστεί κατάλληλο μήνυμα στο χρήστη
+                JOptionPane.showMessageDialog(this,
+                        "Πληκτρολογήσατε μη αριθμητική τιμή.",
+                        "Σφάλμα",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            // αν ο χρήστης πατήσει οκ, τότε θα προσθέσει στο καλάθι το επιλεγμένο προϊόν
+            //       if (Integer.parseInt(ChoiceQ.toString()) == JOptionPane.OK_OPTION) {
+            System.out.print("JOptionPane.OK_OPTION=" + JOptionPane.OK_OPTION);
+            System.out.print("ChoiceQ=" + ChoiceQ);
+            PurchaseProducts(jTableProducts.getSelectedRow(), jTableProducts.getSelectedColumn());//βάλε το προιόν στο καλάθι
+            //     }
 
         }
+    }//GEN-LAST:event_jButtonAddProductToBasketActionPerformed
 
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void jButtonGoToBasketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGoToBasketActionPerformed
+        ParentFrame.pnl = new ViewBasketJPanel(this.ParentFrame);
+        ParentFrame.addPanelInMain();
+
+    }//GEN-LAST:event_jButtonGoToBasketActionPerformed
     // METHOD: START check if value is integer
     public static boolean isInteger(String str) {
         try {
@@ -254,12 +353,16 @@ public class PurchaseJPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox JComboBoxStore;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.persistence.EntityManager entityManager;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButtonAddProductToBasket;
+    private javax.swing.JButton jButtonGoToBasket;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTableProducts;
     private java.awt.Label label1;
+    private java.util.List<LocalDB.Product> productList;
+    private javax.persistence.Query productQuery;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
