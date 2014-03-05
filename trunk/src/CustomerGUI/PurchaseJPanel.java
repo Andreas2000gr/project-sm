@@ -31,7 +31,7 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
     private Store store;
-    private final Object[] columnNames = {"Όνομα", "Κωδικός", "Πόντοι", "Τιμή", "Προστέθηκε στο καλάθι", "Αρ. Τεμαχίων"};
+    private final Object[] columnNames = {"Όνομα Προϊόντος", "Κωδικός", "Πόντοι", "Τιμή"};
     private DefaultTableModel DTModel;
     private List<ProductPurchase> Basket = new ArrayList<ProductPurchase>();
     private Purchase purchase;
@@ -86,17 +86,20 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     }
 
     private void PurchaseProducts(int row, int Quantity) {
-        //Προσθέτουμε στο καλάθι τα προιόντα και την ποσότητά τους
-        Product p = productList.get(jTableProducts.convertRowIndexToModel(row));
-        ProductPurchase ppp = new ProductPurchase();
-        ppp.setProductId(p);
-        ppp.setQuantity(Quantity);
-        
-        Basket.add(ppp);
-        for (Iterator<ProductPurchase> it = Basket.iterator(); it.hasNext();) {
-            ProductPurchase pp2p = it.next();
-            
-            System.out.println("PPP="+pp2p.getProductId());
+        try {
+            //Προσθέτουμε στο καλάθι τα προιόντα και την ποσότητά τους
+            Product p = productList.get(jTableProducts.convertRowIndexToModel(row));
+            ProductPurchase ppp = new ProductPurchase();
+            ppp.setProductId(p);
+            ppp.setQuantity(Quantity);
+
+            Basket.add(ppp);
+            for (Iterator<ProductPurchase> it = Basket.iterator(); it.hasNext();) {
+                ProductPurchase PP = it.next();
+            }
+            JOptionPane.showMessageDialog(this, "Το προϊόν προστέθηκε στο καλάθι.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Απέτυχε! η προσθήκη του προϊόντος στο καλάθι.");
         }
 
     }
@@ -132,21 +135,7 @@ public class PurchaseJPanel extends javax.swing.JPanel {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Λίστα Προϊόντων"));
 
-        jTableProducts.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Όνομα", "Κωδικός", "Πόντοι", "Τιμή"
-            }
-        ){
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
+        jTableProducts.setModel(new javax.swing.table.DefaultTableModel(){
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return false;
             }
@@ -318,8 +307,8 @@ public class PurchaseJPanel extends javax.swing.JPanel {
                 //ο χρήστης ακύρωσε τη διαδικασία
                 return;
             }
-
-            if (!isInteger(ChoiceQ.toString())) {//αν το Input δεν είναι αριθμός, τότε θα εμφανιστεί κατάλληλο μήνυμα στο χρήστη
+            //αν το Input δεν είναι αριθμός, τότε θα εμφανιστεί κατάλληλο μήνυμα στο χρήστη
+            if (!isInteger(ChoiceQ.toString())) {
                 JOptionPane.showMessageDialog(this,
                         "Πληκτρολογήσατε μη αριθμητική τιμή.",
                         "Σφάλμα",
@@ -327,12 +316,10 @@ public class PurchaseJPanel extends javax.swing.JPanel {
                 return;
             }
             // αν ο χρήστης πατήσει οκ, τότε θα προσθέσει στο καλάθι το επιλεγμένο προϊόν
-            //       if (Integer.parseInt(ChoiceQ.toString()) == JOptionPane.OK_OPTION) {
-            System.out.print("JOptionPane.OK_OPTION=" + JOptionPane.OK_OPTION);
-            System.out.print("ChoiceQ=" + ChoiceQ);
-            PurchaseProducts(jTableProducts.getSelectedRow(), jTableProducts.getSelectedColumn());//βάλε το προιόν στο καλάθι
-            //     }
-
+            int Quantity = Integer.parseInt(ChoiceQ.toString());
+            PurchaseProducts(
+                    jTableProducts.getSelectedRow(), Quantity
+            );//βάλε το προιόν στο καλάθι
         }
     }//GEN-LAST:event_jButtonAddProductToBasketActionPerformed
 
