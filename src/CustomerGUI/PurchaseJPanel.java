@@ -12,6 +12,8 @@ import LocalDB.Purchase;
 import LocalDB.Store;
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.TypedQuery;
@@ -33,8 +35,8 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     private Store store;
     private final Object[] columnNames = {"Όνομα Προϊόντος", "Κωδικός", "Πόντοι", "Τιμή"};
     private DefaultTableModel DTModel;
-    private List<ProductPurchase> Basket = new ArrayList<ProductPurchase>();
-    private Purchase purchase;
+    private Purchase Basket;
+    private Collection<ProductPurchase> ProductPurchaseCollection;
     private Customer Usr;
 
     /**
@@ -49,7 +51,17 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         this.ParentFrame = ParentFrame;
         this.store = new Store();
         this.Usr = ParentFrame.cust;
+        this.ProductPurchaseCollection = new ArrayList<ProductPurchase>();
+        this.Basket = new Purchase();
         InitializeCBOStore();
+    }
+
+    public Purchase getBasket() {
+        return Basket;
+    }
+
+    public Collection<ProductPurchase> getProductPurchaseCollection() {
+        return ProductPurchaseCollection;
     }
 
     private void InitializeCBOStore() {
@@ -87,17 +99,31 @@ public class PurchaseJPanel extends javax.swing.JPanel {
 
     private void PurchaseProducts(int row, int Quantity) {
         try {
+
             //Προσθέτουμε στο καλάθι τα προιόντα και την ποσότητά τους
             Product p = productList.get(jTableProducts.convertRowIndexToModel(row));
             ProductPurchase ppp = new ProductPurchase();
+            ppp.setPurchaseId(Basket);
             ppp.setProductId(p);
             ppp.setQuantity(Quantity);
 
-            Basket.add(ppp);
-            for (Iterator<ProductPurchase> it = Basket.iterator(); it.hasNext();) {
-                ProductPurchase PP = it.next();
-            }
+            ProductPurchaseCollection.add(ppp);
+
+            /**
+             * * θέτουμε τιμές για το Purchase με την τρέχουσα ημερομηνία/ώρα
+             * και τον πελάτη που πραγματοποιεί την παραγγελία **
+             */
+            Basket.setCustomer(Usr);
+            Basket.setDatetime(Calendar.getInstance().getTime());
+            Basket.setProductPurchaseCollection(ProductPurchaseCollection);
+
             JOptionPane.showMessageDialog(this, "Το προϊόν προστέθηκε στο καλάθι.");
+            for (Iterator<ProductPurchase> it = ProductPurchaseCollection.iterator(); it.hasNext();) {
+                ProductPurchase PP = it.next();
+                System.out.println("getPurchaseId=" + PP.getPurchaseId());
+                System.out.println("getProductId=" + PP.getProductId());
+                System.out.println("getQuantity=" + PP.getQuantity());
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Απέτυχε! η προσθήκη του προϊόντος στο καλάθι.");
         }

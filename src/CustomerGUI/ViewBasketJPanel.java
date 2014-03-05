@@ -6,6 +6,10 @@
 package CustomerGUI;
 
 import LocalDB.Customer;
+import LocalDB.ProductPurchase;
+import LocalDB.Purchase;
+import java.util.ArrayList;
+import java.util.Collection;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
 
@@ -17,7 +21,10 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
 
     private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
+    private Purchase Basket;
+    private Collection<ProductPurchase> ProductPurchaseCollection;
     private Customer Usr;
+    private PurchaseJPanel PurchaseJPanel;
 
     /**
      * Creates new form ViewBasketJPanel
@@ -26,6 +33,9 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         initComponents();
         this.ParentFrame = ParentFrame;
         this.Usr = ParentFrame.cust;
+        this.ProductPurchaseCollection = PurchaseJPanel.getProductPurchaseCollection();
+        this.Basket = PurchaseJPanel.getBasket();
+
     }
 
     /**
@@ -36,7 +46,13 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
+        entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("SuperMarket-local-PU").createEntityManager();
+        productPurchaseQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT p FROM ProductPurchase p");
+        productPurchaseList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : productPurchaseQuery.getResultList();
+        purchaseQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT p FROM Purchase p");
+        purchaseList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : purchaseQuery.getResultList();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableBasket = new javax.swing.JTable();
@@ -62,17 +78,34 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Καλαθι"));
 
-        jTableBasket.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, purchaseList, jTableBasket);
+        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${customer}"));
+        columnBinding.setColumnName("Customer");
+        columnBinding.setColumnClass(LocalDB.Customer.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${store}"));
+        columnBinding.setColumnName("Store");
+        columnBinding.setColumnClass(LocalDB.Store.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${productPurchaseCollection}"));
+        columnBinding.setColumnName("Product Purchase Collection");
+        columnBinding.setColumnClass(java.util.Collection.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${delivery}"));
+        columnBinding.setColumnName("Delivery");
+        columnBinding.setColumnClass(java.io.Serializable.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${pointsEarned}"));
+        columnBinding.setColumnName("Points Earned");
+        columnBinding.setColumnClass(Integer.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${amount}"));
+        columnBinding.setColumnName("Amount");
+        columnBinding.setColumnClass(Float.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${datetime}"));
+        columnBinding.setColumnName("Datetime");
+        columnBinding.setColumnClass(java.util.Date.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${purchaseId}"));
+        columnBinding.setColumnName("Purchase Id");
+        columnBinding.setColumnClass(Integer.class);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();
+
         jScrollPane1.setViewportView(jTableBasket);
 
         label1.setText("Συνολικοί Πόντοι:");
@@ -247,6 +280,8 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                             .addComponent(jButton1))
                         .addContainerGap())))
         );
+
+        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -267,6 +302,7 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private java.awt.Button button1;
     private java.awt.Button button2;
     private java.awt.Button button3;
+    private javax.persistence.EntityManager entityManager;
     private javax.swing.JButton jButton1;
     private javax.swing.JList jList2;
     private javax.swing.JPanel jPanel1;
@@ -284,5 +320,10 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private java.awt.Label label2;
     private java.awt.Label label3;
     private java.awt.Label label5;
+    private java.util.List<LocalDB.ProductPurchase> productPurchaseList;
+    private javax.persistence.Query productPurchaseQuery;
+    private java.util.List<LocalDB.Purchase> purchaseList;
+    private javax.persistence.Query purchaseQuery;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
