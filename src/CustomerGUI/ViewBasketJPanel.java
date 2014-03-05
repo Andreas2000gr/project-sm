@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package CustomerGUI;
 
 import LocalDB.Customer;
@@ -15,7 +14,8 @@ import supermarket.SuperMarketParentFrame;
  * @author Euh
  */
 public class ViewBasketJPanel extends javax.swing.JPanel {
-private final DBmanager db = new DBmanager();
+
+    private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
     private Customer Usr;
 
@@ -23,7 +23,7 @@ private final DBmanager db = new DBmanager();
      * Creates new form ViewBasketJPanel
      */
     public ViewBasketJPanel(SuperMarketParentFrame ParentFrame) {
-             initComponents();
+        initComponents();
         this.ParentFrame = ParentFrame;
         this.Usr = ParentFrame.cust;
     }
@@ -39,7 +39,7 @@ private final DBmanager db = new DBmanager();
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableBasket = new javax.swing.JTable();
         label1 = new java.awt.Label();
         jTextField1 = new javax.swing.JTextField();
         label2 = new java.awt.Label();
@@ -62,7 +62,7 @@ private final DBmanager db = new DBmanager();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Καλαθι"));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTableBasket.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -73,7 +73,7 @@ private final DBmanager db = new DBmanager();
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jTableBasket);
 
         label1.setText("Συνολικοί Πόντοι:");
 
@@ -254,7 +254,9 @@ private final DBmanager db = new DBmanager();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void ReturnToMainCustomerFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnToMainCustomerFormActionPerformed
-        ParentFrame.pnl = new CustMainPanel(this.ParentFrame);
+//        ParentFrame.pnl = new CustMainPanel(this.ParentFrame);
+        //      ParentFrame.addPanelInMain();
+        ParentFrame.pnl = new PurchaseJPanel(this.ParentFrame);
         ParentFrame.addPanelInMain();
     }//GEN-LAST:event_ReturnToMainCustomerFormActionPerformed
 
@@ -275,7 +277,7 @@ private final DBmanager db = new DBmanager();
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableBasket;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private java.awt.Label label1;
