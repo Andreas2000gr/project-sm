@@ -92,7 +92,9 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     private void InitializeJTableProducts(Store store) {
         jTableProducts.removeAll();
         this.DTModel = new DefaultTableModel(new Object[0][0], columnNames);
-        this.jTableProducts.setModel(this.DTModel);
+
+        int i;
+        i = 0;
         for (Product p : store.getProductCollection()) {
             Object[] object = new Object[6];
             object[0] = p.getName();
@@ -101,20 +103,23 @@ public class PurchaseJPanel extends javax.swing.JPanel {
             object[3] = p.getPrice();
             object[4] = null;
             object[5] = null;
-
+            productList.set(i, p);
             this.DTModel.addRow(object);
+            i= i +1;
         }
+        this.jTableProducts.setModel(this.DTModel);
+        
         this.repaint();
     }
 
     private void PurchaseProducts(int row, int Quantity) {
         try {
 
-                System.out.println("row="+row);
+            System.out.println("row=" + row);
             //Προσθέτουμε στο καλάθι τα προιόντα και την ποσότητά τους
             Product p = productList.get(jTableProducts.convertRowIndexToModel(row));
             System.out.println("product=" + p.getName());
-            
+
             ProductPurchase ppp = new ProductPurchase();
             ppp.setPurchaseId(Basket);
             ppp.setProductId(p);
@@ -135,7 +140,7 @@ public class PurchaseJPanel extends javax.swing.JPanel {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            JOptionPane.showMessageDialog(this, "Το προϊόν "+p.getName()+" προστέθηκε στο καλάθι.");
+            JOptionPane.showMessageDialog(this, "Το προϊόν " + p.getName() + " προστέθηκε στο καλάθι.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Απέτυχε! η προσθήκη του προϊόντος στο καλάθι.");
         }
@@ -198,6 +203,9 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         columnBinding.setColumnClass(Integer.class);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${storeCollection}"));
         columnBinding.setColumnName("Store Collection");
+        columnBinding.setColumnClass(java.util.Collection.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${productPurchaseCollection}"));
+        columnBinding.setColumnName("Product Purchase Collection");
         columnBinding.setColumnClass(java.util.Collection.class);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
@@ -355,6 +363,8 @@ public class PurchaseJPanel extends javax.swing.JPanel {
             }
             // αν ο χρήστης πατήσει οκ, τότε θα προσθέσει στο καλάθι το επιλεγμένο προϊόν
             int Quantity = Integer.parseInt(ChoiceQ.toString());
+
+            System.out.println("jTableProducts.getSelectedRow()=" + jTableProducts.getSelectedRow());
             PurchaseProducts(
                     jTableProducts.getSelectedRow(), Quantity
             );//βάλε το προιόν στο καλάθι

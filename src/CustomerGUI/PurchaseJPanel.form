@@ -185,6 +185,9 @@
                   <Subbinding sourcePath="${storeCollection}">
                     <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="java.util.Collection.class"/>
                   </Subbinding>
+                  <Subbinding sourcePath="${productPurchaseCollection}">
+                    <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="java.util.Collection.class"/>
+                  </Subbinding>
                 </BindingProperty>
               </BindingProperties>
             </Component>

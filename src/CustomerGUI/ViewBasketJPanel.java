@@ -9,7 +9,6 @@ import LocalDB.Customer;
 import LocalDB.Product;
 import LocalDB.ProductPurchase;
 import LocalDB.Purchase;
-import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.table.DefaultTableModel;
 import supermarket.DBmanager;
@@ -52,8 +51,10 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     public void InitializejTableBasket() {
         jTableBasket.removeAll();
 
+        float totalPrice = 0.0f;
+        int totalPointsEarned = 0;
+
         this.DTModel = new DefaultTableModel(new Object[0][0], columnNames);
-        this.jTableBasket.setModel(this.DTModel);
         for (ProductPurchase pp : ProductPurchaseCollection) {
             Product p = pp.getProductId();
 
@@ -64,16 +65,14 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
             object[3] = p.getPrice();
             object[4] = pp.getQuantity();
             this.DTModel.addRow(object);
-
-            System.out.println("22p.getName()=" + p.getName());
+            totalPrice = totalPrice + (p.getPrice() * pp.getQuantity());
+            totalPointsEarned = totalPointsEarned+(p.getPoints() * pp.getQuantity());
         }
+        this.jTableBasket.setModel(this.DTModel);
         this.repaint();
-    }
-    
-    private void InitializeCBO(){
-        
-        
-        jTextFieldSumPontoi.setText(TOOL_TIP_TEXT_KEY);
+
+        jTextFieldSumPontoi.setText(String.valueOf(totalPrice));
+        jTextFieldTotalPrice.setText(String.valueOf(totalPointsEarned));
     }
 
     public Purchase getBasket() {
