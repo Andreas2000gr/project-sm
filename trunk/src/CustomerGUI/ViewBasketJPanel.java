@@ -6,10 +6,12 @@
 package CustomerGUI;
 
 import LocalDB.Customer;
+import LocalDB.Product;
 import LocalDB.ProductPurchase;
 import LocalDB.Purchase;
 import java.util.ArrayList;
 import java.util.Collection;
+import javax.swing.table.DefaultTableModel;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
 
@@ -24,7 +26,8 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private Purchase Basket;
     private Collection<ProductPurchase> ProductPurchaseCollection;
     private Customer Usr;
-    private PurchaseJPanel PurchaseJPanel;
+    private final Object[] columnNames = {"Όνομα Προϊόντος", "Κωδικός", "Πόντοι", "Τιμή", "Ποσότητα"};
+    private DefaultTableModel DTModel;
 
     /**
      * Creates new form ViewBasketJPanel
@@ -33,9 +36,52 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         initComponents();
         this.ParentFrame = ParentFrame;
         this.Usr = ParentFrame.cust;
-        this.ProductPurchaseCollection = PurchaseJPanel.getProductPurchaseCollection();
-        this.Basket = PurchaseJPanel.getBasket();
+    }
 
+    public ViewBasketJPanel(
+            SuperMarketParentFrame ParentFrame, Purchase Bask, Collection<ProductPurchase> PPCol
+    ) {
+        initComponents();
+        this.ParentFrame = ParentFrame;
+        this.Usr = ParentFrame.cust;
+        this.Basket = Bask;
+        this.ProductPurchaseCollection = PPCol;
+        InitializejTableBasket();
+    }
+
+    public void InitializejTableBasket() {
+        jTableBasket.removeAll();
+
+        this.DTModel = new DefaultTableModel(new Object[0][0], columnNames);
+        this.jTableBasket.setModel(this.DTModel);
+        for (ProductPurchase pp : ProductPurchaseCollection) {
+            Product p = pp.getProductId();
+
+            Object[] object = new Object[5];
+            object[0] = p.getName();
+            object[1] = p.getCode();
+            object[2] = p.getPoints();
+            object[3] = p.getPrice();
+            object[4] = pp.getQuantity();
+            this.DTModel.addRow(object);
+
+            System.out.println("22p.getName()=" + p.getName());
+        }
+        this.repaint();
+    }
+    
+    private void InitializeCBO(){
+        
+        
+        jTextFieldSumPontoi.setText(TOOL_TIP_TEXT_KEY);
+    }
+
+    public Purchase getBasket() {
+        return Basket;
+    }
+
+    public Collection<ProductPurchase> getProductPurchaseCollection() {
+        return ProductPurchaseCollection;
     }
 
     /**
@@ -57,9 +103,9 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableBasket = new javax.swing.JTable();
         label1 = new java.awt.Label();
-        jTextField1 = new javax.swing.JTextField();
+        jTextFieldSumPontoi = new javax.swing.JTextField();
         label2 = new java.awt.Label();
-        jTextField2 = new javax.swing.JTextField();
+        jTextFieldTotalPrice = new javax.swing.JTextField();
         button1 = new java.awt.Button();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -110,7 +156,11 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
 
         label1.setText("Συνολικοί Πόντοι:");
 
+        jTextFieldSumPontoi.setEnabled(false);
+
         label2.setText("Συνολική Τιμή:");
+
+        jTextFieldTotalPrice.setEnabled(false);
 
         button1.setLabel("Αφαίρεση από το καλάθι");
 
@@ -128,8 +178,8 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                             .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextFieldTotalPrice)
+                            .addComponent(jTextFieldSumPontoi, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(28, Short.MAX_VALUE))
@@ -143,12 +193,12 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldSumPontoi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(2, 2, 2)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jTextFieldTotalPrice, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 9, Short.MAX_VALUE))
         );
@@ -291,8 +341,10 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private void ReturnToMainCustomerFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnToMainCustomerFormActionPerformed
 //        ParentFrame.pnl = new CustMainPanel(this.ParentFrame);
         //      ParentFrame.addPanelInMain();
-        ParentFrame.pnl = new PurchaseJPanel(this.ParentFrame);
+        ParentFrame.pnl = new PurchaseJPanel(this.ParentFrame, this.getBasket(), this.getProductPurchaseCollection());
+
         ParentFrame.addPanelInMain();
+
     }//GEN-LAST:event_ReturnToMainCustomerFormActionPerformed
 
 
@@ -314,8 +366,8 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTableBasket;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextFieldSumPontoi;
+    private javax.swing.JTextField jTextFieldTotalPrice;
     private java.awt.Label label1;
     private java.awt.Label label2;
     private java.awt.Label label3;

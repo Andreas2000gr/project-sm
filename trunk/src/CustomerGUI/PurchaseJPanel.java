@@ -14,7 +14,6 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import javax.persistence.TypedQuery;
 import javax.swing.DefaultListCellRenderer;
@@ -35,7 +34,7 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     private Store store;
     private final Object[] columnNames = {"Όνομα Προϊόντος", "Κωδικός", "Πόντοι", "Τιμή"};
     private DefaultTableModel DTModel;
-    private Purchase Basket;
+    public Purchase Basket;
     private Collection<ProductPurchase> ProductPurchaseCollection;
     private Customer Usr;
 
@@ -53,6 +52,17 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         this.Usr = ParentFrame.cust;
         this.ProductPurchaseCollection = new ArrayList<ProductPurchase>();
         this.Basket = new Purchase();
+        InitializeCBOStore();
+    }
+
+    public PurchaseJPanel(SuperMarketParentFrame ParentFrame, Purchase bask, Collection<ProductPurchase> PPurch
+    ) {
+        initComponents();
+        this.ParentFrame = ParentFrame;
+        this.store = new Store();
+        this.Usr = ParentFrame.cust;
+        this.ProductPurchaseCollection = PPurch;
+        this.Basket = bask;
         InitializeCBOStore();
     }
 
@@ -100,8 +110,11 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     private void PurchaseProducts(int row, int Quantity) {
         try {
 
+                System.out.println("row="+row);
             //Προσθέτουμε στο καλάθι τα προιόντα και την ποσότητά τους
             Product p = productList.get(jTableProducts.convertRowIndexToModel(row));
+            System.out.println("product=" + p.getName());
+            
             ProductPurchase ppp = new ProductPurchase();
             ppp.setPurchaseId(Basket);
             ppp.setProductId(p);
@@ -117,13 +130,12 @@ public class PurchaseJPanel extends javax.swing.JPanel {
             Basket.setDatetime(Calendar.getInstance().getTime());
             Basket.setProductPurchaseCollection(ProductPurchaseCollection);
 
-            JOptionPane.showMessageDialog(this, "Το προϊόν προστέθηκε στο καλάθι.");
-            for (Iterator<ProductPurchase> it = ProductPurchaseCollection.iterator(); it.hasNext();) {
-                ProductPurchase PP = it.next();
-                System.out.println("getPurchaseId=" + PP.getPurchaseId());
-                System.out.println("getProductId=" + PP.getProductId());
-                System.out.println("getQuantity=" + PP.getQuantity());
+            try {
+                db.getLoc().persist(Basket);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            JOptionPane.showMessageDialog(this, "Το προϊόν "+p.getName()+" προστέθηκε στο καλάθι.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Απέτυχε! η προσθήκη του προϊόντος στο καλάθι.");
         }
@@ -350,12 +362,11 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonAddProductToBasketActionPerformed
 
     private void jButtonGoToBasketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGoToBasketActionPerformed
-        ParentFrame.pnl = new ViewBasketJPanel(this.ParentFrame);
+        ParentFrame.pnl = new ViewBasketJPanel(this.ParentFrame, this.getBasket(), this.getProductPurchaseCollection());
         ParentFrame.addPanelInMain();
-
     }//GEN-LAST:event_jButtonGoToBasketActionPerformed
-    // METHOD: START check if value is integer
-    public static boolean isInteger(String str) {
+    // METHOD: check if value is integer
+    private static boolean isInteger(String str) {
         try {
             Integer.parseInt(str);
             return true;
