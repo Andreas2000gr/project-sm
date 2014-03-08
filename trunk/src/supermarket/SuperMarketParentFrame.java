@@ -47,6 +47,9 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
         this.jPanel2.add(brd);
         this.loc = db.getLoc();
         this.ext = db.getExt();
+        if (!loc.getTransaction().isActive()) {
+            loc.getTransaction().begin();
+        }
     }
 
     public EntityManager getLoc() {
@@ -82,13 +85,11 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
             return true;
         } 
         try {
-            loc.getTransaction().begin();
             Query q = loc.createNamedQuery("Customer.findByIdPassword");//Χρήση του προκατασκευασμένου query
             q.setParameter("cardno", un);
             q.setParameter("password", new String(pw)); //Μετατροπή του char[]->String
             cust = (Customer)q.getSingleResult();
             pnl = new CustMainPanel(this);
-            loc.close();
             return false;
         } catch (NoResultException e) { //Σε περίπτωση που δεν υπάρχει αυτή η κάρτα
                 JOptionPane.showMessageDialog(null, "Λάθος Στοιχεία Εισόδου...");
