@@ -37,7 +37,9 @@ public class ManageProductsPanel extends javax.swing.JPanel {
         this.loc = frame.getLoc();
         this.frame = frame;
         initComponents();
-        loc.getTransaction().begin();
+        if (!loc.getTransaction().isActive()) {
+            loc.getTransaction().begin();
+        }
     }
     
 
