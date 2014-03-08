@@ -153,30 +153,37 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${customer}"));
         columnBinding.setColumnName("Customer");
         columnBinding.setColumnClass(LocalDB.Customer.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${store}"));
         columnBinding.setColumnName("Store");
         columnBinding.setColumnClass(LocalDB.Store.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${productPurchaseCollection}"));
         columnBinding.setColumnName("Product Purchase Collection");
         columnBinding.setColumnClass(java.util.Collection.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${delivery}"));
         columnBinding.setColumnName("Delivery");
         columnBinding.setColumnClass(java.io.Serializable.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${pointsEarned}"));
         columnBinding.setColumnName("Points Earned");
         columnBinding.setColumnClass(Integer.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${amount}"));
         columnBinding.setColumnName("Amount");
         columnBinding.setColumnClass(Float.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${datetime}"));
         columnBinding.setColumnName("Datetime");
         columnBinding.setColumnClass(java.util.Date.class);
+        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${purchaseId}"));
         columnBinding.setColumnName("Purchase Id");
         columnBinding.setColumnClass(Integer.class);
+        columnBinding.setEditable(false);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
-
         jScrollPane1.setViewportView(jTableBasket);
 
         label1.setText("Συνολικοί Πόντοι:");
