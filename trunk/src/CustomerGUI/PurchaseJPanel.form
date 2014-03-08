@@ -207,9 +207,6 @@
                     <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="java.util.Collection.class"/>
                   </Subbinding>
                 </BindingProperty>
-                <BindingProperty name="selectedElement" source="JComboBoxStore" sourcePath="${selectedItem.name}" target="jTableProducts" targetPath="selectedElement" updateStrategy="0" immediately="false">
-                  <BindingParameter name="IGNORE_ADJUSTING" value="N"/>
-                </BindingProperty>
               </BindingProperties>
             </Component>
           </SubComponents>
