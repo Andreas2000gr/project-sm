@@ -60,7 +60,7 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         this.store = new Store();
         this.Usr = ParentFrame.cust;
         this.ProductPurchaseCollection = PPurch;
-        this.Basket = bask;
+        this.Basket = bask; 
         //InitializeCBOStore();
         initComponents();
     }
