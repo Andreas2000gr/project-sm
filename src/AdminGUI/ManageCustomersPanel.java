@@ -7,11 +7,16 @@
 package AdminGUI;
 
 import LocalDB.Customer;
+import externalDB.CreditCardAuthority;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import supermarket.SuperMarketParentFrame;
 
 /**
@@ -25,22 +30,44 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
      */
     private final SuperMarketParentFrame frame;
     private EntityManager loc;
+    private EntityManager ext;
     private Boolean tableChanged = false;
     private String oldValue;
     private String newValue;
     private Integer row;
     private Integer column;
-    private final List<Customer> changedCust = new  ArrayList<>();
     private Customer cust = new Customer();
+    private List<Customer> custList = new ArrayList<>();
     
     public ManageCustomersPanel(SuperMarketParentFrame frame) {
         this.loc = frame.getLoc();
+        this.ext = frame.getExt();
         this.frame = frame;
         initComponents();
-        loc.getTransaction().begin();
+        if (!loc.getTransaction().isActive()) {
+            loc.getTransaction().begin();
+        }
+        if (!ext.getTransaction().isActive()) {
+            ext.getTransaction().begin();
+        }
+        ReturnButton.requestFocusInWindow();
+        DeleteButton.setEnabled(false);
     }
     
-
+    private String getCCno(Integer ccId){
+        CreditCardAuthority card = new CreditCardAuthority();
+        try {
+            Query q = ext.createNamedQuery("CreditCardAuthority.findByPkCardId");
+            q.setParameter("pkCardId", ccId);
+            card = (CreditCardAuthority)q.getSingleResult();
+            return card.getNumber();
+        } catch (javax.persistence.NoResultException e) {
+            return "Δεν βρέθηκε κάρτα";
+        } catch (javax.persistence.NonUniqueResultException e)  {
+            return "Όχι μοναδική κάρτα";
+        } 
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -54,19 +81,20 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
         entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("SuperMarket-local-PU").createEntityManager();
         customerQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT c FROM Customer c");
         customerList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : customerQuery.getResultList();
-        GoBack = new javax.swing.JButton();
+        ReturnButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         CustomerTable = new javax.swing.JTable();
         SaveButton = new javax.swing.JButton();
         NewButton = new javax.swing.JButton();
         ClearChanges = new javax.swing.JButton();
+        DeleteButton = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Διαχείριση Πελατών"));
 
-        GoBack.setText("Επιστροφή");
-        GoBack.addActionListener(new java.awt.event.ActionListener() {
+        ReturnButton.setText("Επιστροφή");
+        ReturnButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                GoBackActionPerformed(evt);
+                ReturnButtonActionPerformed(evt);
             }
         });
 
@@ -74,7 +102,7 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
 
         org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, customerList, CustomerTable);
         org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${customerId}"));
-        columnBinding.setColumnName("Customer Id");
+        columnBinding.setColumnName("ID");
         columnBinding.setColumnClass(Integer.class);
         columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${pointsCardNumber}"));
@@ -82,7 +110,7 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
         columnBinding.setColumnClass(String.class);
         columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${firstName}"));
-        columnBinding.setColumnName("First Name");
+        columnBinding.setColumnName("Name");
         columnBinding.setColumnClass(String.class);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${lastName}"));
         columnBinding.setColumnName("Last Name");
@@ -90,12 +118,11 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${address}"));
         columnBinding.setColumnName("Address");
         columnBinding.setColumnClass(String.class);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${creditCardId}"));
-        columnBinding.setColumnName("Credit Card Id");
-        columnBinding.setColumnClass(Integer.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ObjectProperty.create());
+        columnBinding.setColumnName("CreditCard No.");
         columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${availablePoints}"));
-        columnBinding.setColumnName("Available Points");
+        columnBinding.setColumnName("Points");
         columnBinding.setColumnClass(Integer.class);
         columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${password}"));
@@ -103,12 +130,31 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
         columnBinding.setColumnClass(String.class);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
+        CustomerTable.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                CustomerTableFocusGained(evt);
+            }
+        });
         CustomerTable.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 CustomerTablePropertyChange(evt);
             }
         });
         jScrollPane1.setViewportView(CustomerTable);
+        if (CustomerTable.getColumnModel().getColumnCount() > 0) {
+            CustomerTable.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
+                @Override
+
+                public Component getTableCellRendererComponent(JTable table, Object value,boolean isSelected, boolean hasFocus,int row, int column){
+
+                    //get the label
+                    JLabel label = (JLabel)super.getTableCellRendererComponent(table, value,isSelected, hasFocus,row, column);
+
+                    label.setText(getCCno(((Customer)value).getCreditCardId()));
+                    return label;
+                }
+            });
+        }
 
         SaveButton.setText("Αποθήκευση");
         SaveButton.addActionListener(new java.awt.event.ActionListener() {
@@ -118,11 +164,23 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
         });
 
         NewButton.setText("Δημιουργία");
+        NewButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NewButtonActionPerformed(evt);
+            }
+        });
 
         ClearChanges.setText("Επαναφορά");
         ClearChanges.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ClearChangesActionPerformed(evt);
+            }
+        });
+
+        DeleteButton.setText("Διαγραφή");
+        DeleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeleteButtonActionPerformed(evt);
             }
         });
 
@@ -133,15 +191,17 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(GoBack)
+                        .addComponent(ReturnButton)
                         .addGap(233, 233, 233)
                         .addComponent(ClearChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(NewButton, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(SaveButton, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(DeleteButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(SaveButton, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -149,7 +209,9 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(DeleteButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -158,14 +220,14 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
                             .addComponent(ClearChanges))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(GoBack)
+                        .addComponent(ReturnButton)
                         .addGap(11, 11, 11))))
         );
 
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void GoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GoBackActionPerformed
+    private void ReturnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnButtonActionPerformed
         Object[] options = {"Ναι","Οχι"};
         Integer choice = JOptionPane.showOptionDialog(null,
         "Όλες οι αλλαγές θα χαθούν. Είστε σίγουρος;",
@@ -190,31 +252,34 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
                 }
             }
         }
-    }//GEN-LAST:event_GoBackActionPerformed
+    }//GEN-LAST:event_ReturnButtonActionPerformed
 
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
-        Object[] options = {"Ναι","Οχι"};
-        Integer choice = JOptionPane.showOptionDialog(null,
-        "Επιβεβαίωση αλλαγών;",
-        null,
-        JOptionPane.YES_NO_OPTION,
-        JOptionPane.QUESTION_MESSAGE,
-        null,
-        options,
-        options[0]);
+        if (tableChanged) {
+            Object[] options = {"Ναι","Οχι"};
+            Integer choice = JOptionPane.showOptionDialog(null,
+            "Επιβεβαίωση αλλαγών;",
+            null,
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            options,
+            options[0]);
 
-        if (choice == JOptionPane.YES_OPTION){
-            if (loc.getTransaction().isActive()) {
-                try {
-                    loc.getTransaction().commit();
-                    frame.pnl = new MainPanel(frame);
-                    frame.addPanelInMain();                    
-                } catch (Exception e) {
-                        e.printStackTrace();
-                    loc.getTransaction().rollback();            
+            if (choice == JOptionPane.YES_OPTION){
+                if (loc.getTransaction().isActive()) {
+                    try {
+                        loc.getTransaction().commit();
+                        frame.pnl = new MainPanel(frame);
+                        frame.addPanelInMain();                    
+                    } catch (Exception e) {
+                            e.printStackTrace();
+                        loc.getTransaction().rollback(); 
+                    }
                 }
             }
-        } 
+        }
+ 
     }//GEN-LAST:event_SaveButtonActionPerformed
 
     private void CustomerTablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_CustomerTablePropertyChange
@@ -245,12 +310,51 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
                 }
     }//GEN-LAST:event_ClearChangesActionPerformed
 
+    private void NewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewButtonActionPerformed
+          
+        SuperMarketParentFrame s = new SuperMarketParentFrame();
+        s.pnl =  new CreateCustomerPanel(s);
+        s.addPanelInMain();
+        s.pack();
+        s.setVisible(true);
+
+    }//GEN-LAST:event_NewButtonActionPerformed
+
+    private void DeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButtonActionPerformed
+        
+        if (CustomerTable.getSelectedRow()!= -1) {
+            for (Integer i : CustomerTable.getSelectedRows()) {
+                custList.add(customerList.get(CustomerTable.convertRowIndexToModel(i)));
+                tableChanged = true;
+                DeleteButton.setEnabled(false);
+            }
+            customerList.removeAll(custList);
+            CustomerTable.updateUI();
+            for (Customer c : custList) {
+                try {
+                    cust = loc.find(Customer.class, c.getCustomerId());
+                    loc.remove(cust);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Σφάλμα βάσης...");
+                }
+            }
+            custList.clear();
+        }        
+    }//GEN-LAST:event_DeleteButtonActionPerformed
+
+    private void CustomerTableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_CustomerTableFocusGained
+        CustomerTable.updateUI();
+        DeleteButton.setEnabled(true);
+    }//GEN-LAST:event_CustomerTableFocusGained
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ClearChanges;
     private javax.swing.JTable CustomerTable;
-    private javax.swing.JButton GoBack;
+    private javax.swing.JButton DeleteButton;
     private javax.swing.JButton NewButton;
+    private javax.swing.JButton ReturnButton;
     private javax.swing.JButton SaveButton;
     private java.util.List<LocalDB.Customer> customerList;
     private javax.persistence.Query customerQuery;

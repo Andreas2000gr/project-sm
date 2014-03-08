@@ -42,7 +42,9 @@ public class AssignProductsPanel extends javax.swing.JPanel {
         this.avProd = new ArrayList<>(0);
         this.loc = frame.getLoc();
         initComponents();
-        loc.getTransaction().begin();
+        if (!loc.getTransaction().isActive()) {
+            loc.getTransaction().begin();
+        }
      }
 
     

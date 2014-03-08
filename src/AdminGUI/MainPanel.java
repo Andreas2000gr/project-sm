@@ -53,7 +53,7 @@ public class MainPanel extends javax.swing.JPanel {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Μενού Διαχείρισης"));
 
         jButton1.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        jButton1.setText("Διαχείρηση Καταστημάτων");
+        jButton1.setText("Διαχείριση Καταστημάτων");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -61,7 +61,7 @@ public class MainPanel extends javax.swing.JPanel {
         });
 
         jButton2.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        jButton2.setText("Διαχείρηση Προϊόντων");
+        jButton2.setText("Διαχείριση Προϊόντων");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -69,7 +69,7 @@ public class MainPanel extends javax.swing.JPanel {
         });
 
         jButton3.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        jButton3.setText("Διαχείρηση Πελατών");
+        jButton3.setText("Διαχείριση Πελατών");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
