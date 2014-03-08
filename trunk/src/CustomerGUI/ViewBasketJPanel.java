@@ -10,6 +10,7 @@ import LocalDB.Product;
 import LocalDB.ProductPurchase;
 import LocalDB.Purchase;
 import LocalDB.Voucher;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.DefaultListModel;
@@ -387,26 +388,34 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                 Confirmation[0]);
 
         if (choice == JOptionPane.YES_OPTION) {
+            Collection<ProductPurchase> PPurchList = new ArrayList<>();
 
-            System.out.println(jTableBasket.convertRowIndexToModel(row));
-//            Purchase pp = purchaseList.get(jTableBasket.convertRowIndexToModel(row));
-//            System.out.println("Basket="+Basket);
-            // this.ProductPurchaseCollection.remove(pp.getProductPurchaseCollection());
-            //    this.Basket.setProductPurchaseCollection(ProductPurchaseCollection);
-
-            // System.out.println("Basket="+Basket);
-            purchaseList.set(1, Basket);
-
-            try {
-                db.getLoc().persist(Basket);
-            } catch (Exception e) {
-                e.printStackTrace();
+            //αν ο χρήστης δεν έχει επιλέξει προϊόν προς διαγραφή.
+            if (jTableBasket.getSelectedRow() < 0) {
+                JOptionPane.showMessageDialog(null, "Επιλέξτε ένα προϊον για να αφαιρεθεί από το καλάθι.");
+                return;//επιστρέφει στην φόρμα, χωρίς να προχωρήσει παρακάτω
             }
-        }
-
-        jTableBasket.repaint();
+            //αν έχει επιλέξει τότε θα βρει ποιο είαι και θα το διαγράψει από τη λίστα
+            ProductPurchase pprch;
+            for (Integer i : jTableBasket.getSelectedRows()) {
+                System.out.println("i="+i);
+                System.out.println("jTableBasket.convertRowIndexToModel(i)="+jTableBasket.convertRowIndexToModel(i));
+                PPurchList.add(productPurchaseList.get(jTableBasket.convertRowIndexToModel(i)));
+            }
+            productPurchaseList.removeAll(PPurchList);
+            jTableBasket.updateUI();
+            for (ProductPurchase pp : PPurchList) {
+                try {
+                    pprch = db.getLoc().find(ProductPurchase.class, pp.getProductPurchaseId());
+                    db.getLoc().remove(pprch);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Απέτυχε! Η διαγραφή του προϊόντος από το καλάθι.");
+                }
+            }
+            PPurchList.clear();
     }//GEN-LAST:event_button1ActionPerformed
-
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList EarnedChecksLists;
