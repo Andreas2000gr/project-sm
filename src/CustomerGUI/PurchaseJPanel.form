@@ -25,6 +25,24 @@
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;LocalDB.Product&gt;"/>
       </AuxValues>
     </Component>
+    <Component class="javax.persistence.Query" name="storeQuery">
+      <Properties>
+        <Property name="query" type="java.lang.String" value="SELECT s FROM Store s"/>
+        <Property name="entityManager" type="java.lang.Object" editor="org.netbeans.modules.form.j2ee.J2EEPropertyModifier$EMProperty$EntityManagerEditor">
+          <ComponentRef name="entityManager"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="java.util.List" name="storeList">
+      <Properties>
+        <Property name="query" type="java.lang.Object" editor="org.netbeans.modules.form.j2ee.J2EEPropertyModifier$QueryBeanProperty$QueryEditor">
+          <ComponentRef name="storeQuery"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;LocalDB.Store&gt;"/>
+      </AuxValues>
+    </Component>
   </NonVisualComponents>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -196,6 +214,10 @@
       </SubComponents>
     </Container>
     <Component class="javax.swing.JComboBox" name="JComboBoxStore">
+      <BindingProperties>
+        <BindingProperty name="elements" source="storeList" target="JComboBoxStore" targetPath="elements" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="selectedItem" source="JComboBoxStore" sourcePath="${selectedItem.name}" target="JComboBoxStore" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
+      </BindingProperties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="JComboBoxStoreActionPerformed"/>
       </Events>

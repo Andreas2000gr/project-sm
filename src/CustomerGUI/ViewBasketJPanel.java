@@ -28,7 +28,7 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
     private Purchase Basket;
-    private Collection<ProductPurchase> ProductPurchaseCollection;
+    private Collection<ProductPurchase> ProductPurchaseCollection = new ArrayList<>(0);
     private Customer Usr;
     private final Object[] columnNames = {"Όνομα Προϊόντος", "Κωδικός", "Πόντοι", "Τιμή", "Ποσότητα"};
     private DefaultTableModel DTModel;
@@ -47,13 +47,13 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     public ViewBasketJPanel(
             SuperMarketParentFrame ParentFrame, Purchase Bask, Collection<ProductPurchase> PPCol
     ) {
-        initComponents();
         this.ParentFrame = ParentFrame;
         this.Usr = ParentFrame.cust;
         this.Basket = Bask;
         this.ProductPurchaseCollection = PPCol;
         PopulateCustPurchase();
         populateAvailableVoucher();
+        initComponents();
     }
 
     public void PopulateCustPurchase() {
@@ -405,12 +405,13 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
             //αν έχει επιλέξει τότε θα βρει ποιο είαι και θα το διαγράψει από τη λίστα
             ProductPurchase pprch;
             for (Integer i : jTableBasket.getSelectedRows()) {
-                System.out.println("i="+i);
-                System.out.println("jTableBasket.convertRowIndexToModel(i)="+jTableBasket.convertRowIndexToModel(i));
+//                System.out.println("i="+i);
+//                System.out.println("jTableBasket.convertRowIndexToModel(i)="+jTableBasket.convertRowIndexToModel(i));
                 PPurchList.add(productPurchaseList.get(jTableBasket.convertRowIndexToModel(i)));
             }
             productPurchaseList.removeAll(PPurchList);
             jTableBasket.updateUI();
+            
             for (ProductPurchase pp : PPurchList) {
                 try {
                     pprch = db.getLoc().find(ProductPurchase.class, pp.getProductPurchaseId());

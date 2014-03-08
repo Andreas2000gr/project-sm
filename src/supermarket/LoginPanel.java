@@ -6,8 +6,7 @@
 
 package supermarket;
 
-import javax.swing.JOptionPane;
-import AdminGUI.*;
+import javax.persistence.EntityManager;
 /**
  *
  * @author Panagis
@@ -19,11 +18,17 @@ public class LoginPanel extends javax.swing.JPanel {
      */
     
     private final SuperMarketParentFrame frame;
+    private EntityManager loc;
     public LoginPanel(SuperMarketParentFrame frame) {
-        initComponents();
-        this.jTextField1.requestFocusInWindow();
+
+        this.loc = frame.getLoc();
         this.frame = frame;
         this.repaint();
+        initComponents();
+        this.jTextField1.requestFocusInWindow();
+        if (!loc.getTransaction().isActive()) {
+            loc.getTransaction().begin();
+        }        
     }
 
     /**

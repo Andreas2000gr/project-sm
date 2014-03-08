@@ -35,7 +35,7 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     private final Object[] columnNames = {"Όνομα Προϊόντος", "Κωδικός", "Πόντοι", "Τιμή"};
     private DefaultTableModel DTModel;
     public Purchase Basket;
-    private Collection<ProductPurchase> ProductPurchaseCollection;
+    private Collection<ProductPurchase> ProductPurchaseCollection = new ArrayList<>(0);
     private Customer Usr;
 
     /**
@@ -46,24 +46,23 @@ public class PurchaseJPanel extends javax.swing.JPanel {
      * πίνακα.
      */
     public PurchaseJPanel(SuperMarketParentFrame ParentFrame) {
-        initComponents();
         this.ParentFrame = ParentFrame;
         this.store = new Store();
         this.Usr = ParentFrame.cust;
-        this.ProductPurchaseCollection = new ArrayList<ProductPurchase>();
         this.Basket = new Purchase();
-        InitializeCBOStore();
+        //InitializeCBOStore();
+        initComponents();
     }
 
     public PurchaseJPanel(SuperMarketParentFrame ParentFrame, Purchase bask, Collection<ProductPurchase> PPurch
     ) {
-        initComponents();
         this.ParentFrame = ParentFrame;
         this.store = new Store();
         this.Usr = ParentFrame.cust;
         this.ProductPurchaseCollection = PPurch;
         this.Basket = bask;
-        InitializeCBOStore();
+        //InitializeCBOStore();
+        initComponents();
     }
 
     public Purchase getBasket() {
@@ -74,20 +73,20 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         return ProductPurchaseCollection;
     }
 
-    private void InitializeCBOStore() {
-        /**
-         * αρχικοποιούμε τις τιμές του combo box όπου εμφανίζονται όλα τα
-         * καταστήμα**
-         */
-        JComboBoxStore.removeAllItems();
-        TypedQuery<Store> Query = db.getLoc().createNamedQuery("Store.findAll", Store.class);
-        List<Store> Stores = Query.getResultList();
-
-        for (Store s : Stores) {
-            JComboBoxStore.addItem(s);
-        }
-        JComboBoxStore.repaint();
-    }
+//    private void InitializeCBOStore() {
+//        /**
+//         * αρχικοποιούμε τις τιμές του combo box όπου εμφανίζονται όλα τα
+//         * καταστήμα**
+//         */
+//        JComboBoxStore.removeAllItems();
+//        TypedQuery<Store> Query = db.getLoc().createNamedQuery("Store.findAll", Store.class);
+//        List<Store> Stores = Query.getResultList();
+//
+//        for (Store s : Stores) {
+//            JComboBoxStore.addItem(s);
+//        }
+//        JComboBoxStore.repaint();
+//    }
 
     private void InitializeJTableProducts(Store store) {
         jTableProducts.removeAll();
@@ -108,7 +107,6 @@ public class PurchaseJPanel extends javax.swing.JPanel {
             i= i +1;
         }
         this.jTableProducts.setModel(this.DTModel);
-        
         this.repaint();
     }
 
@@ -138,6 +136,7 @@ public class PurchaseJPanel extends javax.swing.JPanel {
             }
             JOptionPane.showMessageDialog(this, "Το προϊόν " + p.getName() + " προστέθηκε στο καλάθι.");
         } catch (Exception e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Απέτυχε! η προσθήκη του προϊόντος στο καλάθι.");
         }
 
@@ -156,6 +155,8 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("SuperMarket-local-PU").createEntityManager();
         productQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT p FROM Product p");
         productList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : productQuery.getResultList();
+        storeQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT s FROM Store s");
+        storeList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : storeQuery.getResultList();
         jButton3 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -235,6 +236,12 @@ public class PurchaseJPanel extends javax.swing.JPanel {
                 return this;
             }
         });
+
+        org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, storeList, JComboBoxStore);
+        bindingGroup.addBinding(jComboBoxBinding);
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, JComboBoxStore, org.jdesktop.beansbinding.ELProperty.create("${selectedItem.name}"), JComboBoxStore, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        bindingGroup.addBinding(binding);
+
         JComboBoxStore.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JComboBoxStoreActionPerformed(evt);
@@ -391,6 +398,8 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     private java.awt.Label label1;
     private java.util.List<LocalDB.Product> productList;
     private javax.persistence.Query productQuery;
+    private java.util.List<LocalDB.Store> storeList;
+    private javax.persistence.Query storeQuery;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
