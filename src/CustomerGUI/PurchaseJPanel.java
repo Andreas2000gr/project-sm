@@ -114,12 +114,8 @@ public class PurchaseJPanel extends javax.swing.JPanel {
 
     private void PurchaseProducts(int row, int Quantity) {
         try {
-
-            System.out.println("row=" + row);
             //Προσθέτουμε στο καλάθι τα προιόντα και την ποσότητά τους
             Product p = productList.get(jTableProducts.convertRowIndexToModel(row));
-            System.out.println("product=" + p.getName());
-
             ProductPurchase ppp = new ProductPurchase();
             ppp.setPurchaseId(Basket);
             ppp.setProductId(p);
@@ -363,8 +359,6 @@ public class PurchaseJPanel extends javax.swing.JPanel {
             }
             // αν ο χρήστης πατήσει οκ, τότε θα προσθέσει στο καλάθι το επιλεγμένο προϊόν
             int Quantity = Integer.parseInt(ChoiceQ.toString());
-
-            System.out.println("jTableProducts.getSelectedRow()=" + jTableProducts.getSelectedRow());
             PurchaseProducts(
                     jTableProducts.getSelectedRow(), Quantity
             );//βάλε το προιόν στο καλάθι
