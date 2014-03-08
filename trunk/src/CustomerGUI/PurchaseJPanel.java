@@ -205,7 +205,9 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         columnBinding.setColumnName("Product Purchase Collection");
         columnBinding.setColumnClass(java.util.Collection.class);
         bindingGroup.addBinding(jTableBinding);
-        jTableBinding.bind();
+        jTableBinding.bind();org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, JComboBoxStore, org.jdesktop.beansbinding.ELProperty.create("${selectedItem.name}"), jTableProducts, org.jdesktop.beansbinding.BeanProperty.create("selectedElement"));
+        bindingGroup.addBinding(binding);
+
         jScrollPane2.setViewportView(jTableProducts);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -239,7 +241,7 @@ public class PurchaseJPanel extends javax.swing.JPanel {
 
         org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, storeList, JComboBoxStore);
         bindingGroup.addBinding(jComboBoxBinding);
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, JComboBoxStore, org.jdesktop.beansbinding.ELProperty.create("${selectedItem.name}"), JComboBoxStore, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, JComboBoxStore, org.jdesktop.beansbinding.ELProperty.create("${selectedItem.name}"), JComboBoxStore, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
 
         JComboBoxStore.addActionListener(new java.awt.event.ActionListener() {
