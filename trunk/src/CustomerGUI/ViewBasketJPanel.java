@@ -27,7 +27,7 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
 
     private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
-    private Purchase Basket;
+    private Purchase Basket = new Purchase();
     private Collection<ProductPurchase> ProductPurchaseCollection = new ArrayList<>(0);
     private Customer Usr;
     private final Object[] columnNames = {"Όνομα Προϊόντος", "Κωδικός", "Πόντοι", "Τιμή", "Ποσότητα"};
