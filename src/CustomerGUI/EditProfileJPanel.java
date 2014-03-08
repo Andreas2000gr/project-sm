@@ -459,10 +459,6 @@ public class EditProfileJPanel extends javax.swing.JPanel {
             //ΟΡΙΣΤΙΚΗ ΔΙΑΓΡΑΦΗ ΠΕΛΑΤΗ ΑΠΟ ΤΗ ΒΑΣΗ ΔΕΔΕΟΜΕΝΩΝ
             Customer customer = db.getLoc().find(Customer.class, Usr.getCustomerId());
             db.DELETE_CUSTOMER(customer);
-            //ΟΡΙΣΤΙΚΗ ΔΙΑΓΡΑΦΗ ΠΙΣΤΩΤΙΚΗΣ ΚΑΡΤΑΣ ΑΠΟ ΤΗ ΒΑΣΗ ΔΕΔΟΜΕΝΩΝ
-            CreditCardAuthority credit = db.getExt().find(CreditCardAuthority.class, CreditCard.getPkCardId());
-            db.DELETE_CREDIT_CARD(credit);
-            JOptionPane.showMessageDialog(null, "Ο λογαριασμός διεγράφη οριστικά από το σύστημα.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Απέτυχε! η διαγραφή των στοιχείων του πελάτη.");
         }
