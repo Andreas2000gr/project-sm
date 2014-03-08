@@ -287,6 +287,7 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
             row = CustomerTable.getSelectedRow();
             column = CustomerTable.getSelectedColumn();
             if (CustomerTable.isEditing()) {
+                DeleteButton.setEnabled(false);                
                 oldValue = CustomerTable.getValueAt(row, column).toString();
             } else {
                 newValue = CustomerTable.getValueAt(row, column).toString();
@@ -344,8 +345,7 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_DeleteButtonActionPerformed
 
     private void CustomerTableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_CustomerTableFocusGained
-        CustomerTable.updateUI();
-        DeleteButton.setEnabled(true);
+        DeleteButton.setEnabled(true); //Η διαγραφή ενεργοποιείται μονο εάν έχουμε επιλέξει σειρά.
     }//GEN-LAST:event_CustomerTableFocusGained
 
 

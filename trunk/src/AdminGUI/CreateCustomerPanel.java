@@ -7,6 +7,7 @@
 package AdminGUI;
 
 import LocalDB.Customer;
+import java.util.Random;
 import javax.persistence.EntityManager;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -23,7 +24,10 @@ public class CreateCustomerPanel extends javax.swing.JPanel {
      */
     private final SuperMarketParentFrame frame;
     private final EntityManager loc;
-    private Customer cust = new Customer();
+    private Customer cust;
+    private boolean acceptFn = false;
+    private boolean acceptLn = false;
+    private boolean acceptAd = true;
     
     public CreateCustomerPanel(SuperMarketParentFrame frame) {
         this.frame = frame;
@@ -34,7 +38,22 @@ public class CreateCustomerPanel extends javax.swing.JPanel {
             loc.getTransaction().begin();
         }
     }
-
+    
+    private Integer validateCCard(String input){
+        
+        return (0);
+    }
+    
+    private String createPointsCard(){
+        String output;
+        Random ran = new Random(); //Κατασκευή γεννήτριας τυχαίων αριθμών
+        Integer ran1 = ran.nextInt(1000);  //Δημιουργία αριθμών 0-999
+        Integer ran2 = ran.nextInt(1000);
+        output= String.format("%03d",ran1) //μετατροπή τους σε τριψήφιους
+            +"-"+String.format("%03d",ran2); //και απόδοση του String στην κάρτα του πελάτη
+        return output;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -55,6 +74,8 @@ public class CreateCustomerPanel extends javax.swing.JPanel {
         AdField = new javax.swing.JTextField();
         validation1 = new javax.swing.JLabel();
         validation2 = new javax.swing.JLabel();
+        CCard = new javax.swing.JTextField();
+        AddressLabel1 = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Δημιουργία Πελάτη"));
         setOpaque(false);
@@ -93,19 +114,29 @@ public class CreateCustomerPanel extends javax.swing.JPanel {
                 FnFieldActionPerformed(evt);
             }
         });
-        FnField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                FnFieldFocusGained(evt);
-            }
-        });
 
         LnField.setToolTipText("εώς 40 χαρακτήρες");
+        LnField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LnFieldActionPerformed(evt);
+            }
+        });
 
         AdField.setToolTipText("εώς 50 χαρακτήρες");
 
         validation1.setText("* ");
 
         validation2.setText("* ");
+
+        CCard.setToolTipText("εώς 50 χαρακτήρες");
+        CCard.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CCardActionPerformed(evt);
+            }
+        });
+
+        AddressLabel1.setLabelFor(AdField);
+        AddressLabel1.setText("Αριθμός Πιστωτικής");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -114,27 +145,22 @@ public class CreateCustomerPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(AddressLabel))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(160, 160, 160)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(FirstNameLabel)
-                                    .addComponent(LastNameLabel))))
+                        .addGap(154, 154, 154)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(AddressLabel)
+                            .addComponent(LastNameLabel)
+                            .addComponent(FirstNameLabel)
+                            .addComponent(AddressLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(FnField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(LnField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(AdField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(CCard, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(AdField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(LnField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(FnField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(4, 4, 4)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(validation2))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(validation1))))
+                            .addComponent(validation2)
+                            .addComponent(validation1)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(ReturnButton)
@@ -161,7 +187,11 @@ public class CreateCustomerPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(AdField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(AddressLabel))
-                .addGap(162, 162, 162)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(CCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(AddressLabel1))
+                .addGap(131, 131, 131)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ReturnButton)
                     .addComponent(ClearButton)
@@ -175,27 +205,45 @@ public class CreateCustomerPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_ReturnButtonActionPerformed
 
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
-        Object[] options = {"Ναι","Οχι"};
-        Integer choice = JOptionPane.showOptionDialog(null,
-        "Επιβεβαίωση αλλαγών;",
-        null,
-        JOptionPane.YES_NO_OPTION,
-        JOptionPane.QUESTION_MESSAGE,
-        null,
-        options,
-        options[0]);
+        if (acceptFn && acceptLn) {
+//            cust = new Customer(
+//                    null, 
+//                    FnField.getText(), 
+//                    LnField.getText(),
+//                    , int availablePoints) {
 
-        if (choice == JOptionPane.YES_OPTION){
-            if (loc.getTransaction().isActive()) {
-                try {
-                    loc.getTransaction().commit();
-                    frame.dispose();
-                } catch (Exception e) {
-                        e.printStackTrace();
-                    loc.getTransaction().rollback();            
+            
+            {
+            
+            JOptionPane.showMessageDialog(null,"Κάρτα πελάτη:"
+                    + cust.getPointsCardNumber());
+            }
+            
+            Object[] options = {"Ναι","Οχι"};
+            Integer choice = JOptionPane.showOptionDialog(null,
+            "Επιβεβαίωση αλλαγών;",
+            null,
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            options,
+            options[0]);
+
+            if (choice == JOptionPane.YES_OPTION){
+                if (loc.getTransaction().isActive()) {
+                    try {
+                        loc.getTransaction().commit();
+                        frame.dispose();
+                    } catch (Exception e) {
+                            e.printStackTrace();
+                        loc.getTransaction().rollback();            
+                    }
                 }
             }
-        } 
+        } else {
+            JOptionPane.showMessageDialog(null, "Δεν έχουν δοθεί τα απαιτούμενα στοιχεία...");
+            FnField.requestFocusInWindow();
+        }
     }//GEN-LAST:event_SaveButtonActionPerformed
 
     private void ClearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearButtonActionPerformed
@@ -212,17 +260,38 @@ public class CreateCustomerPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_ClearButtonActionPerformed
 
     private void FnFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FnFieldActionPerformed
-        LnField.requestFocusInWindow();
+        if (FnField.getText().length()<=30 && FnField.getText().length()>0 ) {
+            acceptFn = true;
+            LnField.requestFocusInWindow();            
+        } else {
+            acceptFn = false;
+        }        
     }//GEN-LAST:event_FnFieldActionPerformed
 
-    private void FnFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_FnFieldFocusGained
-        FnField.setText("");
-    }//GEN-LAST:event_FnFieldFocusGained
+    private void CCardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CCardActionPerformed
+        Integer cCardId = validateCCard(CCard.getText());
+        if (cCardId > 0) {
+            SaveButton.requestFocusInWindow();            
+        } else {
+            CCard.setText(null);
+        } 
+    }//GEN-LAST:event_CCardActionPerformed
+
+    private void LnFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LnFieldActionPerformed
+        if (LnField.getText().length()<=30 && LnField.getText().length()>0 ) {
+            acceptLn = true;
+            LnField.requestFocusInWindow();            
+        } else {
+            acceptLn = false;
+        } 
+    }//GEN-LAST:event_LnFieldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField AdField;
     private javax.swing.JLabel AddressLabel;
+    private javax.swing.JLabel AddressLabel1;
+    private javax.swing.JTextField CCard;
     private javax.swing.JButton ClearButton;
     private javax.swing.JLabel FirstNameLabel;
     private javax.swing.JTextField FnField;
