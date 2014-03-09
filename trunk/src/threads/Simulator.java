@@ -89,12 +89,6 @@ class Simulator {
             //ως ανώνατο όριο ορίζουμε τα 10 τεμάχια
             int Quantity = 1 + r.nextInt(10);
 
-            //επιλέγουμε τυχαία τον τρόπο παράδοσης του προϊόντος
-            boolean Delivery;
-            if (r.nextInt(1) == 1) {
-                Delivery = true;
-            }
-
             //επιλέγουμε ένα τυχαίο προϊόν του επιλεγμένου καταστήματος
             int productIndex = r.nextInt(products.size());
             Product p = products.get(productIndex);
@@ -111,6 +105,12 @@ class Simulator {
             //αφαιρούμε από τη λίστα το προϊόν που επιλέξαμε
             //για να μην το επιλέξουμε πάλι
             products.remove(p);
+        }
+
+        //επιλέγουμε τυχαία τον τρόπο παράδοσης του προϊόντος
+        boolean Delivery;
+        if (r.nextInt(1) == 1) {
+            Delivery = true;
         }
 
         //Προσθέτουμε στο καλάθι μας(Purchase) το προϊόν που 
