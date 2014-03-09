@@ -1,6 +1,7 @@
 package threads;
 
 import LocalDB.Customer;
+import LocalDB.Store;
 import java.util.ArrayList;
 import java.util.Random;
 import supermarket.DBmanager;
@@ -42,10 +43,24 @@ class Simulator {
             //τυχαία επέλεξε έναν πελάτη
              int customerIndex = r.nextInt(customers.size());
              threads[i] = new Threads(db,customers.get(customerIndex),this);
-             threads[i].setName("Thread " + counter);
+             threads[i].setName("Thread::[" + counter+"]");
              counter++;
              customers.remove(customerIndex);
         }
-    }    
+    }
+    
+    public void PopulateBasket(){
+        Random r = new Random();
+        ArrayList<Store> stores = db.FindAllStores();
+    }
+    
+    /*** θα γεμίζει το καλάθι του 
+    * με ένα τυχαίο αριθμό διαφορετικών προϊόντων 
+    * με άνω όριο τα 20 προϊόντα ανά καλάθι ***/
+    public void SimBuyProducts(){
+        for(int i=0; i<threads.length; i++){
+            threads[i].BuyProducts();
+        }
+    }
     
 }
