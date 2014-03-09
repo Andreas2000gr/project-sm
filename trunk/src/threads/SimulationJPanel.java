@@ -147,7 +147,19 @@ public class SimulationJPanel extends javax.swing.JPanel {
         for(ProductPurchase pp : purchase.getProductPurchaseCollection()){
             jTextAreaSimulation.append("Επιλέχθηκε τυχαία το προϊόν: " + pp.getProductId() +"-" + pp.getQuantity() + "\n");
         }
-         
+        
+         try {
+            // αρχικοποίηση transaction
+            if (!db.getLoc().getTransaction().isActive()) {
+                db.getLoc().getTransaction().begin();
+            }
+
+            
+//            db.getLoc().getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.getLoc().getTransaction().rollback();
+        }
         
 
     }//GEN-LAST:event_jButton2ActionPerformed

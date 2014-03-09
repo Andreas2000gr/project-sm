@@ -6,7 +6,10 @@ import LocalDB.ProductPurchase;
 import LocalDB.Purchase;
 import LocalDB.Store;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Random;
 import javax.persistence.EntityManager;
 import supermarket.DBmanager;
@@ -30,7 +33,8 @@ class Simulator {
 
     private DBmanager db;
     private Purchase Basket;
-
+    public Calendar cal = new GregorianCalendar();
+    public Date date = cal.getTime();
 
     public Simulator(DBmanager db) {
         this.db = db;
@@ -114,19 +118,27 @@ class Simulator {
 
         //Προσθέτουμε στο καλάθι μας(Purchase) το προϊόν που 
         Basket.setCustomer(customer);
-        Basket.setDatetime(null);
+        Basket.setDatetime(date);
         Basket.setAmount(0);
         Basket.setPointsEarned(0);
-        //Basket.setProductPurchaseCollection(ProdPurchCollection);
         Basket.getProductPurchaseCollection().addAll(ProdPurchCollection);
         Basket.setStore(s);
         Basket.setDelivery(false);
-        
-        db.getLoc().persist(Basket);
-        
-        
+
+        try {
+            // αρχικοποίηση transaction
+            if (!db.getLoc().getTransaction().isActive()) {
+                db.getLoc().getTransaction().begin();
+            }
+            db.getLoc().persist(Basket);
+            // db.getLoc().merge(Basket);
+            db.getLoc().getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.getLoc().getTransaction().rollback();
+        }
+
         return Basket;
     }
-
 
 }
