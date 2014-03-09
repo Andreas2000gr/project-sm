@@ -12,6 +12,9 @@ import AdminGUI.*;
 import CustomerGUI.*;
 import javax.persistence.*;
 import LocalDB.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;
 
 /**
@@ -29,7 +32,8 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
     public static String getAdminPw() {
         return adminPw;
     }
-    
+    public Calendar cal = new GregorianCalendar();
+    public Date date = cal.getTime();
     private final DBmanager db = new DBmanager();
     public Customer cust; //Μεταβλητή που θα κρατήσει τον πελάτη και θα τον πασάρει σε κάθε JPanel
     private EntityManager loc = db.getLoc();  
