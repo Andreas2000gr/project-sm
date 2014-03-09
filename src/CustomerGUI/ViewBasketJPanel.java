@@ -178,7 +178,7 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         ShopButton = new javax.swing.JRadioButton();
         DeliveryButton = new javax.swing.JRadioButton();
-        jButton1 = new javax.swing.JButton();
+        CheckOutButton = new javax.swing.JButton();
         ReturnToMainCustomerForm = new javax.swing.JButton();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Καλαθι"));
@@ -352,10 +352,10 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                 .addGap(0, 2, Short.MAX_VALUE))
         );
 
-        jButton1.setLabel("Ολοκλήρωση αγοράς");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        CheckOutButton.setLabel("Ολοκλήρωση αγοράς");
+        CheckOutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                CheckOutButtonActionPerformed(evt);
             }
         });
 
@@ -380,7 +380,7 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(ReturnToMainCustomerForm)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                        .addComponent(CheckOutButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -395,14 +395,18 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ReturnToMainCustomerForm)
-                    .addComponent(jButton1))
+                    .addComponent(CheckOutButton))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void CheckOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckOutButtonActionPerformed
+        SuperMarketParentFrame s = new SuperMarketParentFrame();
+        s.pnl =  new CreditCardVerification(s);
+        s.addPanelInMain();
+        s.pack();
+        s.setVisible(true);
+    }//GEN-LAST:event_CheckOutButtonActionPerformed
 
     private void ReturnToMainCustomerFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnToMainCustomerFormActionPerformed
         ParentFrame.pnl = new PurchaseJPanel(this.ParentFrame);
@@ -484,6 +488,7 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Button AddVoucher;
     private javax.swing.JList AvVoucherList;
+    private javax.swing.JButton CheckOutButton;
     private javax.swing.JRadioButton DeliveryButton;
     private javax.swing.JList RefundedVoucherList;
     private java.awt.Button RemoveVoucher;
@@ -491,7 +496,6 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private javax.swing.JButton ReturnToMainCustomerForm;
     private javax.swing.JRadioButton ShopButton;
     private javax.persistence.EntityManager entityManager;
-    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
