@@ -7,9 +7,11 @@ package supermarket;
 
 import LocalDB.Customer;
 import externalDB.CreditCardAuthority;
+import java.util.ArrayList;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 /**
  *
@@ -109,4 +111,13 @@ public class DBmanager {
             //  return false;
         }
     }
+    
+    // Βρίσκουμε όλους του πελάτες
+    public ArrayList<Customer> FindAllCustomers() { 
+        Query FindAllCustomers;
+         // Δημιουργία sql query για την ανάκτηση όλων των πελατών
+        FindAllCustomers = getLoc().createNamedQuery("Customer.findAll",Customer.class);
+        return new ArrayList<Customer>(FindAllCustomers.getResultList());
+    }    
+    
 }
