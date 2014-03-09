@@ -320,10 +320,9 @@ public class PurchaseJPanel extends javax.swing.JPanel {
         
             // Καταχώρηση στη ΒΔ
             try {
-            if (!loc.getTransaction().isActive()) {
-                loc.getTransaction().begin();
-            }
-            JOptionPane.showMessageDialog(null,"SUXS");
+                if (!loc.getTransaction().isActive()) {
+                    loc.getTransaction().begin();
+                }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null,"Σφάλμα κατά την καταχώρηση...");
                 loc.getTransaction().rollback();
