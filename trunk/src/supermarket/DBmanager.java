@@ -6,6 +6,7 @@
 package supermarket;
 
 import LocalDB.Customer;
+import LocalDB.Store;
 import externalDB.CreditCardAuthority;
 import java.util.ArrayList;
 import javax.persistence.EntityManager;
@@ -115,9 +116,16 @@ public class DBmanager {
     // Βρίσκουμε όλους του πελάτες
     public ArrayList<Customer> FindAllCustomers() { 
         Query FindAllCustomers;
-         // Δημιουργία sql query για την ανάκτηση όλων των πελατών
+         //sql query για την ανάκτηση όλων των πελατών
         FindAllCustomers = getLoc().createNamedQuery("Customer.findAll",Customer.class);
         return new ArrayList<Customer>(FindAllCustomers.getResultList());
     }    
     
+// Η παρακάτω μέθοδος επιστρέφει όλα τα καταστήματα
+    public ArrayList<Store> FindAllStores() { 
+        Query FindAllStores;
+        // sql query για την ανάκτηση όλων των καταστημάτων
+        FindAllStores = getLoc().createNamedQuery("Store.findAll",Store.class);
+        return new ArrayList<Store>(FindAllStores.getResultList());
+    }
 }
