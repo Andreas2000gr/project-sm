@@ -6,17 +6,27 @@
 
 package threads;
 
+import javax.persistence.EntityManager;
+import supermarket.SuperMarketParentFrame;
+
 /**
  *
  * @author Euh
  */
-public class ThreadsJPanel extends javax.swing.JPanel {
+public class SimulationJPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form ThreadsJPanel
      */
-    public ThreadsJPanel() {
+    private final SuperMarketParentFrame frame;
+    private EntityManager loc;
+    
+    public SimulationJPanel(SuperMarketParentFrame frame) {
+        this.frame = frame;
         initComponents();
+        if (!loc.getTransaction().isActive()) {
+            loc.getTransaction().begin();
+        }        
     }
 
     /**
