@@ -117,8 +117,8 @@ class Simulator {
         Basket.setDatetime(null);
         Basket.setAmount(0);
         Basket.setPointsEarned(0);
-        Basket.setProductPurchaseCollection(ProdPurchCollection);
-        //Basket.getProductPurchaseCollection().add(ProdPurchCollection);
+        //Basket.setProductPurchaseCollection(ProdPurchCollection);
+        Basket.getProductPurchaseCollection().addAll(ProdPurchCollection);
         Basket.setStore(s);
         Basket.setDelivery(false);
         
