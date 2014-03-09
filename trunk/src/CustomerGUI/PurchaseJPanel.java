@@ -310,24 +310,14 @@ public class PurchaseJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonAddProductToBasketActionPerformed
 
     private void jButtonGoToBasketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGoToBasketActionPerformed
-            Basket.setCustomer(Usr);
-            Basket.setDatetime(frame.date);
-            Basket.setAmount(0);
-            Basket.setPointsEarned(0);
-            Basket.setProductPurchaseCollection(ProductPurchaseCollection);
-            Basket.setStore(store);
-            Basket.setDelivery(false);
+        Basket.setCustomer(Usr);
+        Basket.setDatetime(frame.date);
+        Basket.setAmount(0);
+        Basket.setPointsEarned(0);
+        Basket.setProductPurchaseCollection(ProductPurchaseCollection);
+        Basket.setStore(store);
+        Basket.setDelivery(false);
         
-            // Καταχώρηση στη ΒΔ
-            try {
-                if (!loc.getTransaction().isActive()) {
-                    loc.getTransaction().begin();
-                }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null,"Σφάλμα κατά την καταχώρηση...");
-                loc.getTransaction().rollback();
-                return; // Έξοδος στο μενού
-            }
         frame.pnl = new ViewBasketJPanel(this.frame, Basket);
         frame.addPanelInMain();
     }//GEN-LAST:event_jButtonGoToBasketActionPerformed
