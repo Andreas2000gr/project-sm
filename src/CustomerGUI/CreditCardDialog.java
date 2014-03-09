@@ -21,6 +21,7 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import supermarket.SuperMarketParentFrame;
 
@@ -28,7 +29,7 @@ import supermarket.SuperMarketParentFrame;
  *
  * @author Panagis
  */
-public class CreditCardlDialog extends javax.swing.JDialog {
+public class CreditCardDialog extends javax.swing.JDialog {
 
     /**
      * A return status code - returned if Cancel button has been pressed
@@ -40,15 +41,15 @@ public class CreditCardlDialog extends javax.swing.JDialog {
     public static final int RET_OK = 1;
 
     /**
-     * Creates new form CreditCardlDialog
+     * Creates new form CreditCardDialog
      */
     private SuperMarketParentFrame frame;
     private EntityManager loc;
     private EntityManager ext;
     
-    public CreditCardlDialog(java.awt.Frame parent, boolean modal) {
+    public CreditCardDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        this.frame = parent;
+        this.frame = (SuperMarketParentFrame)parent;
         this.loc = frame.getLoc();
         this.ext = frame.getExt();
         if (!loc.getTransaction().isActive()) {
@@ -69,7 +70,7 @@ public class CreditCardlDialog extends javax.swing.JDialog {
         });
     }
     
-        private void populateFields(){
+    private void populateFields(){
         Customer cust = frame.cust;
         CreditCardAuthority CCard = new CreditCardAuthority();
         if (!cust.getCreditCardId().equals(null)) {
@@ -91,6 +92,32 @@ public class CreditCardlDialog extends javax.swing.JDialog {
             } catch (Exception e){
                 e.printStackTrace();
             }
+        }
+    }
+        
+    
+    private boolean validateCCard(){
+        CreditCardAuthority CCard = new CreditCardAuthority();
+        try {
+            Query q = ext.createQuery("SELECT c FROM CreditCardAuthority c WHERE c.ownerName = :ownerName "
+                    + "AND c.number = :number "
+                    + "AND c.cvv = :cvv "
+                    + "AND c.bank = :bank");
+            q.setParameter("ownerName", CardHolderField.getText());
+            q.setParameter("number", CCardNoField.getText());
+            q.setParameter("cvv", CVVField.getText());
+            q.setParameter("bank", ((ExternalBank)BankComboBox.getSelectedItem()));
+            CCard = (CreditCardAuthority)q.getSingleResult();
+            return true;
+        } catch (javax.persistence.NoResultException e) {
+            JOptionPane.showMessageDialog(null, "Κάρτα δεν βρέθηκε...");
+            return false;
+        } catch (javax.persistence.NonUniqueResultException e) {
+            JOptionPane.showMessageDialog(null, "Μή μοναδική κάρτα...");
+            return false;
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Σφάλμα...");
+            return false; 
         }
     }
 
@@ -270,7 +297,12 @@ public class CreditCardlDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        doClose(RET_OK);
+        if (validateCCard()) {
+            doClose(RET_OK);
+        } else {
+            doClose(RET_CANCEL);
+        }
+
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -307,20 +339,20 @@ public class CreditCardlDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CreditCardlDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CreditCardDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CreditCardlDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CreditCardDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CreditCardlDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CreditCardDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CreditCardlDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CreditCardDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CreditCardlDialog dialog = new CreditCardlDialog(new javax.swing.JFrame(), true);
+                CreditCardDialog dialog = new CreditCardDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

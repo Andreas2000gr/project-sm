@@ -38,6 +38,8 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private Collection<Voucher> avVouch = new ArrayList<>(0);
     private Float totalPrice;
     private Integer totalPointsEarned;
+    private Integer attempts = 0;
+    private Integer retval = 0;
   
 
     /**
@@ -99,7 +101,7 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         return avVouchCol;
     }
     
-     public void PopulateCustPurchase() {
+    public void PopulateCustPurchase() {
         totalPrice = 0.0f;
         totalPointsEarned = 0;
         DTModel = new DefaultTableModel(new Object[0][0], columnNames);
@@ -405,8 +407,48 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void CheckOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckOutButtonActionPerformed
-        CreditCardDialog dialog = new CreditCardDialog((javax.swing.JFrame)ParentFrame, true);
-        
+        CreditCardDialog dialog = new CreditCardDialog(ParentFrame,true);
+        dialog.setVisible(true);
+        retval = dialog.getReturnStatus();
+        if (retval==0) {
+            attempts++;
+            if (attempts>2) {
+                JOptionPane.showMessageDialog(null, "Έχετε ξεπεράσει το όριο προσπαθειών. "
+                        + "Η παραγγελία ακυρώθηκε...");
+                ParentFrame.pnl = new CustMainPanel(ParentFrame);
+                ParentFrame.addPanelInMain();
+            }
+        } else {  // Η πληρωμή έγινε
+            //Ακύρωση επιταγών
+            for (Voucher v : refVouch) {
+                for (Voucher w : Usr.getVoucherCollection()) {
+                    if (v.equals(w)) {
+                        w.setVoucherStatus(false);
+                    }
+                }
+            }
+            // Ενημέρωση λοιπών στοιχείων παραγγελίας
+            Basket.setCustomer(Usr); 
+            Basket.setAmount(totalPrice);
+            Basket.setPointsEarned(totalPointsEarned);
+            if (DeliveryButton.isSelected()) {
+                Basket.setDelivery(true);
+            } else {
+                Basket.setDelivery(false);
+            }
+
+            if (ParentFrame.persistPurchase(Basket)) { 
+                JOptionPane.showMessageDialog(null, "Η παραγγελία καταχωρήθηκε επιτυχώς."
+                        + " Ευχαριστούμε!!!");
+                ParentFrame.pnl = new CustMainPanel(ParentFrame);
+                ParentFrame.addPanelInMain();
+            }else {
+                JOptionPane.showMessageDialog(null, "Σφάλμα!!!"
+                        + " Ακύρωση παραγγελίας!!!");
+                ParentFrame.pnl = new CustMainPanel(ParentFrame);
+                ParentFrame.addPanelInMain();
+            }
+        }      
     }//GEN-LAST:event_CheckOutButtonActionPerformed
 
     private void ReturnToMainCustomerFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnToMainCustomerFormActionPerformed

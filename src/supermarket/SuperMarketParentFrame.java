@@ -114,6 +114,32 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
 
     }
     
+    public boolean persistPurchase(Purchase pur){
+
+        if (!loc.getTransaction().isActive()) {
+            loc.getTransaction().begin();
+        }
+        Float amount = pur.getAmount();
+        Integer noOfVouchers = amount.intValue()/200;
+        
+        try {
+            for (int i = 0; i < noOfVouchers; i++) {
+                date = cal.getTime();
+                Voucher v = new Voucher(true, date, pur.getCustomer());
+                loc.persist(v);
+                pur.getCustomer().getVoucherCollection().add(v);
+                loc.merge(pur.getCustomer());
+            }
+            loc.persist(pur);
+            loc.getTransaction().commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            loc.getTransaction().rollback();
+            return false;
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
