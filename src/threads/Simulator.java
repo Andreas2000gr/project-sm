@@ -19,12 +19,12 @@ import supermarket.DBmanager;
  * Όμως, κατά την επικοινωνία με την «Αρχή Πιστοποίησης Καρτών» τίθενται κάποιοι περιορισμοί:
  * 
  */
-class Simulation {
+class Simulator {
     
     private DBmanager db;//Σύνδεση με τη Βάση Δεδομένων
     private Threads[] threads;
     
-    public Simulation(DBmanager db){
+    public Simulator(DBmanager db){
         this.db = db;
     }
     
