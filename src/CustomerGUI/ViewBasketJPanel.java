@@ -5,16 +5,19 @@
  */
 package CustomerGUI;
 
-import LocalDB.Customer;
-import LocalDB.Product;
-import LocalDB.ProductPurchase;
-import LocalDB.Purchase;
-import LocalDB.Voucher;
+import LocalDB.*;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Iterator;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import static javax.swing.UIManager.get;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
@@ -28,12 +31,12 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
     private Purchase Basket = new Purchase();
-    private Collection<ProductPurchase> ProductPurchaseCollection = new ArrayList<>(0);
     private Customer Usr;
     private final Object[] columnNames = {"Όνομα Προϊόντος", "Κωδικός", "Πόντοι", "Τιμή", "Ποσότητα"};
     private DefaultTableModel DTModel;
     private Collection<Voucher> voucher;
     private DefaultListModel CustEarnedChecks;
+    private EntityManager loc;
 
     /**
      * Creates new form ViewBasketJPanel
@@ -42,44 +45,67 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         initComponents();
         this.ParentFrame = ParentFrame;
         this.Usr = ParentFrame.cust;
+        this.loc = ParentFrame.getLoc();
+        if (!loc.getTransaction().isActive()) {
+            loc.getTransaction().begin();
+        }   
+        this.productPurchaseList.clear();
     }
 
     public ViewBasketJPanel(
-            SuperMarketParentFrame ParentFrame, Purchase Bask, Collection<ProductPurchase> PPCol
+            SuperMarketParentFrame ParentFrame, Purchase Bask
     ) {
         this.ParentFrame = ParentFrame;
         this.Usr = ParentFrame.cust;
         this.Basket = Bask;
-        this.ProductPurchaseCollection = PPCol;
-        PopulateCustPurchase();
-        populateAvailableVoucher();
         initComponents();
+        populateAvailableVoucher();
+        this.loc = ParentFrame.getLoc();
+        if (!loc.getTransaction().isActive()) {
+            loc.getTransaction().begin();
+        }
+        PopulateCustPurchase();
+        JOptionPane.showMessageDialog(null, Basket.getProductPurchaseCollection().size());
     }
-
+    
     public void PopulateCustPurchase() {
 
         float totalPrice = 0.0f;
         int totalPointsEarned = 0;
 
-        this.DTModel = new DefaultTableModel(new Object[0][0], columnNames);
-        for (ProductPurchase pp : ProductPurchaseCollection) {
+        DTModel = new DefaultTableModel(new Object[0][0], columnNames);
+        for (ProductPurchase pp : Basket.getProductPurchaseCollection()) {
             Product p = pp.getProductId();
 
-            Object[] object = new Object[5];
+            Object[] object = new Object[6];
             object[0] = p.getName();
-            object[1] = p.getCode();
+            object[1] = pp;
             object[2] = p.getPoints();
             object[3] = p.getPrice();
             object[4] = pp.getQuantity();
-            this.DTModel.addRow(object);
+            DTModel.addRow(object);
             totalPrice = totalPrice + (p.getPrice() * pp.getQuantity());
             totalPointsEarned = totalPointsEarned + (p.getPoints() * pp.getQuantity());
         }
-        this.jTableBasket.setModel(this.DTModel);
-        this.repaint();
+        jTableBasket.setModel(DTModel);
+        
+        jTableBasket.getColumnModel().getColumn(1).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+
+            public Component getTableCellRendererComponent(JTable table, Object value,boolean isSelected, boolean hasFocus,int row, int column){
+
+                //get the label
+                JLabel label = (JLabel)super.getTableCellRendererComponent(table, value,isSelected, hasFocus,row, column);
+
+                label.setText(((ProductPurchase)value).getProductId().getCode());
+                return label;
+            }
+        });
 
         jTextFieldSumPontoi.setText(String.valueOf(totalPrice));
         jTextFieldTotalPrice.setText(String.valueOf(totalPointsEarned));
+        
+        jTableBasket.updateUI();
     }
 
     public void populateAvailableVoucher() {
@@ -104,10 +130,6 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         return Basket;
     }
 
-    public Collection<ProductPurchase> getProductPurchaseCollection() {
-        return ProductPurchaseCollection;
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -116,10 +138,9 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("SuperMarket-local-PU").createEntityManager();
-        productPurchaseQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT p FROM ProductPurchase p");
+        javax.persistence.Query productPurchaseQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT p FROM ProductPurchase p");
         productPurchaseList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : productPurchaseQuery.getResultList();
         purchaseQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT p FROM Purchase p");
         purchaseList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : purchaseQuery.getResultList();
@@ -148,42 +169,23 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Καλαθι"));
 
-        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, purchaseList, jTableBasket);
-        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${customer}"));
-        columnBinding.setColumnName("Customer");
-        columnBinding.setColumnClass(LocalDB.Customer.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${store}"));
-        columnBinding.setColumnName("Store");
-        columnBinding.setColumnClass(LocalDB.Store.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${productPurchaseCollection}"));
-        columnBinding.setColumnName("Product Purchase Collection");
-        columnBinding.setColumnClass(java.util.Collection.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${delivery}"));
-        columnBinding.setColumnName("Delivery");
-        columnBinding.setColumnClass(java.io.Serializable.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${pointsEarned}"));
-        columnBinding.setColumnName("Points Earned");
-        columnBinding.setColumnClass(Integer.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${amount}"));
-        columnBinding.setColumnName("Amount");
-        columnBinding.setColumnClass(Float.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${datetime}"));
-        columnBinding.setColumnName("Datetime");
-        columnBinding.setColumnClass(java.util.Date.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${purchaseId}"));
-        columnBinding.setColumnName("Purchase Id");
-        columnBinding.setColumnClass(Integer.class);
-        columnBinding.setEditable(false);
-        bindingGroup.addBinding(jTableBinding);
-        jTableBinding.bind();
         jScrollPane1.setViewportView(jTableBasket);
+        if (jTableBasket.getColumnModel().getColumnCount() > 0) {
+            jTableBasket.getColumnModel().getColumn(0).setHeaderValue("Προϊόν");
+            jTableBasket.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer() {
+                @Override
+
+                public Component getTableCellRendererComponent(JTable table, Object value,boolean isSelected, boolean hasFocus,int row, int column){
+
+                    //get the label
+                    JLabel label = (JLabel)super.getTableCellRendererComponent(table, value,isSelected, hasFocus,row, column);
+
+                    label.setText(((ProductPurchase)value).getProductId().getName());
+                    return label;
+                }
+            });
+            jTableBasket.getColumnModel().getColumn(1).setHeaderValue("Quantity");
+        }
 
         label1.setText("Συνολικοί Πόντοι:");
 
@@ -364,8 +366,6 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                     .addComponent(jButton1))
                 .addContainerGap())
         );
-
-        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -373,7 +373,7 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void ReturnToMainCustomerFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnToMainCustomerFormActionPerformed
-        ParentFrame.pnl = new PurchaseJPanel(this.ParentFrame, this.getBasket(), this.getProductPurchaseCollection());
+        ParentFrame.pnl = new PurchaseJPanel(this.ParentFrame);
         ParentFrame.addPanelInMain();
     }//GEN-LAST:event_ReturnToMainCustomerFormActionPerformed
 
@@ -381,14 +381,15 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         //αφαιρεί από το καλάθι το επιλεγμένο προϊόν
         int row = jTableBasket.getSelectedRow();
         if (row < 0) {
+           //αν ο χρήστης δεν έχει επιλέξει προϊόν προς διαγραφή.
             JOptionPane.showMessageDialog(this,
                     "Επιλέξτε ένα προϊόν.",
                     "Σφάλμα",
                     JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        Object[] Confirmation = {"Ναι", "Οχι"};
-        Integer choice = JOptionPane.showOptionDialog(null,
+
+        } else {
+           Object[] Confirmation = {"Ναι", "Οχι"};
+           Integer choice = JOptionPane.showOptionDialog(null,
                 "Επιθυμείτει την αφαίρεση του προϊόντος από το καλάθι;",
                 "Αφαίρεση από το καλάθι",
                 JOptionPane.YES_NO_OPTION,
@@ -397,34 +398,19 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                 Confirmation,
                 Confirmation[0]);
 
-        if (choice == JOptionPane.YES_OPTION) {
-            Collection<ProductPurchase> PPurchList = new ArrayList<>();
-
-            //αν ο χρήστης δεν έχει επιλέξει προϊόν προς διαγραφή.
-            if (jTableBasket.getSelectedRow() < 0) {
-                JOptionPane.showMessageDialog(null, "Επιλέξτε ένα προϊον για να αφαιρεθεί από το καλάθι.");
-                return;//επιστρέφει στην φόρμα, χωρίς να προχωρήσει παρακάτω
-            }
-            //αν έχει επιλέξει τότε θα βρει ποιο είαι και θα το διαγράψει από τη λίστα
-            ProductPurchase pprch;
-            for (Integer i : jTableBasket.getSelectedRows()) {
-//                System.out.println("i="+i);
-//                System.out.println("jTableBasket.convertRowIndexToModel(i)="+jTableBasket.convertRowIndexToModel(i));
-                PPurchList.add(productPurchaseList.get(jTableBasket.convertRowIndexToModel(i)));
-            }
-            productPurchaseList.removeAll(PPurchList);
-            jTableBasket.updateUI();
-            
-            for (ProductPurchase pp : PPurchList) {
-                try {
-                    pprch = db.getLoc().find(ProductPurchase.class, pp.getProductPurchaseId());
-                    db.getLoc().remove(pprch);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Απέτυχε! Η διαγραφή του προϊόντος από το καλάθι.");
+           if (choice == JOptionPane.YES_OPTION) {
+            Collection<ProductPurchase> PPList = new ArrayList<>();   
+            ProductPurchase PPur = new ProductPurchase();
+            //αν έχει επιλέξει τότε θα βρει ποιο είναι και θα το διαγράψει από τη λίστα
+            if (row > -1) {
+                for (Integer i : jTableBasket.getSelectedRows()) {
+                    PPur= (ProductPurchase)jTableBasket.getValueAt(i, 1);
+                    Basket.getProductPurchaseCollection().remove(PPur);
                 }
+               JOptionPane.showMessageDialog(null, Basket.getProductPurchaseCollection().size());
             }
-            PPurchList.clear();
+            PopulateCustPurchase();             
+        }
     }//GEN-LAST:event_button1ActionPerformed
     }
 
@@ -453,9 +439,7 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private java.awt.Label label3;
     private java.awt.Label label5;
     private java.util.List<LocalDB.ProductPurchase> productPurchaseList;
-    private javax.persistence.Query productPurchaseQuery;
     private java.util.List<LocalDB.Purchase> purchaseList;
     private javax.persistence.Query purchaseQuery;
-    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

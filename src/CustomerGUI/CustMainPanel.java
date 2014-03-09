@@ -5,6 +5,7 @@
  */
 package CustomerGUI;
 
+import LocalDB.Purchase;
 import supermarket.*;
 
 /**
@@ -201,7 +202,9 @@ public class CustMainPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_ChangePasswordjButtonActionPerformed
 
     private void ViewBasketjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewBasketjButtonActionPerformed
-        frame.pnl = new ViewBasketJPanel(this.frame);
+        Purchase pur = new Purchase();
+        pur.setPurchaseId(0);
+        frame.pnl = new ViewBasketJPanel(this.frame, pur);
         frame.addPanelInMain();
     }//GEN-LAST:event_ViewBasketjButtonActionPerformed
 
