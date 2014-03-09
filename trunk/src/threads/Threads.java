@@ -15,7 +15,7 @@ import supermarket.*;
  */
 public class Threads extends Thread {
     
-public Threads(DBmanager db, Customer customer, Simulation sim){
+public Threads(DBmanager db, Customer customer, Simulator sim){
     
 }    
     
