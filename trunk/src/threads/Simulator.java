@@ -28,7 +28,7 @@ import supermarket.DBmanager;
  */
 class Simulator {
 
-    private DBmanager db;//Σύνδεση με τη Βάση Δεδομένων
+    private DBmanager db;
     private Purchase Basket;
 
 
@@ -121,6 +121,9 @@ class Simulator {
         Basket.getProductPurchaseCollection().addAll(ProdPurchCollection);
         Basket.setStore(s);
         Basket.setDelivery(false);
+        
+        db.getLoc().persist(Basket);
+        
         
         return Basket;
     }
