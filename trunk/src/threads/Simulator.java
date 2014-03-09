@@ -29,9 +29,8 @@ import supermarket.DBmanager;
 class Simulator {
 
     private DBmanager db;//Σύνδεση με τη Βάση Δεδομένων
-    private Threads[] threads;
     private Purchase Basket;
-    private EntityManager loc;
+
 
     public Simulator(DBmanager db) {
         this.db = db;
@@ -126,14 +125,5 @@ class Simulator {
         return Basket;
     }
 
-    /**
-     * * θα γεμίζει το καλάθι του με ένα τυχαίο αριθμό διαφορετικών προϊόντων
-     * με άνω όριο τα 20 προϊόντα ανά καλάθι **
-     */
-    public void SimBuyProducts() {
-        for (int i = 0; i < threads.length; i++) {
-            threads[i].BuyProducts();
-        }
-    }
 
 }
