@@ -19,5 +19,10 @@ public Threads(DBmanager db, Customer customer, Simulator sim){
     
 }    
     
-    
+public void BuyProducts(){
+
+
+}
+
+
 }
