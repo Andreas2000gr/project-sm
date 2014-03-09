@@ -99,76 +99,79 @@ public class SuperMarket {
             //Παρακάτω φαίνεται ο σωστός τρόπος ώστε να ενημερωθεί και ο πίνακας 
             //Store_Product. O λόγος που δεν δουλεύει το ανάποδο είναι διότι η κλάση Product
             // έχει τα στοιχεία για τον join table και μόνο μία εκ των δύο μπορεί να τα έχει.
-            Collection<Store> store = new ArrayList<>(); //αρχικοποίηση
-            store.add(abAlimou);           
-            store.add(abFalirou);
-            store.add(abGeraka);
+            Collection<Store> sc = new ArrayList<>(); //αρχικοποίηση
+            sc.add(abAlimou);
+            sc.add(abFalirou);
+            sc.add(abGeraka);
 
-            //Σύνδεση καταστημάτων με προϊόντα
-            odokrema.setStoreCollection(store);
-            makaroniano7.setStoreCollection(store);
-            alevri.setStoreCollection(store);
-            ladi.setStoreCollection(store);
-            dimitriaka.setStoreCollection(store);
-            xartikouzinas.setStoreCollection(store);
-            makaroniano3.setStoreCollection(store);
-            badedas.setStoreCollection(store);
-            kafesellinikos.setStoreCollection(store);
-            kafesfiltrou.setStoreCollection(store);
-            kafesespresso.setStoreCollection(store);
-            aporrouxwn.setStoreCollection(store);
-            kyboimaggi.setStoreCollection(store);
-            moustarda.setStoreCollection(store);
-            ketsap.setStoreCollection(store);
-            malaktikoroux.setStoreCollection(store);
-            ryzibasmati.setStoreCollection(store);
-            tsixles.setStoreCollection(store);
-            galafresko.setStoreCollection(store);
-            sokolata.setStoreCollection(store);
+            //Για κάθε ένα κατάστημα της λίστας, πρόσθεσε τα παρακάτω προϊόντα
+            for (Store s : sc) {
+                odokrema.setStoreCollection(sc);
+                makaroniano7.setStoreCollection(sc);
+                alevri.setStoreCollection(sc);
+                ladi.setStoreCollection(sc);
+                dimitriaka.setStoreCollection(sc);
+                xartikouzinas.setStoreCollection(sc);
+                makaroniano3.setStoreCollection(sc);
+                badedas.setStoreCollection(sc);
+                kafesellinikos.setStoreCollection(sc);
+                kafesfiltrou.setStoreCollection(sc);
+                kafesespresso.setStoreCollection(sc);
+                aporrouxwn.setStoreCollection(sc);
+                kyboimaggi.setStoreCollection(sc);
+                moustarda.setStoreCollection(sc);
+                ketsap.setStoreCollection(sc);
+                malaktikoroux.setStoreCollection(sc);
+                ryzibasmati.setStoreCollection(sc);
+                tsixles.setStoreCollection(sc);
+                galafresko.setStoreCollection(sc);
+                sokolata.setStoreCollection(sc);
 
-            //Δημιούργησε μια νέα εγγραφή στη βάση
-            db.getLoc().persist(odokrema);
-            db.getLoc().persist(makaroniano7);
-            db.getLoc().persist(alevri);
-            db.getLoc().persist(ladi);
-            db.getLoc().persist(dimitriaka);
-            db.getLoc().persist(xartikouzinas);
-            db.getLoc().persist(makaroniano3);
-            db.getLoc().persist(badedas);
-            db.getLoc().persist(kafesellinikos);
-            db.getLoc().persist(kafesfiltrou);
-            db.getLoc().persist(kafesespresso);
-            db.getLoc().persist(aporrouxwn);
-            db.getLoc().persist(kyboimaggi);
-            db.getLoc().persist(moustarda);
-            db.getLoc().persist(ketsap);
-            db.getLoc().persist(malaktikoroux);
-            db.getLoc().persist(ryzibasmati);
-            db.getLoc().persist(tsixles);
-            db.getLoc().persist(galafresko);
-            db.getLoc().persist(sokolata);
+                //Δημιούργησε μια νέα εγγραφή στη βάση
+                db.getLoc().persist(odokrema);
+                db.getLoc().persist(makaroniano7);
+                db.getLoc().persist(alevri);
+                db.getLoc().persist(ladi);
+                db.getLoc().persist(dimitriaka);
+                db.getLoc().persist(xartikouzinas);
+                db.getLoc().persist(makaroniano3);
+                db.getLoc().persist(badedas);
+                db.getLoc().persist(kafesellinikos);
+                db.getLoc().persist(kafesfiltrou);
+                db.getLoc().persist(kafesespresso);
+                db.getLoc().persist(aporrouxwn);
+                db.getLoc().persist(kyboimaggi);
+                db.getLoc().persist(moustarda);
+                db.getLoc().persist(ketsap);
+                db.getLoc().persist(malaktikoroux);
+                db.getLoc().persist(ryzibasmati);
+                db.getLoc().persist(tsixles);
+                db.getLoc().persist(galafresko);
+                db.getLoc().persist(sokolata);
 
-            //ενημέρωσε τη βάση
-            db.getLoc().merge(odokrema);
-            db.getLoc().merge(makaroniano7);
-            db.getLoc().merge(alevri);
-            db.getLoc().merge(ladi);
-            db.getLoc().merge(dimitriaka);
-            db.getLoc().merge(xartikouzinas);
-            db.getLoc().merge(makaroniano3);
-            db.getLoc().merge(badedas);
-            db.getLoc().merge(kafesellinikos);
-            db.getLoc().merge(kafesfiltrou);
-            db.getLoc().merge(kafesespresso);
-            db.getLoc().merge(aporrouxwn);
-            db.getLoc().merge(kyboimaggi);
-            db.getLoc().merge(moustarda);
-            db.getLoc().merge(ketsap);
-            db.getLoc().merge(malaktikoroux);
-            db.getLoc().merge(ryzibasmati);
-            db.getLoc().merge(tsixles);
-            db.getLoc().merge(galafresko);
-            db.getLoc().merge(sokolata);
+                //ενημέρωσε τη βάση
+                db.getLoc().merge(odokrema);
+                db.getLoc().merge(makaroniano7);
+                db.getLoc().merge(alevri);
+                db.getLoc().merge(ladi);
+                db.getLoc().merge(dimitriaka);
+                db.getLoc().merge(xartikouzinas);
+                db.getLoc().merge(makaroniano3);
+                db.getLoc().merge(badedas);
+                db.getLoc().merge(kafesellinikos);
+                db.getLoc().merge(kafesfiltrou);
+                db.getLoc().merge(kafesespresso);
+                db.getLoc().merge(aporrouxwn);
+                db.getLoc().merge(kyboimaggi);
+                db.getLoc().merge(moustarda);
+                db.getLoc().merge(ketsap);
+                db.getLoc().merge(malaktikoroux);
+                db.getLoc().merge(ryzibasmati);
+                db.getLoc().merge(tsixles);
+                db.getLoc().merge(galafresko);
+                db.getLoc().merge(sokolata);
+
+            }
 
             /**
              * Κάνοντας commit το transaction θα δημιουργηθούν οι αντίστοιχες
@@ -185,8 +188,8 @@ public class SuperMarket {
     public static void main(String[] args) {
         // Δημιουργούμε το SuperMarket
         SuperMarket sm = new SuperMarket();
-        sm.CleanDB();
-        sm.createStoresAndProducts();
+        //sm.CleanDB();
+        //sm.createStoresAndProducts();
 
         //Schedule a job for the event dispatch thread:
         //creating and showing this application's GUI.
