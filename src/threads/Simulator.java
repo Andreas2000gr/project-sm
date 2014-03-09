@@ -108,7 +108,7 @@ class Simulator {
         }
 
         //επιλέγουμε τυχαία τον τρόπο παράδοσης του προϊόντος
-        boolean Delivery;
+        boolean Delivery= false;
         if (r.nextInt(1) == 1) {
             Delivery = true;
         }
