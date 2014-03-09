@@ -31,17 +31,17 @@ class Simulator {
     private DBmanager db;//Σύνδεση με τη Βάση Δεδομένων
     private Threads[] threads;
     private Purchase Basket;
-    private Customer Usr;
     private EntityManager loc;
 
     public Simulator(DBmanager db) {
         this.db = db;
+        Basket = new Purchase();
     }
 
     /**
-     * * Τυχαία επιλογή πελάτη από τη βάση **
+     * Μέθοδος που επιλέγει τυχαία ένα πελάτη από τη βάση και επιστρέφει το
+     * αντικείμενο του πελάτη
      */
-    //θα επιλέγει τυχαία ένα πελάτη από τη βάση
     public Customer RandomFindCustomer() {
         //χρήση της random
         Random r = new Random();
@@ -57,7 +57,7 @@ class Simulator {
         return customer;
     }
 
-    public void PopulateBasket() {
+    public Purchase PopulateBasket(Customer customer) {
         Random r = new Random();
         //αποθηκεύουμε όλα τα καταστήματα σε μια λίστα
         ArrayList<Store> stores = db.FindAllStores();
@@ -69,7 +69,7 @@ class Simulator {
         ArrayList<Product> products = new ArrayList(0);
         products = new ArrayList<Product>(s.getProductCollection());
         //λίστα στην οποία θα αποθηκεύσουμε τα επιλεγμένα προϊόντα
-        Collection<ProductPurchase> ProdPurchCollection = new ArrayList(0);
+        Collection<ProductPurchase> ProdPurchCollection = new ArrayList<>();
 
         //θα γεμίζει το καλάθι του με ένα τυχαίο αριθμό διαφορετικών προϊόντων 
         //με άνω όριο τα 20 προϊόντα ανά καλάθι
@@ -108,20 +108,22 @@ class Simulator {
         }
 
         //επιλέγουμε τυχαία τον τρόπο παράδοσης του προϊόντος
-        boolean Delivery= false;
+        boolean Delivery = false;
         if (r.nextInt(1) == 1) {
             Delivery = true;
         }
 
         //Προσθέτουμε στο καλάθι μας(Purchase) το προϊόν που 
-        Basket.setCustomer(Usr);
+        Basket.setCustomer(customer);
         Basket.setDatetime(null);
         Basket.setAmount(0);
         Basket.setPointsEarned(0);
         Basket.setProductPurchaseCollection(ProdPurchCollection);
+        //Basket.getProductPurchaseCollection().add(ProdPurchCollection);
         Basket.setStore(s);
         Basket.setDelivery(false);
-
+        
+        return Basket;
     }
 
     /**
