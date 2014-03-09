@@ -10,7 +10,6 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import javax.persistence.EntityManager;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -57,10 +56,15 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         if (!loc.getTransaction().isActive()) {
             loc.getTransaction().begin();
         }
-        JOptionPane.showMessageDialog(null,Usr.getFirstName());
+
         repaintAvVouc(Usr);
         repaintRefVouch(Usr);
         PopulateCustPurchase();
+        ShopButton.setSelected(true);
+        if (Usr.getAddress().isEmpty()) {
+            DeliveryButton.setEnabled(false);
+        }
+
     }
     
     private void repaintAvVouc(Customer cust){
@@ -359,7 +363,7 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
             }
         });
 
-        ReturnToMainCustomerForm.setText("επιστροφή");
+        ReturnToMainCustomerForm.setText("Επιστροφή");
         ReturnToMainCustomerForm.setActionCommand("return");
         ReturnToMainCustomerForm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -401,11 +405,8 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void CheckOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckOutButtonActionPerformed
-        SuperMarketParentFrame s = new SuperMarketParentFrame();
-        s.pnl =  new CrediCardVerificationPanel(s);
-        s.addPanelInMain();
-        s.pack();
-        s.setVisible(true);
+        CreditCardDialog dialog = new CreditCardDialog((javax.swing.JFrame)ParentFrame, true);
+        
     }//GEN-LAST:event_CheckOutButtonActionPerformed
 
     private void ReturnToMainCustomerFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnToMainCustomerFormActionPerformed
@@ -477,11 +478,13 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_RemoveVoucherActionPerformed
 
     private void ShopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ShopButtonActionPerformed
+        ShopButton.setSelected(true);        
         DeliveryButton.setSelected(false);
     }//GEN-LAST:event_ShopButtonActionPerformed
 
     private void DeliveryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeliveryButtonActionPerformed
         ShopButton.setSelected(false);
+        DeliveryButton.setSelected(true);        
     }//GEN-LAST:event_DeliveryButtonActionPerformed
     
 
