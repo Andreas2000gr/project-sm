@@ -29,6 +29,7 @@ class Simulation {
     }
     
     /*** Τυχαία επιλογή πελάτη από τη βάση ***/
+    //θα επιλέγει τυχαία ένα πελάτη από τη βάση
     public void RandomFindCustomer() { 
         //χρήση της random
         Random r = new Random();
