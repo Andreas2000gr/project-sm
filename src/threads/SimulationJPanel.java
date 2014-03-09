@@ -6,6 +6,8 @@
 package threads;
 
 import LocalDB.Customer;
+import LocalDB.ProductPurchase;
+import LocalDB.Purchase;
 import javax.persistence.EntityManager;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
@@ -22,21 +24,12 @@ public class SimulationJPanel extends javax.swing.JPanel {
      */
     private final SuperMarketParentFrame ParentFrame;
     private DBmanager db = new DBmanager();
-    private EntityManager loc;
-    private Customer customer;
     private Simulator simulator = new Simulator(db);
 
     public SimulationJPanel(SuperMarketParentFrame ParentFrame) {
+
         this.ParentFrame = ParentFrame;
-        this.loc = ParentFrame.getLoc();
         initComponents();
-//        if (!loc.getTransaction().isActive()) {
-//            loc.getTransaction().begin();
-//        }       
-
-        Customer customer = simulator.RandomFindCustomer();
-        System.out.println("customer"+customer.getLastName());
-
     }
 
     /**
@@ -51,10 +44,10 @@ public class SimulationJPanel extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        threads = new javax.swing.JSpinner();
+        JSpinnerNumOfThreads = new javax.swing.JSpinner();
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jTextAreaSimulation = new javax.swing.JTextArea();
 
         jButton1.setText("επιστροφή");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -66,6 +59,8 @@ public class SimulationJPanel extends javax.swing.JPanel {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Προσομοίωση αγορών"));
 
         jLabel1.setText("Αριθμός νημάτων:");
+
+        JSpinnerNumOfThreads.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), null, null, Integer.valueOf(1)));
 
         jButton2.setText("εκκίνηση προσομοίωσης");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -82,7 +77,7 @@ public class SimulationJPanel extends javax.swing.JPanel {
                 .addGap(19, 19, 19)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(threads, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(JSpinnerNumOfThreads, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 198, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addContainerGap())
@@ -92,15 +87,15 @@ public class SimulationJPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(threads, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JSpinnerNumOfThreads, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2))
                 .addContainerGap(35, Short.MAX_VALUE))
         );
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jTextAreaSimulation.setColumns(20);
+        jTextAreaSimulation.setRows(5);
+        jScrollPane1.setViewportView(jTextAreaSimulation);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -133,17 +128,38 @@ public class SimulationJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        //Γράφουμε τα αποτελέσματα στο textarea
+        jTextAreaSimulation.setText("");
+        jTextAreaSimulation.append("Έναρξη διαδικασίας προσωμείωσης νημάτων.\n");
+
+        //για κάθε ένα από τα νήματα επιλέγεται ένας πελάτης
+        jTextAreaSimulation.append("Τυχαία επιλογή πελατών\n");
+
+        //εντοπισμός τυχαίων πελατών
+        Customer customer = simulator.RandomFindCustomer();
+        jTextAreaSimulation.append("Επιλέχθηκε ο πελάτης " + customer.getLastName() + "\n");
+
+        //Αγορά τυχαίων προϊόντων και προσθήκη στο καλάθι του επιλεγμένου πελάτη
+        jTextAreaSimulation.append("Τυχαία επιλογή προϊόντων για αγορά\n");
+        Purchase purchase = simulator.PopulateBasket(customer);
+        jTextAreaSimulation.append(" " + purchase.getCustomer().getLastName() + "\n");
+        
+        for(ProductPurchase pp : purchase.getProductPurchaseCollection()){
+            jTextAreaSimulation.append("Επιλέχθηκε τυχαία το προϊόν: " + pp.getProductId() +"-" + pp.getQuantity() + "\n");
+        }
+         
+        
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSpinner JSpinnerNumOfThreads;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JSpinner threads;
+    private javax.swing.JTextArea jTextAreaSimulation;
     // End of variables declaration//GEN-END:variables
 }
