@@ -10,8 +10,10 @@ package supermarket;
  * @author Loukatos
  */
 import LocalDB.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Query;
 import javax.swing.SwingUtilities;
@@ -42,9 +44,9 @@ public class SuperMarket {
             q.executeUpdate();
             q = db.getLoc().createQuery("DELETE FROM Store s");
             q.executeUpdate();
-//            q = db.getLoc().createQuery("DELETE FROM Customer c");
-//            q.executeUpdate();
             q = db.getLoc().createQuery("DELETE FROM Voucher v");
+            q.executeUpdate();
+            q = db.getLoc().createQuery("DELETE FROM Customer c");
             q.executeUpdate();
 
             db.getLoc().getTransaction().commit();
@@ -100,7 +102,7 @@ public class SuperMarket {
             //Store_Product. O λόγος που δεν δουλεύει το ανάποδο είναι διότι η κλάση Product
             // έχει τα στοιχεία για τον join table και μόνο μία εκ των δύο μπορεί να τα έχει.
             Collection<Store> store = new ArrayList<>(); //αρχικοποίηση
-            store.add(abAlimou);           
+            store.add(abAlimou);
             store.add(abFalirou);
             store.add(abGeraka);
 
@@ -182,11 +184,140 @@ public class SuperMarket {
         }
     }
 
+    /**
+     * @EPA:: Δημιουργεί κάποιους πελάτες στη ΒΔ για να μπορούν να
+     * χρησιμοποιηθούν για τους σκοπούς της εργασίας
+     */
+    public void createCustomersAndVouchers() {
+        String myDateAsString;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); //Example: 2012-03-04
+        Date date;
+
+        // αρχικοποίηση transaction
+        db.getLoc().getTransaction().begin();
+        try {
+            /* Δημιουργία Πελατών */
+            //δημιουργούμε ένα πελάτη
+            Customer CustomerA = new Customer(1, "Andreas", "Paradise", "111-111", 0);
+            Customer CustomerB = new Customer(2, "Panagis", "Loukatos", "222-222", 0);
+            Customer CustomerC = new Customer(3, "Anestis", "Passas", "333-333", 0);
+            Customer CustomerD = new Customer(4, "Evangelia", "Papavasileiou", "444-444", 0);
+
+            //ορίζουμε μια λίστα από επιταγές
+            Collection<Voucher> VoucherCollectionA = new ArrayList<>();
+            Collection<Voucher> VoucherCollectionB = new ArrayList<>();
+            Collection<Voucher> VoucherCollectionC = new ArrayList<>();
+            Collection<Voucher> VoucherCollectionD = new ArrayList<>();
+
+            //δημιουργούμε νέες επιταγές      
+            myDateAsString = "2012-05-10";
+            formatter = new SimpleDateFormat("yyyy-MM-dd"); //Example: 2012-03-04
+            date = formatter.parse(myDateAsString);
+            Voucher VoucherA1 = new Voucher(1, true, date);
+
+            myDateAsString = "2000-12-14";
+            formatter = new SimpleDateFormat("yyyy-MM-dd"); //Example: 2012-03-04
+            date = formatter.parse(myDateAsString);
+            Voucher VoucherA2 = new Voucher(2, false, date);
+
+            VoucherA1.setCustomer(CustomerA);
+            VoucherA2.setCustomer(CustomerA);
+
+            VoucherCollectionA.add(VoucherA1);
+            VoucherCollectionA.add(VoucherA2);
+
+            //----------------
+            myDateAsString = "2002-02-03";
+            formatter = new SimpleDateFormat("yyyy-MM-dd");
+            date = formatter.parse(myDateAsString);
+            Voucher VoucherB1 = new Voucher(3, true, date);
+
+            myDateAsString = "2001-12-11";
+            formatter = new SimpleDateFormat("yyyy-MM-dd");
+            date = formatter.parse(myDateAsString);
+            Voucher VoucherB2 = new Voucher(4, false, date);
+
+            VoucherB1.setCustomer(CustomerB);
+            VoucherB2.setCustomer(CustomerB);
+
+            VoucherCollectionB.add(VoucherB1);
+            VoucherCollectionB.add(VoucherB2);
+            //----------------
+            myDateAsString = "2004-04-12";
+            formatter = new SimpleDateFormat("yyyy-MM-dd");
+            date = formatter.parse(myDateAsString);
+            Voucher VoucherC1 = new Voucher(5, true, date);
+
+            VoucherC1.setCustomer(CustomerC);
+            VoucherCollectionC.add(VoucherC1);
+            //----------------
+            myDateAsString = "2004-04-12";
+            formatter = new SimpleDateFormat("yyyy-MM-dd");
+            date = formatter.parse(myDateAsString);
+            Voucher VoucherD1 = new Voucher(6, true, date);
+
+            VoucherD1.setCustomer(CustomerD);
+            VoucherCollectionD.add(VoucherD1);
+            //----------------
+            myDateAsString = "2008-07-02";
+            formatter = new SimpleDateFormat("yyyy-MM-dd");
+            date = formatter.parse(myDateAsString);
+            Voucher VoucherD2 = new Voucher(7, true, date);
+
+            VoucherD2.setCustomer(CustomerD);
+            VoucherCollectionD.add(VoucherD2);
+            //----------------
+            myDateAsString = "3013-05-03";
+            formatter = new SimpleDateFormat("yyyy-MM-dd");
+            date = formatter.parse(myDateAsString);
+            Voucher VoucherD3 = new Voucher(8, true, date);
+
+            VoucherD3.setCustomer(CustomerD);
+            VoucherCollectionD.add(VoucherD3);
+
+            //οριζουμε στον πελάτη τις επιταγές
+            CustomerA.setVoucherCollection(VoucherCollectionA);
+            CustomerB.setVoucherCollection(VoucherCollectionB);
+            CustomerC.setVoucherCollection(VoucherCollectionC);
+            CustomerD.setVoucherCollection(VoucherCollectionD);
+
+            //Σχετίζουμε τον πελάτη με την πιστωτική κάρτα
+            CustomerA.setCreditCardId(2);
+            CustomerB.setCreditCardId(3);
+            CustomerC.setCreditCardId(4);
+            CustomerD.setCreditCardId(5);
+
+            //ορίζουμε διευθύνση στον πελάτη
+            CustomerA.setAddress("Ag. Georgiou 89, Athina");
+            CustomerD.setAddress("Grigoriou 20, Kallithea");
+
+            //Δημιούργησε μια νέα εγγραφή στη βάση
+            db.getLoc().persist(CustomerA);
+            db.getLoc().persist(CustomerB);
+            db.getLoc().persist(CustomerC);
+            db.getLoc().persist(CustomerD);
+
+            //ενημέρωσε τη βάση
+            db.getLoc().merge(CustomerA);
+            db.getLoc().merge(CustomerB);
+            db.getLoc().merge(CustomerC);
+            db.getLoc().merge(CustomerD);
+
+            //εκτέλεση την εντολή
+            db.getLoc().getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.getLoc().getTransaction().rollback();
+        }
+
+    }
+
     public static void main(String[] args) {
         // Δημιουργούμε το SuperMarket
         SuperMarket sm = new SuperMarket();
         sm.CleanDB();
         sm.createStoresAndProducts();
+        sm.createCustomersAndVouchers();
 
         //Schedule a job for the event dispatch thread:
         //creating and showing this application's GUI.
