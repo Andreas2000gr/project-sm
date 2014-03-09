@@ -402,7 +402,7 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
 
     private void CheckOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckOutButtonActionPerformed
         SuperMarketParentFrame s = new SuperMarketParentFrame();
-        s.pnl =  new CreditCardVerification(s);
+        s.pnl =  new CrediCardVerificationPanel(s);
         s.addPanelInMain();
         s.pack();
         s.setVisible(true);
