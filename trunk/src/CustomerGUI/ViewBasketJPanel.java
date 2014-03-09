@@ -10,13 +10,12 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import static javax.swing.UIManager.get;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import supermarket.DBmanager;
@@ -34,23 +33,17 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private Customer Usr;
     private final Object[] columnNames = {"Όνομα Προϊόντος", "Κωδικός", "Πόντοι", "Τιμή", "Ποσότητα"};
     private DefaultTableModel DTModel;
-    private Collection<Voucher> voucher;
-    private DefaultListModel CustEarnedChecks;
     private EntityManager loc;
+    private Collection<Voucher> allVouch = new ArrayList<>(0);
+    private Collection<Voucher> refVouch = new ArrayList<>(0);
+    private Collection<Voucher> avVouch = new ArrayList<>(0);
+    private Float totalPrice;
+    private Integer totalPointsEarned;
+  
 
     /**
      * Creates new form ViewBasketJPanel
      */
-    public ViewBasketJPanel(SuperMarketParentFrame ParentFrame) {
-        initComponents();
-        this.ParentFrame = ParentFrame;
-        this.Usr = ParentFrame.cust;
-        this.loc = ParentFrame.getLoc();
-        if (!loc.getTransaction().isActive()) {
-            loc.getTransaction().begin();
-        }   
-        this.productPurchaseList.clear();
-    }
 
     public ViewBasketJPanel(
             SuperMarketParentFrame ParentFrame, Purchase Bask
@@ -58,26 +51,58 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         this.ParentFrame = ParentFrame;
         this.Usr = ParentFrame.cust;
         this.Basket = Bask;
+        this.allVouch = getAvVoucher(Usr);
         initComponents();
-        populateAvailableVoucher();
         this.loc = ParentFrame.getLoc();
         if (!loc.getTransaction().isActive()) {
             loc.getTransaction().begin();
         }
+        JOptionPane.showMessageDialog(null,Usr.getFirstName());
+        repaintAvVouc(Usr);
+        repaintRefVouch(Usr);
         PopulateCustPurchase();
-        JOptionPane.showMessageDialog(null, Basket.getProductPurchaseCollection().size());
     }
     
-    public void PopulateCustPurchase() {
-
-        float totalPrice = 0.0f;
-        int totalPointsEarned = 0;
-
+    private void repaintAvVouc(Customer cust){
+        avVouch = allVouch;
+        if(avVouch.removeAll(refVouch)){
+            DefaultListModel<Voucher> model = new DefaultListModel();
+            for (Voucher v : avVouch) {
+                model.addElement(v);
+            }
+            this.AvVoucherList.setModel(model); 
+        };
+    }
+    
+    private void repaintRefVouch(Customer cust){
+        DefaultListModel<Voucher> model = new DefaultListModel();
+        for (Voucher p : refVouch) {
+            model.addElement(p);
+        }
+        this.RefundedVoucherList.setModel(model);
+    }
+    
+    private Collection<Voucher> getAvVoucher(Customer cust){
+        Collection<Voucher> avVouchCol = new ArrayList<>();
+        Iterator iter = cust.getVoucherCollection().iterator();
+        Voucher v = new Voucher();
+        while (iter.hasNext()) {
+            v = (Voucher)iter.next();
+            if (v.getVoucherStatus()) {
+                avVouchCol.add(v);
+            }
+        }
+        return avVouchCol;
+    }
+    
+     public void PopulateCustPurchase() {
+        totalPrice = 0.0f;
+        totalPointsEarned = 0;
         DTModel = new DefaultTableModel(new Object[0][0], columnNames);
         for (ProductPurchase pp : Basket.getProductPurchaseCollection()) {
             Product p = pp.getProductId();
 
-            Object[] object = new Object[6];
+            Object[] object = new Object[5];
             object[0] = p.getName();
             object[1] = pp;
             object[2] = p.getPoints();
@@ -101,29 +126,18 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                 return label;
             }
         });
-
-        jTextFieldSumPontoi.setText(String.valueOf(totalPrice));
-        jTextFieldTotalPrice.setText(String.valueOf(totalPointsEarned));
-        
-        jTableBasket.updateUI();
-    }
-
-    public void populateAvailableVoucher() {
-        CustEarnedChecks = new DefaultListModel();
-        Object[] object = new Object[1];
-        // παίρνουμε τις επιταγές που έχει ο χρήστης 
-        this.voucher = Usr.getVoucherCollection();
-
-        for (Voucher v : voucher) {
-            //βρίσκουμε μόνο τις έγκυρες
-            if (v.getVoucherStatus()) {
-                object[0] = "[" + v.getVoucherId() + "]:" + v.getVoucherDate();
-                CustEarnedChecks.addElement(object);
+        if (!refVouch.isEmpty()) {
+            for (Voucher v : refVouch) {
+                totalPrice = totalPrice - 6.0f;
+            }
+            if (totalPrice < 0.0f) {
+                totalPrice = 0.0f;
             }
         }
-
-        EarnedChecksLists.setModel(CustEarnedChecks);
-        this.repaint();
+        jTextFieldSumPontoi.setText(String.valueOf(totalPointsEarned));
+        jTextFieldTotalPrice.setText(String.format("%.2f",totalPrice));
+        
+        jTableBasket.updateUI();
     }
 
     public Purchase getBasket() {
@@ -151,19 +165,19 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         jTextFieldSumPontoi = new javax.swing.JTextField();
         label2 = new java.awt.Label();
         jTextFieldTotalPrice = new javax.swing.JTextField();
-        button1 = new java.awt.Button();
+        RemovefromBasketButton = new java.awt.Button();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        EarnedChecksLists = new javax.swing.JList();
+        AvVoucherList = new javax.swing.JList();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
-        button2 = new java.awt.Button();
-        button3 = new java.awt.Button();
+        RefundedVoucherList = new javax.swing.JList();
+        RemoveVoucher = new java.awt.Button();
+        AddVoucher = new java.awt.Button();
         label3 = new java.awt.Label();
         label5 = new java.awt.Label();
         jPanel3 = new javax.swing.JPanel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        ShopButton = new javax.swing.JRadioButton();
+        DeliveryButton = new javax.swing.JRadioButton();
         jButton1 = new javax.swing.JButton();
         ReturnToMainCustomerForm = new javax.swing.JButton();
 
@@ -195,10 +209,10 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
 
         jTextFieldTotalPrice.setEnabled(false);
 
-        button1.setLabel("Αφαίρεση από το καλάθι");
-        button1.addActionListener(new java.awt.event.ActionListener() {
+        RemovefromBasketButton.setLabel("Αφαίρεση από το καλάθι");
+        RemovefromBasketButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button1ActionPerformed(evt);
+                RemovefromBasketButtonActionPerformed(evt);
             }
         });
 
@@ -208,46 +222,54 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextFieldTotalPrice)
-                            .addComponent(jTextFieldSumPontoi, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(21, Short.MAX_VALUE))
+                        .addComponent(jTextFieldTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldSumPontoi, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19)
+                        .addComponent(RemovefromBasketButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 11, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextFieldSumPontoi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(2, 2, 2)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextFieldTotalPrice, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextFieldTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextFieldSumPontoi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(RemovefromBasketButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Επιταγές"));
 
-        jScrollPane2.setViewportView(EarnedChecksLists);
+        jScrollPane2.setViewportView(AvVoucherList);
 
-        jScrollPane3.setViewportView(jList2);
+        jScrollPane3.setViewportView(RefundedVoucherList);
 
-        button2.setLabel("αφαίρεση");
+        RemoveVoucher.setLabel("αφαίρεση");
+        RemoveVoucher.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RemoveVoucherActionPerformed(evt);
+            }
+        });
 
-        button3.setLabel("προσθήκη");
+        AddVoucher.setLabel("προσθήκη");
+        AddVoucher.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddVoucherActionPerformed(evt);
+            }
+        });
 
         label3.setText("Κερδισμένες Επιταγές:");
 
@@ -270,8 +292,8 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(button2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(button3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(RemoveVoucher, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(AddVoucher, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
@@ -285,9 +307,9 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                 .addGap(2, 2, 2)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(button3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(AddVoucher, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(button2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(RemoveVoucher, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(13, 13, 13))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
@@ -296,9 +318,19 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Τρόπος αποστολής"));
 
-        jRadioButton1.setText("Παραλαβή από το κατάστημα");
+        ShopButton.setText("Παραλαβή από το κατάστημα");
+        ShopButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ShopButtonActionPerformed(evt);
+            }
+        });
 
-        jRadioButton2.setText("Αποστολή στο χώρο του πελάτη");
+        DeliveryButton.setText("Αποστολή στο χώρο του πελάτη");
+        DeliveryButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeliveryButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -306,17 +338,17 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jRadioButton1)
+                .addComponent(ShopButton)
                 .addGap(18, 18, 18)
-                .addComponent(jRadioButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(DeliveryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton2))
+                    .addComponent(ShopButton)
+                    .addComponent(DeliveryButton))
                 .addGap(0, 2, Short.MAX_VALUE))
         );
 
@@ -377,7 +409,7 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         ParentFrame.addPanelInMain();
     }//GEN-LAST:event_ReturnToMainCustomerFormActionPerformed
 
-    private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
+    private void RemovefromBasketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemovefromBasketButtonActionPerformed
         //αφαιρεί από το καλάθι το επιλεγμένο προϊόν
         int row = jTableBasket.getSelectedRow();
         if (row < 0) {
@@ -399,35 +431,70 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                 Confirmation[0]);
 
            if (choice == JOptionPane.YES_OPTION) {
-            Collection<ProductPurchase> PPList = new ArrayList<>();   
-            ProductPurchase PPur = new ProductPurchase();
+
+               ProductPurchase PPur = new ProductPurchase();
             //αν έχει επιλέξει τότε θα βρει ποιο είναι και θα το διαγράψει από τη λίστα
-            if (row > -1) {
+               if (row > -1) {
                 for (Integer i : jTableBasket.getSelectedRows()) {
-                    PPur= (ProductPurchase)jTableBasket.getValueAt(i, 1);
+                    PPur = (ProductPurchase)jTableBasket.getValueAt(jTableBasket.convertRowIndexToModel(i), 1);
                     Basket.getProductPurchaseCollection().remove(PPur);
                 }
                JOptionPane.showMessageDialog(null, Basket.getProductPurchaseCollection().size());
             }
             PopulateCustPurchase();             
         }
-    }//GEN-LAST:event_button1ActionPerformed
-    }
+        }
+    }//GEN-LAST:event_RemovefromBasketButtonActionPerformed
+
+    private void AddVoucherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddVoucherActionPerformed
+        if (!AvVoucherList.getSelectedValuesList().isEmpty()) {
+            for (Object o : AvVoucherList.getSelectedValuesList()) {
+                refVouch.add((Voucher)o);
+            }
+            repaintAvVouc(Usr);
+            repaintRefVouch(Usr);
+            PopulateCustPurchase();        
+        }else {
+            JOptionPane.showMessageDialog(null,"Δεν εχετε επιλέξει επιταγή...");
+        }
+    }//GEN-LAST:event_AddVoucherActionPerformed
+
+    private void RemoveVoucherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveVoucherActionPerformed
+        if (!RefundedVoucherList.getSelectedValuesList().isEmpty()) {
+            for (Object o : RefundedVoucherList.getSelectedValuesList()) {
+                refVouch.remove((Voucher)o);
+            }
+            repaintAvVouc(Usr);
+            repaintRefVouch(Usr);
+            PopulateCustPurchase();        
+        }else {
+            JOptionPane.showMessageDialog(null,"Δεν εχετε επιλέξει επιταγή...");
+        }
+    }//GEN-LAST:event_RemoveVoucherActionPerformed
+
+    private void ShopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ShopButtonActionPerformed
+        DeliveryButton.setSelected(false);
+    }//GEN-LAST:event_ShopButtonActionPerformed
+
+    private void DeliveryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeliveryButtonActionPerformed
+        ShopButton.setSelected(false);
+    }//GEN-LAST:event_DeliveryButtonActionPerformed
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList EarnedChecksLists;
+    private java.awt.Button AddVoucher;
+    private javax.swing.JList AvVoucherList;
+    private javax.swing.JRadioButton DeliveryButton;
+    private javax.swing.JList RefundedVoucherList;
+    private java.awt.Button RemoveVoucher;
+    private java.awt.Button RemovefromBasketButton;
     private javax.swing.JButton ReturnToMainCustomerForm;
-    private java.awt.Button button1;
-    private java.awt.Button button2;
-    private java.awt.Button button3;
+    private javax.swing.JRadioButton ShopButton;
     private javax.persistence.EntityManager entityManager;
     private javax.swing.JButton jButton1;
-    private javax.swing.JList jList2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
