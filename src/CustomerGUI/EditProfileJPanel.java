@@ -77,7 +77,7 @@ public class EditProfileJPanel extends javax.swing.JPanel {
         }
     }
 
-    //Method:: to get bank 
+    //Method:: Επιστρέφει την τράπεζα του πελάτη
     private ExternalBank getExternalBank(String BankName) {
 
         TypedQuery<ExternalBank> Query = db.getExt().createNamedQuery("ExternalBank.findByName", ExternalBank.class);
@@ -419,11 +419,11 @@ public class EditProfileJPanel extends javax.swing.JPanel {
             return;
         }
         
-        String Message = "";
+        String Message = "";//Προειδοποιητικό μήνυμα
        
         try {
 
-            //update credit card info
+            //Ενημέρωση των στοιχείων της κάρτας
             CreditCard.setOwnerName(usrOWNER_NAME.getText());
             CreditCard.setNumber(usrCARD_NUMBER.getText());
             CreditCard.setCvv(usrCVV.getText());
@@ -437,7 +437,7 @@ public class EditProfileJPanel extends javax.swing.JPanel {
         }        
 
         try {
-            //update customer info
+            //Ενημέρωση των στοιχείων του πελάτη
             Usr.setLastName(usrLAST_NAME.getText());
             Usr.setFirstName(usrFIRST_NAME.getText());
             Usr.setAddress(usrADDRESS.getText());
@@ -467,6 +467,7 @@ public class EditProfileJPanel extends javax.swing.JPanel {
             //ΟΡΙΣΤΙΚΗ ΔΙΑΓΡΑΦΗ ΠΕΛΑΤΗ ΑΠΟ ΤΗ ΒΑΣΗ ΔΕΔΕΟΜΕΝΩΝ
             Customer customer = db.getLoc().find(Customer.class, Usr.getCustomerId());
             db.DELETE_CUSTOMER(customer);
+            JOptionPane.showMessageDialog(this, "Επιστροφή στην αρχική οθόνη.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Απέτυχε! η διαγραφή των στοιχείων του πελάτη.");
         }
