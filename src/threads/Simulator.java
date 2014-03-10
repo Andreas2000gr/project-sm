@@ -59,6 +59,20 @@ class Simulator {
         //και βρίσκουμε τον πελάτη που βρίσκεται στη συγκεκριμέη θέση
         customer = customers.get(customerIndex);
 
+        try {
+            // αρχικοποίηση transaction
+            if (!db.getLoc().getTransaction().isActive()) {
+                db.getLoc().getTransaction().begin();
+            }
+            db.getLoc().persist(customer);
+
+            db.getLoc().merge(customer);
+            db.getLoc().getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.getLoc().getTransaction().rollback();
+        }
+        
         return customer;
     }
 
