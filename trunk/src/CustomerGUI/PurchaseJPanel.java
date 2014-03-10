@@ -58,6 +58,19 @@ public class PurchaseJPanel extends javax.swing.JPanel {
             loc.getTransaction().begin();
         }
     }
+    
+    public PurchaseJPanel(SuperMarketParentFrame ParentFrame, Purchase pur) {
+        this.frame = ParentFrame;
+        this.store = new Store();
+        this.Usr = ParentFrame.cust;
+        initComponents();
+        this.loc = ParentFrame.getLoc();
+        if (!loc.getTransaction().isActive()) {
+            loc.getTransaction().begin();
+        }
+        this.Basket = pur;
+        this.ProductPurchaseCollection = Basket.getProductPurchaseCollection();
+    }
 
     private void PurchaseProducts(int row, int Quantity) {
         try {
