@@ -93,6 +93,7 @@ public class SimulationJPanel extends javax.swing.JPanel {
                 .addContainerGap(35, Short.MAX_VALUE))
         );
 
+        jTextAreaSimulation.setEditable(false);
         jTextAreaSimulation.setColumns(20);
         jTextAreaSimulation.setRows(5);
         jScrollPane1.setViewportView(jTextAreaSimulation);
@@ -142,10 +143,10 @@ public class SimulationJPanel extends javax.swing.JPanel {
         //Αγορά τυχαίων προϊόντων και προσθήκη στο καλάθι του επιλεγμένου πελάτη
         jTextAreaSimulation.append("Τυχαία επιλογή προϊόντων για αγορά\n");
         Purchase purchase = simulator.PopulateBasket(customer);
-        jTextAreaSimulation.append(" " + purchase.getCustomer().getLastName() + "\n");
+        jTextAreaSimulation.append("Purchase ID: "+purchase.getPurchaseId()+ "\n");
         
         for(ProductPurchase pp : purchase.getProductPurchaseCollection()){
-            jTextAreaSimulation.append("Επιλέχθηκε τυχαία το προϊόν: " + pp.getProductId() +"-" + pp.getQuantity() + "\n");
+            jTextAreaSimulation.append("Επιλέχθηκε τυχαία το προϊόν: " + pp.getProductId() +"- τεμάχια:" + pp.getQuantity() + "\n");
         }
         
          try {
@@ -154,8 +155,9 @@ public class SimulationJPanel extends javax.swing.JPanel {
                 db.getLoc().getTransaction().begin();
             }
 
+            db.getLoc().persist(purchase);
             
-//            db.getLoc().getTransaction().commit();
+           db.getLoc().getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
             db.getLoc().getTransaction().rollback();
