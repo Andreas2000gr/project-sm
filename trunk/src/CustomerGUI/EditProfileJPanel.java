@@ -433,7 +433,7 @@ public class EditProfileJPanel extends javax.swing.JPanel {
 
             Message="Τα στοιχεία της πιστωτικής κάρτας ενημερώθηκαν επιτυχώς.";
          } catch (Exception e) {
-            Message="Απέτυχε! η ενημέρωση των στοιχείων της πιστωτικής κάρτας του πελάτη.";
+            Message="Απέτυχε η ενημέρωση της κάρτας! Η εξωτερική βάση δεν δέχεται update της πιστωτικής κάρτας.";
         }        
 
         try {
