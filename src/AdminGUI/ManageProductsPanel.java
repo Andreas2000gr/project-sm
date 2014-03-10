@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import supermarket.SuperMarketParentFrame;
 
 /**
@@ -248,7 +248,9 @@ public class ManageProductsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_RemoveRowActionPerformed
 
     private void AddRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddRowActionPerformed
-
+        prod = new Product();
+        productList.add(prod);
+        ProductTable.updateUI();
     }//GEN-LAST:event_AddRowActionPerformed
 
     private void ProductTablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_ProductTablePropertyChange

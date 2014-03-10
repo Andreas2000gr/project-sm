@@ -38,6 +38,7 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
     private Integer column;
     private Customer cust = new Customer();
     private List<Customer> custList = new ArrayList<>();
+    private Integer retval = 0;
     
     public ManageCustomersPanel(SuperMarketParentFrame frame) {
         this.loc = frame.getLoc();
@@ -312,13 +313,33 @@ public class ManageCustomersPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_ClearChangesActionPerformed
 
     private void NewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewButtonActionPerformed
-          
-        SuperMarketParentFrame s = new SuperMarketParentFrame();
-        s.pnl =  new CreateCustomerPanel(s);
-        s.addPanelInMain();
-        s.pack();
-        s.setVisible(true);
+        if (tableChanged) {
+            Object[] options = {"Ναι","Οχι"};
+            Integer choice = JOptionPane.showOptionDialog(null,
+            "Επιβεβαίωση αλλαγών;",
+            null,
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            options,
+            options[0]);
 
+            if (choice == JOptionPane.YES_OPTION){
+                if (loc.getTransaction().isActive()) {
+                    try {
+                        loc.getTransaction().commit();
+                    } catch (Exception e) {
+                            e.printStackTrace();
+                        loc.getTransaction().rollback(); 
+                    }
+                }
+            }
+        }
+        
+        CreateCustomerDialog dialog = new CreateCustomerDialog(frame,true);
+        dialog.setVisible(true);
+        frame.pnl = new ManageCustomersPanel(frame);
+        frame.addPanelInMain();
     }//GEN-LAST:event_NewButtonActionPerformed
 
     private void DeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButtonActionPerformed

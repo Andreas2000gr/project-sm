@@ -46,6 +46,7 @@ public class CreditCardDialog extends javax.swing.JDialog {
     private SuperMarketParentFrame frame;
     private EntityManager loc;
     private EntityManager ext;
+    private CreditCardAuthority CCard = new CreditCardAuthority();
     
     public CreditCardDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -72,8 +73,6 @@ public class CreditCardDialog extends javax.swing.JDialog {
     
     private void populateFields(){
         Customer cust = frame.cust;
-        CreditCardAuthority CCard = new CreditCardAuthority();
-        if (!cust.getCreditCardId().equals(null)) {
             try {
                 Query q = ext.createNamedQuery("CreditCardAuthority.findByPkCardId");
                 q.setParameter("pkCardId", cust.getCreditCardId());
@@ -84,15 +83,17 @@ public class CreditCardDialog extends javax.swing.JDialog {
                 for (ExternalBank bank : externalBankList) {
                     if (CCard.getBank().equals(bank)) {
                         BankComboBox.setSelectedItem(bank);
-                        break;
+                        return;
                     }
                 }
             } catch (javax.persistence.NoResultException e) {
                 BankComboBox.setSelectedIndex(-1);
+                return;
             } catch (Exception e){
                 e.printStackTrace();
+                return;
             }
-        }
+
     }
         
     
@@ -126,6 +127,10 @@ public class CreditCardDialog extends javax.swing.JDialog {
      */
     public int getReturnStatus() {
         return returnStatus;
+    }
+    
+    public CreditCardAuthority getCCard(){
+        return CCard;
     }
 
     /**
