@@ -467,7 +467,7 @@ public class EditProfileJPanel extends javax.swing.JPanel {
             //ΟΡΙΣΤΙΚΗ ΔΙΑΓΡΑΦΗ ΠΕΛΑΤΗ ΑΠΟ ΤΗ ΒΑΣΗ ΔΕΔΕΟΜΕΝΩΝ
             Customer customer = db.getLoc().find(Customer.class, Usr.getCustomerId());
             db.DELETE_CUSTOMER(customer);
-            JOptionPane.showMessageDialog(this, "Επιστροφή στην αρχική οθόνη.");
+            JOptionPane.showMessageDialog(this, "Ο λογαριασμός διεγράφη. Θα επιστρέψετε στην αρχική οθόνη.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Απέτυχε! η διαγραφή των στοιχείων του πελάτη.");
         }
