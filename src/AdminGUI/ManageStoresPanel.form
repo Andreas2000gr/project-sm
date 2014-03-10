@@ -59,29 +59,28 @@
                       <Component id="SaveButton" min="-2" pref="112" max="-2" attributes="0"/>
                   </Group>
                   <Component id="jScrollPane1" pref="647" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="AddRow" max="32767" attributes="0"/>
+                          <Component id="RemoveRow" min="-2" pref="41" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-          </Group>
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace max="32767" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="AddRow" max="32767" attributes="0"/>
-                  <Component id="RemoveRow" max="32767" attributes="0"/>
-              </Group>
-              <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
-              <Component id="jScrollPane1" min="-2" pref="210" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jScrollPane1" pref="305" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="AddRow" min="-2" pref="38" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="RemoveRow" min="-2" pref="38" max="-2" attributes="0"/>
-              <EmptySpace pref="62" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="ReturnButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="SaveButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -110,9 +109,6 @@
       <SubComponents>
         <Component class="javax.swing.JTable" name="StoreTable">
           <Properties>
-            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="model" type="code"/>
-            </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0"/>
             </Property>
@@ -120,13 +116,22 @@
               <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
             </Property>
           </Properties>
+          <BindingProperties>
+            <BindingProperty name="elements" source="storeList" target="StoreTable" targetPath="elements" updateStrategy="0" immediately="true">
+              <Subbinding sourcePath="${address}">
+                <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="String.class"/>
+              </Subbinding>
+              <Subbinding sourcePath="${name}">
+                <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="String.class"/>
+              </Subbinding>
+            </BindingProperty>
+            <BindingProperty name="selectedElement" source="StoreTable" sourcePath="${selectedElement}" target="StoreTable" targetPath="selectedElement" updateStrategy="0" immediately="false">
+              <BindingParameter name="IGNORE_ADJUSTING" value="N"/>
+            </BindingProperty>
+          </BindingProperties>
           <Events>
             <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="StoreTablePropertyChange"/>
           </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable()"/>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="populateTable();"/>
-          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

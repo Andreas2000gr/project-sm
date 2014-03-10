@@ -51,6 +51,7 @@ public class ManageStoresPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("SuperMarket-local-PU").createEntityManager();
         storeQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT s FROM Store s");
@@ -72,8 +73,17 @@ public class ManageStoresPanel extends javax.swing.JPanel {
             }
         });
 
-        populateTable();
-        StoreTable.setModel(model);
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, storeList, StoreTable);
+        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${address}"));
+        columnBinding.setColumnName("Address");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${name}"));
+        columnBinding.setColumnName("Name");
+        columnBinding.setColumnClass(String.class);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, StoreTable, org.jdesktop.beansbinding.ELProperty.create("${selectedElement}"), StoreTable, org.jdesktop.beansbinding.BeanProperty.create("selectedElement"));
+        bindingGroup.addBinding(binding);
+
         StoreTable.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 StoreTablePropertyChange(evt);
@@ -122,49 +132,50 @@ public class ManageStoresPanel extends javax.swing.JPanel {
                         .addComponent(EditButton, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(SaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(AddRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(RemoveRow, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(AddRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(RemoveRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(50, 50, 50))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(AddRow, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(RemoveRow, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ReturnButton)
                     .addComponent(SaveButton)
                     .addComponent(EditButton))
                 .addContainerGap())
         );
+
+        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
  
-    private void populateTable(){
-        for (Store st : storeList) {
-            model.addRow(new Object[]{st.getName(),st.getAddress(),st.getStoreId()});
-        }
-         StoreTable.setModel(model);
-        for (int i=0 ; i < StoreTable.getRowCount(); i++) {
-            for (int j = 0; j < StoreTable.getColumnCount(); j++) {
-               //StoreTable.setEnabled(false);
-            }
-        }
-    }
-    
-    private boolean validateStore(){
-        return true;
-    }
+//    private void populateTable(){
+//        for (Store st : storeList) {
+//            model.addRow(new Object[]{st.getName(),st.getAddress(),st.getStoreId()});
+//        }
+//         StoreTable.setModel(model);
+//        for (int i=0 ; i < StoreTable.getRowCount(); i++) {
+//            for (int j = 0; j < StoreTable.getColumnCount(); j++) {
+//               //StoreTable.setEnabled(false);
+//            }
+//        }
+//    }
+//    
+//    private boolean validateStore(){
+//        return true;
+//    }
     
     private void ReturnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnButtonActionPerformed
         frame.pnl = new MainPanel(frame);
@@ -176,7 +187,7 @@ public class ManageStoresPanel extends javax.swing.JPanel {
             existsEmptyRow = true;
 
             model = (DefaultTableModel)StoreTable.getModel();
-            model.addRow(new Object[]{"","",""});
+            model.addRow(new Object[]{"",""});
             StoreTable.setModel(model);
         }
     }//GEN-LAST:event_AddRowActionPerformed
@@ -258,5 +269,6 @@ public class ManageStoresPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private java.util.List<LocalDB.Store> storeList;
     private javax.persistence.Query storeQuery;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
