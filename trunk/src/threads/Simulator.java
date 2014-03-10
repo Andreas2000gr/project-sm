@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Random;
-import javax.persistence.EntityManager;
 import supermarket.DBmanager;
 
 /**
@@ -32,13 +31,16 @@ import supermarket.DBmanager;
 class Simulator {
 
     private DBmanager db;
-    private Purchase Basket;
-    public Calendar cal = new GregorianCalendar();
-    public Date date = cal.getTime();
+    public Purchase Basket;
+    private Calendar cal = new GregorianCalendar();
+    private Date date = cal.getTime();
 
     public Simulator(DBmanager db) {
         this.db = db;
-        Basket = new Purchase();
+        this.Basket = new Purchase();
+                if (!db.getLoc().getTransaction().isActive()) {
+            db.getLoc().getTransaction().begin();
+        }
     }
 
     /**
@@ -101,6 +103,7 @@ class Simulator {
             PP.setProductId(p);
             PP.setQuantity(Quantity);
             PP.setProductPurchaseId(null);
+            PP.setPurchaseId(Basket);
 
             //αποθηκεούμε τη συσχέτιση προϊόν-αγοράς στη λίστα
             ProdPurchCollection.add(PP);
@@ -121,17 +124,18 @@ class Simulator {
         Basket.setDatetime(date);
         Basket.setAmount(0);
         Basket.setPointsEarned(0);
-        Basket.getProductPurchaseCollection().addAll(ProdPurchCollection);
         Basket.setStore(s);
         Basket.setDelivery(false);
-
+        Basket.getProductPurchaseCollection().addAll(ProdPurchCollection);
+        
         try {
             // αρχικοποίηση transaction
             if (!db.getLoc().getTransaction().isActive()) {
                 db.getLoc().getTransaction().begin();
             }
             db.getLoc().persist(Basket);
-            // db.getLoc().merge(Basket);
+
+            db.getLoc().merge(Basket);
             db.getLoc().getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
