@@ -33,7 +33,9 @@ public class SuperMarket {
 
     // @EPA:: Καθαρίζει όλους τους πίνακες της ΒΔ     
     private void CleanDB() {
-        db.getLoc().getTransaction().begin();
+        if (!db.getLoc().getTransaction().isActive()) {
+            db.getLoc().getTransaction().begin();
+        }
         try {
             Query q;
             q = db.getLoc().createQuery("DELETE FROM ProductPurchase pp");
@@ -68,7 +70,9 @@ public class SuperMarket {
      */
     public void createStoresAndProducts() {
         // αρχικοποίηση transaction
-        db.getLoc().getTransaction().begin();
+        if (!db.getLoc().getTransaction().isActive()) {
+            db.getLoc().getTransaction().begin();
+        }
         try {
             /* Δημιουργία Προϊόντων */
             Product odokrema = new Product(null, "Aim Οδοντόκρεμα 75 ml", "1100", 10, 4.35f);
@@ -92,41 +96,84 @@ public class SuperMarket {
             Product galafresko = new Product(null, "Γάλα φρέσκο 1Ltr", "1280", 20, 5.31f);
             Product sokolata = new Product(null, "Σολολάτες Lakta 12τμ.", "1290", 20, 15.21f);
 
+            Product kyboimaggiB = new Product(null, "Maggi Κύβοι Ζωμό 12τεμ.", "1220", 16, 5.01f);
+            Product moustardaB = new Product(null, "Μουστάρδα 500 gr", "1230", 17, 5.06f);
+            Product ketsapB = new Product(null, "Κέτσαπ 500 gr", "1240", 17, 5.11f);
+            Product malaktikorouxB = new Product(null, "Μαλακτικό Ρούχων 1lt", "1250", 18, 15.16f);
+            Product ryzibasmatiB = new Product(null, "Ρύζι Basmati 500gr", "1260", 18, 5.21f);
+            Product tsixlesB = new Product(null, "Τσίχλες Trdent Μέντα", "1270", 19, 5.26f);
+            Product galafreskoB = new Product(null, "Γάλα φρέσκο 1Ltr", "1280", 20, 5.31f);
+            Product sokolataB = new Product(null, "Σολολάτες Lakta 12τμ.", "1290", 20, 15.21f);
 
             /* Δημιουργία Καταστημάτων */
+            Store abGeraka = new Store(null, "AB Γέρακα", "Λεωφόρος Σπάτων 81, Γέρακας");
             Store abAlimou = new Store(null, "AB Αλίμου", "Καλαμακίου 120, Άλιμος");
             Store abFalirou = new Store(null, "AB Φαλήρου", "Ποσειδώνος 300, Παλαιό Φάληρο");
-            Store abGeraka = new Store(null, "AB Γέρακα", "Λεωφόρος Σπάτων 81, Γέρακας");
+            
+            //Παρακάτω φαίνεται ο σωστός τρόπος ώστε να ενημερωθεί και ο πίνακας 
+            //Store_Product. O λόγος που δεν δουλεύει το ανάποδο είναι διότι η κλάση Product
+            // έχει τα στοιχεία για τον join table και μόνο μία εκ των δύο μπορεί να τα έχει.
+            Collection<Store> StoreCollectionGeraka = new ArrayList<>(); //αρχικοποίηση
+            StoreCollectionGeraka.add(abGeraka);
+
+            //Σύνδεση καταστημάτων με προϊόντα
+            kyboimaggiB.setStoreCollection(StoreCollectionGeraka);
+            moustardaB.setStoreCollection(StoreCollectionGeraka);
+            ketsapB.setStoreCollection(StoreCollectionGeraka);
+            malaktikorouxB.setStoreCollection(StoreCollectionGeraka);
+            ryzibasmatiB.setStoreCollection(StoreCollectionGeraka);
+            tsixlesB.setStoreCollection(StoreCollectionGeraka);
+            galafreskoB.setStoreCollection(StoreCollectionGeraka);
+            sokolataB.setStoreCollection(StoreCollectionGeraka);
+
+            //Δημιούργησε μια νέα εγγραφή στη βάση
+            db.getLoc().persist(kyboimaggiB);
+            db.getLoc().persist(moustardaB);
+            db.getLoc().persist(ketsapB);
+            db.getLoc().persist(malaktikorouxB);
+            db.getLoc().persist(ryzibasmatiB);
+            db.getLoc().persist(tsixlesB);
+            db.getLoc().persist(galafreskoB);
+            db.getLoc().persist(sokolataB);
+
+            //ενημέρωσε τη βάση
+            db.getLoc().merge(kyboimaggiB);
+            db.getLoc().merge(moustardaB);
+            db.getLoc().merge(ketsapB);
+            db.getLoc().merge(malaktikorouxB);
+            db.getLoc().merge(ryzibasmatiB);
+            db.getLoc().merge(tsixlesB);
+            db.getLoc().merge(galafreskoB);
+            db.getLoc().merge(sokolataB);
 
             //Παρακάτω φαίνεται ο σωστός τρόπος ώστε να ενημερωθεί και ο πίνακας 
             //Store_Product. O λόγος που δεν δουλεύει το ανάποδο είναι διότι η κλάση Product
             // έχει τα στοιχεία για τον join table και μόνο μία εκ των δύο μπορεί να τα έχει.
-            Collection<Store> store = new ArrayList<>(); //αρχικοποίηση
-            store.add(abAlimou);
-            store.add(abFalirou);
-            store.add(abGeraka);
-
+            Collection<Store> StoreCollectionOther = new ArrayList<>(); //αρχικοποίηση
+            StoreCollectionOther.add(abFalirou);
+            StoreCollectionOther.add(abAlimou);
+            
             //Σύνδεση καταστημάτων με προϊόντα
-            odokrema.setStoreCollection(store);
-            makaroniano7.setStoreCollection(store);
-            alevri.setStoreCollection(store);
-            ladi.setStoreCollection(store);
-            dimitriaka.setStoreCollection(store);
-            xartikouzinas.setStoreCollection(store);
-            makaroniano3.setStoreCollection(store);
-            badedas.setStoreCollection(store);
-            kafesellinikos.setStoreCollection(store);
-            kafesfiltrou.setStoreCollection(store);
-            kafesespresso.setStoreCollection(store);
-            aporrouxwn.setStoreCollection(store);
-            kyboimaggi.setStoreCollection(store);
-            moustarda.setStoreCollection(store);
-            ketsap.setStoreCollection(store);
-            malaktikoroux.setStoreCollection(store);
-            ryzibasmati.setStoreCollection(store);
-            tsixles.setStoreCollection(store);
-            galafresko.setStoreCollection(store);
-            sokolata.setStoreCollection(store);
+            odokrema.setStoreCollection(StoreCollectionOther);
+            makaroniano7.setStoreCollection(StoreCollectionOther);
+            alevri.setStoreCollection(StoreCollectionOther);
+            ladi.setStoreCollection(StoreCollectionOther);
+            dimitriaka.setStoreCollection(StoreCollectionOther);
+            xartikouzinas.setStoreCollection(StoreCollectionOther);
+            makaroniano3.setStoreCollection(StoreCollectionOther);
+            badedas.setStoreCollection(StoreCollectionOther);
+            kafesellinikos.setStoreCollection(StoreCollectionOther);
+            kafesfiltrou.setStoreCollection(StoreCollectionOther);
+            kafesespresso.setStoreCollection(StoreCollectionOther);
+            aporrouxwn.setStoreCollection(StoreCollectionOther);
+            kyboimaggi.setStoreCollection(StoreCollectionOther);
+            moustarda.setStoreCollection(StoreCollectionOther);
+            ketsap.setStoreCollection(StoreCollectionOther);
+            malaktikoroux.setStoreCollection(StoreCollectionOther);
+            ryzibasmati.setStoreCollection(StoreCollectionOther);
+            tsixles.setStoreCollection(StoreCollectionOther);
+            galafresko.setStoreCollection(StoreCollectionOther);
+            sokolata.setStoreCollection(StoreCollectionOther);
 
             //Δημιούργησε μια νέα εγγραφή στη βάση
             db.getLoc().persist(odokrema);
@@ -194,14 +241,17 @@ public class SuperMarket {
         Date date;
 
         // αρχικοποίηση transaction
-        db.getLoc().getTransaction().begin();
+        if (!db.getLoc().getTransaction().isActive()) {
+            db.getLoc().getTransaction().begin();
+        }
         try {
             /* Δημιουργία Πελατών */
             //δημιουργούμε ένα πελάτη
-            Customer CustomerA = new Customer("Andreas", "Paradise", "111-111","Αιόλου 29, Γαλάτσι", 0,"aparadis");
-            Customer CustomerB = new Customer("Panagis", "Loukatos", "222-222","Αγ. Μαρίνας 33, Πειραιάς", 0,"ploukato");
-            Customer CustomerC = new Customer("Anestis", "Passas", "333-333","Δωδεκανήσου 20, Χολαργός",0,  "apassas");
-            Customer CustomerD = new Customer("Euh", "Papavasileiou", "444-444","Αγ. Διονυσίου 123, Αγ. Παρασκευή",0,"epapavas");
+            Customer CustomerA = new Customer("Andreas", "Paradise", "111-111", "Αιόλου 29, Γαλάτσι", 0, "aparadis");
+            Customer CustomerB = new Customer("Panagis", "Loukatos", "222-222", "Αγ. Μαρίνας 33, Πειραιάς", 0, "ploukato");
+            Customer CustomerC = new Customer("Anestis", "Passas", "333-333", "Δωδεκανήσου 20, Χολαργός", 0, "apassas");
+            //Customer CustomerD = new Customer("Euh", "Papavasileiou", "444-444", "Αγ. Διονυσίου 123, Αγ. Παρασκευή", 0, "epapavas");
+            Customer CustomerD = new Customer("Euh", "Papavasileiou", "0", "Αγ. Διονυσίου 123, Αγ. Παρασκευή", 0, "0");
 
             //δημιουργούμε νέες επιταγές      
             myDateAsString = "2012-05-10";
@@ -240,7 +290,6 @@ public class SuperMarket {
             date = formatter.parse(myDateAsString);
             Voucher VoucherD1 = new Voucher(false, date, CustomerD);
 
-           
             //----------------
             myDateAsString = "2008-07-02";
             formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -252,7 +301,7 @@ public class SuperMarket {
             formatter = new SimpleDateFormat("yyyy-MM-dd");
             date = formatter.parse(myDateAsString);
             Voucher VoucherD3 = new Voucher(false, date, CustomerD);
-            
+
             //Σχετίζουμε τον πελάτη με την πιστωτική κάρτα
             CustomerA.setCreditCardId(2);
             CustomerB.setCreditCardId(3);
@@ -269,7 +318,7 @@ public class SuperMarket {
             db.getLoc().persist(CustomerC);
             db.getLoc().persist(CustomerD);
 
-          //Δημιούργησε μια νέα εγγραφή στη βάση για τις επιταγές
+            //Δημιούργησε μια νέα εγγραφή στη βάση για τις επιταγές
             db.getLoc().persist(VoucherA1);
             db.getLoc().persist(VoucherA2);
             db.getLoc().persist(VoucherB1);
@@ -277,8 +326,8 @@ public class SuperMarket {
             db.getLoc().persist(VoucherC1);
             db.getLoc().persist(VoucherD1);
             db.getLoc().persist(VoucherD2);
-            db.getLoc().persist(VoucherD3);              
-            
+            db.getLoc().persist(VoucherD3);
+
             //ενημέρωσε τη βάση
             db.getLoc().merge(CustomerA);
             db.getLoc().merge(CustomerB);
@@ -292,8 +341,7 @@ public class SuperMarket {
             db.getLoc().merge(VoucherC1);
             db.getLoc().merge(VoucherD1);
             db.getLoc().merge(VoucherD2);
-            db.getLoc().merge(VoucherD3);  
-            
+            db.getLoc().merge(VoucherD3);
 
             //εκτέλεση την εντολή
             db.getLoc().getTransaction().commit();
