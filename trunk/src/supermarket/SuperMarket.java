@@ -106,8 +106,8 @@ public class SuperMarket {
             Product sokolataB = new Product(null, "Σολολάτες Lakta 12τμ.", "1290", 20, 15.21f);
 
             /* Δημιουργία Καταστημάτων */
-            Store abGeraka = new Store(null, "AB Γέρακα", "Λεωφόρος Σπάτων 81, Γέρακας");
             Store abAlimou = new Store(null, "AB Αλίμου", "Καλαμακίου 120, Άλιμος");
+            Store abGeraka = new Store(null, "AB Γέρακα", "Λεωφόρος Σπάτων 81, Γέρακας");            
             Store abFalirou = new Store(null, "AB Φαλήρου", "Ποσειδώνος 300, Παλαιό Φάληρο");
             
             //Παρακάτω φαίνεται ο σωστός τρόπος ώστε να ενημερωθεί και ο πίνακας 
@@ -235,7 +235,7 @@ public class SuperMarket {
      * @EPA:: Δημιουργεί κάποιους πελάτες στη ΒΔ για να μπορούν να
      * χρησιμοποιηθούν για τους σκοπούς της εργασίας
      */
-    public void createCustomersAndVouchers() {
+     public void createCustomersAndVouchers() {
         String myDateAsString;
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); //Example: 2012-03-04
         Date date;
@@ -308,7 +308,7 @@ public class SuperMarket {
             CustomerD.setCreditCardId(5);
 
             //ορίζουμε διευθύνση στον πελάτη
-            CustomerA.setAddress("Ag. Georgiou 89, Athina");
+            CustomerA.setAddress("Ag. Georgiou 89, Athina");           
             CustomerD.setAddress("Grigoriou 20, Kallithea");
 
             //Δημιούργησε μια νέα εγγραφή στη βάση
@@ -350,6 +350,7 @@ public class SuperMarket {
         }
 
     }
+   
 
     public static void main(String[] args) {
         // Δημιουργούμε το SuperMarket
