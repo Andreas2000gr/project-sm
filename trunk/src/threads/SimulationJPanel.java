@@ -8,7 +8,6 @@ package threads;
 import LocalDB.Customer;
 import LocalDB.ProductPurchase;
 import LocalDB.Purchase;
-import javax.persistence.EntityManager;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
 import supermarket.WelcomePanel;
@@ -162,8 +161,6 @@ public class SimulationJPanel extends javax.swing.JPanel {
             e.printStackTrace();
             db.getLoc().getTransaction().rollback();
         }
-        
-
     }//GEN-LAST:event_jButton2ActionPerformed
 
 
