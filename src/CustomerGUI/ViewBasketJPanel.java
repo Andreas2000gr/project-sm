@@ -42,6 +42,10 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private Integer retval = 0;
     private boolean tableChanged = false;
     private List<ProductPurchase> PPurList = new ArrayList<>();
+    private Object newValue;
+    private Object oldValue;
+    private Integer row = 0;
+    private Integer column = 0;
   
 
     /**
@@ -349,6 +353,11 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                 BasketTableFocusGained(evt);
             }
         });
+        BasketTable.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                BasketTablePropertyChange(evt);
+            }
+        });
         jScrollPane4.setViewportView(BasketTable);
         BasketTable.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (BasketTable.getColumnModel().getColumnCount() > 0) {
@@ -458,7 +467,8 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_CheckOutButtonActionPerformed
 
     private void ReturnToMainCustomerFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnToMainCustomerFormActionPerformed
-        ParentFrame.pnl = new PurchaseJPanel(this.ParentFrame);
+        Basket.setProductPurchaseCollection(PPurList);
+        ParentFrame.pnl = new PurchaseJPanel(this.ParentFrame, Basket);
         ParentFrame.addPanelInMain();
     }//GEN-LAST:event_ReturnToMainCustomerFormActionPerformed
 
@@ -515,6 +525,26 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private void BasketTableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_BasketTableFocusGained
         RemovefromBasketButton.setEnabled(true);
     }//GEN-LAST:event_BasketTableFocusGained
+
+    private void BasketTablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_BasketTablePropertyChange
+        if ("tableCellEditor".equals(evt.getPropertyName())) {
+            row = BasketTable.getSelectedRow();
+            column = BasketTable.getSelectedColumn();
+            ProductPurchase oldPP = productPurchaseList.get(BasketTable.convertRowIndexToModel(row));
+            if (BasketTable.isEditing()) {
+                RemovefromBasketButton.setEnabled(false);                
+                oldValue = BasketTable.getValueAt(row, column);
+            } else {
+                newValue = BasketTable.getValueAt(row, column);
+                if (!oldValue.equals(newValue)) {
+                    ProductPurchase newPP = new ProductPurchase();
+                    newPP = productPurchaseList.get(BasketTable.convertRowIndexToModel(row));
+                    PPurList.remove(oldPP);
+                    PPurList.add(newPP);
+                }
+            }
+        }
+    }//GEN-LAST:event_BasketTablePropertyChange
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

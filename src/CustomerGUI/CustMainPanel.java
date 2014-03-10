@@ -36,7 +36,6 @@ public class CustMainPanel extends javax.swing.JPanel {
         jButton5 = new javax.swing.JButton();
         BuyProducts = new javax.swing.JPanel();
         PurchaseButton = new javax.swing.JButton();
-        ViewBasketjButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         EditProfileButton1 = new javax.swing.JButton();
         ChecksjButton = new javax.swing.JButton();
@@ -61,35 +60,21 @@ public class CustMainPanel extends javax.swing.JPanel {
             }
         });
 
-        ViewBasketjButton.setText("Προβολή Καλαθιού");
-        ViewBasketjButton.setMaximumSize(new java.awt.Dimension(199, 25));
-        ViewBasketjButton.setMinimumSize(new java.awt.Dimension(199, 25));
-        ViewBasketjButton.setPreferredSize(new java.awt.Dimension(199, 25));
-        ViewBasketjButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ViewBasketjButtonActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout BuyProductsLayout = new javax.swing.GroupLayout(BuyProducts);
         BuyProducts.setLayout(BuyProductsLayout);
         BuyProductsLayout.setHorizontalGroup(
             BuyProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BuyProductsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(BuyProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(PurchaseButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ViewBasketjButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addComponent(PurchaseButton, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
+                .addContainerGap())
         );
         BuyProductsLayout.setVerticalGroup(
             BuyProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BuyProductsLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(PurchaseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ViewBasketjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(PurchaseButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Διαχείριση Προφίλ"));
@@ -139,7 +124,7 @@ public class CustMainPanel extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(21, Short.MAX_VALUE)
                 .addComponent(EditProfileButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ChangePasswordjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -160,9 +145,9 @@ public class CustMainPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(88, 88, 88)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(BuyProducts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(84, Short.MAX_VALUE))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,8 +155,8 @@ public class CustMainPanel extends javax.swing.JPanel {
                 .addGap(49, 49, 49)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(BuyProducts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(8, 8, 8)
+                        .addComponent(BuyProducts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(90, 90, 90)
                 .addComponent(jButton5)
@@ -201,13 +186,6 @@ public class CustMainPanel extends javax.swing.JPanel {
         frame.addPanelInMain();
     }//GEN-LAST:event_ChangePasswordjButtonActionPerformed
 
-    private void ViewBasketjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewBasketjButtonActionPerformed
-        Purchase pur = new Purchase();
-        pur.setPurchaseId(0);
-        frame.pnl = new ViewBasketJPanel(this.frame, pur);
-        frame.addPanelInMain();
-    }//GEN-LAST:event_ViewBasketjButtonActionPerformed
-
     private void PurchaseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PurchaseButtonActionPerformed
         // TODO add your handling code here:
         frame.pnl = new PurchaseJPanel(this.frame);
@@ -221,7 +199,6 @@ public class CustMainPanel extends javax.swing.JPanel {
     private javax.swing.JButton ChecksjButton;
     private javax.swing.JButton EditProfileButton1;
     private javax.swing.JButton PurchaseButton;
-    private javax.swing.JButton ViewBasketjButton;
     private javax.swing.JButton jButton5;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
