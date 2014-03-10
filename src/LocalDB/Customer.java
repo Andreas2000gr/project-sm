@@ -74,11 +74,11 @@ public class Customer implements Serializable {
         this.customerId = customerId;
     }
 
-    public Customer(Integer customerId, String firstName, String lastName, String pointsCardNumber, int availablePoints,String password) {
-        this.customerId = customerId;
+    public Customer(String firstName, String lastName, String pointsCardNumber,String address,int availablePoints,String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.pointsCardNumber = pointsCardNumber;
+        this.address = address;
         this.availablePoints = availablePoints;
         this.password = password;
     }
