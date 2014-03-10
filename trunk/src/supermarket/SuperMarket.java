@@ -198,16 +198,10 @@ public class SuperMarket {
         try {
             /* Δημιουργία Πελατών */
             //δημιουργούμε ένα πελάτη
-            Customer CustomerA = new Customer(1, "Andreas", "Paradise", "111-111", 0);
-            Customer CustomerB = new Customer(2, "Panagis", "Loukatos", "222-222", 0);
-            Customer CustomerC = new Customer(3, "Anestis", "Passas", "333-333", 0);
-            Customer CustomerD = new Customer(4, "Evangelia", "Papavasileiou", "444-444", 0);
-
-            //ορίζουμε μια λίστα από επιταγές
-            Collection<Voucher> VoucherCollectionA = new ArrayList<>();
-            Collection<Voucher> VoucherCollectionB = new ArrayList<>();
-            Collection<Voucher> VoucherCollectionC = new ArrayList<>();
-            Collection<Voucher> VoucherCollectionD = new ArrayList<>();
+            Customer CustomerA = new Customer(1, "Andreas", "Paradise", "111-111", 0,"aparadis");
+            Customer CustomerB = new Customer(2, "Panagis", "Loukatos", "222-222", 0,"ploukato");
+            Customer CustomerC = new Customer(3, "Anestis", "Passas", "333-333", 0,  "apassas");
+            Customer CustomerD = new Customer(4, "Euh", "Papavasileiou", "444-444",0,"epapavas");
 
             //δημιουργούμε νέες επιταγές      
             myDateAsString = "2012-05-10";
