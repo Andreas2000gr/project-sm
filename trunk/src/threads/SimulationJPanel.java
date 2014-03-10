@@ -146,7 +146,7 @@ public class SimulationJPanel extends javax.swing.JPanel {
         jTextAreaSimulation.append("Purchase ID: "+purchase.getPurchaseId()+ "\n");
         
         for(ProductPurchase pp : purchase.getProductPurchaseCollection()){
-            jTextAreaSimulation.append("Επιλέχθηκε τυχαία το προϊόν: " + pp.getProductId() +"- τεμάχια:" + pp.getQuantity() + "\n");
+            jTextAreaSimulation.append("Επιλέχθηκε τυχαία το προϊόν: " + pp.getProductId().getName() +"- τεμάχια:" + pp.getQuantity() + "\n");
         }
         
          try {
