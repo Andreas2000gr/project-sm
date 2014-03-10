@@ -139,7 +139,7 @@ class Simulator {
         Basket.setAmount(0);
         Basket.setPointsEarned(0);
         Basket.setStore(s);
-        Basket.setDelivery(false);
+        Basket.setDelivery(Delivery);
         Basket.getProductPurchaseCollection().addAll(ProdPurchCollection);
         
         try {
