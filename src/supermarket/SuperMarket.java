@@ -250,8 +250,7 @@ public class SuperMarket {
             Customer CustomerA = new Customer("Andreas", "Paradise", "111-111", "Αιόλου 29, Γαλάτσι", 0, "aparadis");
             Customer CustomerB = new Customer("Panagis", "Loukatos", "222-222", "Αγ. Μαρίνας 33, Πειραιάς", 0, "ploukato");
             Customer CustomerC = new Customer("Anestis", "Passas", "333-333", "Δωδεκανήσου 20, Χολαργός", 0, "apassas");
-            //Customer CustomerD = new Customer("Euh", "Papavasileiou", "444-444", "Αγ. Διονυσίου 123, Αγ. Παρασκευή", 0, "epapavas");
-            Customer CustomerD = new Customer("Euh", "Papavasileiou", "0", "Αγ. Διονυσίου 123, Αγ. Παρασκευή", 0, "0");
+            Customer CustomerD = new Customer("Euh", "Papavasileiou", "444-444", "Αγ. Διονυσίου 123, Αγ. Παρασκευή", 0, "epapavas");
 
             //δημιουργούμε νέες επιταγές      
             myDateAsString = "2012-05-10";
