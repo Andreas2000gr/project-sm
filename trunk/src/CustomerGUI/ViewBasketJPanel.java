@@ -10,13 +10,15 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import javax.persistence.EntityManager;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
 
@@ -28,18 +30,18 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
 
     private final DBmanager db = new DBmanager();
     private SuperMarketParentFrame ParentFrame;
-    private Purchase Basket = new Purchase();
+    private Purchase Basket;
     private Customer Usr;
     private final Object[] columnNames = {"Όνομα Προϊόντος", "Κωδικός", "Πόντοι", "Τιμή", "Ποσότητα"};
-    private DefaultTableModel DTModel;
     private EntityManager loc;
-    private Collection<Voucher> allVouch = new ArrayList<>(0);
     private Collection<Voucher> refVouch = new ArrayList<>(0);
     private Collection<Voucher> avVouch = new ArrayList<>(0);
     private Float totalPrice;
     private Integer totalPointsEarned;
     private Integer attempts = 0;
     private Integer retval = 0;
+    private boolean tableChanged = false;
+    private List<ProductPurchase> PPurList = new ArrayList<>();
   
 
     /**
@@ -52,13 +54,12 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         this.ParentFrame = ParentFrame;
         this.Usr = ParentFrame.cust;
         this.Basket = Bask;
-        this.allVouch = getAvVoucher(Usr);
+        this.PPurList = (List<ProductPurchase>)(Basket.getProductPurchaseCollection());
         initComponents();
         this.loc = ParentFrame.getLoc();
         if (!loc.getTransaction().isActive()) {
             loc.getTransaction().begin();
         }
-
         repaintAvVouc(Usr);
         repaintRefVouch(Usr);
         PopulateCustPurchase();
@@ -66,18 +67,19 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         if (Usr.getAddress().isEmpty()) {
             DeliveryButton.setEnabled(false);
         }
-
+        updateUI();
     }
     
     private void repaintAvVouc(Customer cust){
-        avVouch = allVouch;
-        if(avVouch.removeAll(refVouch)){
+        avVouch = getAvVoucher(Usr);
+        avVouch.removeAll(refVouch);
             DefaultListModel<Voucher> model = new DefaultListModel();
             for (Voucher v : avVouch) {
                 model.addElement(v);
-            }
-            this.AvVoucherList.setModel(model); 
-        };
+        }
+        this.AvVoucherList.setModel(model);
+        AvVoucherList.updateUI();
+        revalidate();            
     }
     
     private void repaintRefVouch(Customer cust){
@@ -86,6 +88,8 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
             model.addElement(p);
         }
         this.RefundedVoucherList.setModel(model);
+        RefundedVoucherList.updateUI();
+        revalidate();
     }
     
     private Collection<Voucher> getAvVoucher(Customer cust){
@@ -98,40 +102,19 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                 avVouchCol.add(v);
             }
         }
+        revalidate();
         return avVouchCol;
     }
     
     public void PopulateCustPurchase() {
         totalPrice = 0.0f;
         totalPointsEarned = 0;
-        DTModel = new DefaultTableModel(new Object[0][0], columnNames);
-        for (ProductPurchase pp : Basket.getProductPurchaseCollection()) {
+        for (ProductPurchase pp : productPurchaseList) {
             Product p = pp.getProductId();
-
-            Object[] object = new Object[5];
-            object[0] = p.getName();
-            object[1] = pp;
-            object[2] = p.getPoints();
-            object[3] = p.getPrice();
-            object[4] = pp.getQuantity();
-            DTModel.addRow(object);
             totalPrice = totalPrice + (p.getPrice() * pp.getQuantity());
             totalPointsEarned = totalPointsEarned + (p.getPoints() * pp.getQuantity());
         }
-        jTableBasket.setModel(DTModel);
-        
-        jTableBasket.getColumnModel().getColumn(1).setCellRenderer(new DefaultTableCellRenderer() {
-            @Override
 
-            public Component getTableCellRendererComponent(JTable table, Object value,boolean isSelected, boolean hasFocus,int row, int column){
-
-                //get the label
-                JLabel label = (JLabel)super.getTableCellRendererComponent(table, value,isSelected, hasFocus,row, column);
-
-                label.setText(((ProductPurchase)value).getProductId().getCode());
-                return label;
-            }
-        });
         if (!refVouch.isEmpty()) {
             for (Voucher v : refVouch) {
                 totalPrice = totalPrice - 6.0f;
@@ -143,12 +126,10 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         jTextFieldSumPontoi.setText(String.valueOf(totalPointsEarned));
         jTextFieldTotalPrice.setText(String.format("%.2f",totalPrice));
         
-        jTableBasket.updateUI();
+        BasketTable.updateUI();
+        BasketTable.revalidate();
     }
 
-    public Purchase getBasket() {
-        return Basket;
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -158,20 +139,13 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("SuperMarket-local-PU").createEntityManager();
         javax.persistence.Query productPurchaseQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT p FROM ProductPurchase p");
-        productPurchaseList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : productPurchaseQuery.getResultList();
+        productPurchaseList = PPurList;
         purchaseQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT p FROM Purchase p");
         purchaseList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : purchaseQuery.getResultList();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTableBasket = new javax.swing.JTable();
-        label1 = new java.awt.Label();
-        jTextFieldSumPontoi = new javax.swing.JTextField();
-        label2 = new java.awt.Label();
-        jTextFieldTotalPrice = new javax.swing.JTextField();
-        RemovefromBasketButton = new java.awt.Button();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         AvVoucherList = new javax.swing.JList();
@@ -184,83 +158,42 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         ShopButton = new javax.swing.JRadioButton();
         DeliveryButton = new javax.swing.JRadioButton();
-        CheckOutButton = new javax.swing.JButton();
         ReturnToMainCustomerForm = new javax.swing.JButton();
+        CheckOutButton = new javax.swing.JButton();
+        label2 = new java.awt.Label();
+        jTextFieldTotalPrice = new javax.swing.JTextField();
+        label1 = new java.awt.Label();
+        jTextFieldSumPontoi = new javax.swing.JTextField();
+        RemovefromBasketButton = new java.awt.Button();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        BasketTable = new javax.swing.JTable();
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Καλαθι"));
-
-        jScrollPane1.setViewportView(jTableBasket);
-        if (jTableBasket.getColumnModel().getColumnCount() > 0) {
-            jTableBasket.getColumnModel().getColumn(0).setHeaderValue("Προϊόν");
-            jTableBasket.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer() {
-                @Override
-
-                public Component getTableCellRendererComponent(JTable table, Object value,boolean isSelected, boolean hasFocus,int row, int column){
-
-                    //get the label
-                    JLabel label = (JLabel)super.getTableCellRendererComponent(table, value,isSelected, hasFocus,row, column);
-
-                    label.setText(((ProductPurchase)value).getProductId().getName());
-                    return label;
-                }
-            });
-            jTableBasket.getColumnModel().getColumn(1).setHeaderValue("Quantity");
-        }
-
-        label1.setText("Συνολικοί Πόντοι:");
-
-        jTextFieldSumPontoi.setEnabled(false);
-
-        label2.setText("Συνολική Τιμή:");
-
-        jTextFieldTotalPrice.setEnabled(false);
-
-        RemovefromBasketButton.setLabel("Αφαίρεση από το καλάθι");
-        RemovefromBasketButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RemovefromBasketButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldSumPontoi, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(19, 19, 19)
-                        .addComponent(RemovefromBasketButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 11, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextFieldTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextFieldSumPontoi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(RemovefromBasketButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        );
+        setBorder(javax.swing.BorderFactory.createTitledBorder("Καλάθι"));
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Επιταγές"));
 
+        AvVoucherList.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Voucher) {
+                    setText("Επιταγή Αρ. "+((Voucher)value).getVoucherId().toString());
+                }
+                return renderer;
+            }
+        });
         jScrollPane2.setViewportView(AvVoucherList);
 
+        RefundedVoucherList.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Voucher) {
+                    setText("Επιταγή Αρ. "+((Voucher)value).getVoucherId().toString());
+                }
+                return renderer;
+            }
+        });
         jScrollPane3.setViewportView(RefundedVoucherList);
 
         RemoveVoucher.setLabel("αφαίρεση");
@@ -292,7 +225,7 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(19, 112, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6))
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -338,33 +271,6 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
             }
         });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ShopButton)
-                .addGap(18, 18, 18)
-                .addComponent(DeliveryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ShopButton)
-                    .addComponent(DeliveryButton))
-                .addGap(0, 2, Short.MAX_VALUE))
-        );
-
-        CheckOutButton.setLabel("Ολοκλήρωση αγοράς");
-        CheckOutButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CheckOutButtonActionPerformed(evt);
-            }
-        });
-
         ReturnToMainCustomerForm.setText("Επιστροφή");
         ReturnToMainCustomerForm.setActionCommand("return");
         ReturnToMainCustomerForm.addActionListener(new java.awt.event.ActionListener() {
@@ -373,37 +279,135 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
             }
         });
 
+        CheckOutButton.setLabel("Ολοκλήρωση αγοράς");
+        CheckOutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CheckOutButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(ReturnToMainCustomerForm)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(CheckOutButton))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(ShopButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(DeliveryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ShopButton)
+                    .addComponent(DeliveryButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ReturnToMainCustomerForm)
+                    .addComponent(CheckOutButton))
+                .addGap(0, 11, Short.MAX_VALUE))
+        );
+
+        label2.setText("Συνολική Τιμή:");
+
+        jTextFieldTotalPrice.setEnabled(false);
+
+        label1.setText("Συνολικοί Πόντοι:");
+
+        jTextFieldSumPontoi.setEnabled(false);
+
+        RemovefromBasketButton.setLabel("Αφαίρεση από το καλάθι");
+        RemovefromBasketButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RemovefromBasketButtonActionPerformed(evt);
+            }
+        });
+
+        BasketTable.setColumnSelectionAllowed(true);
+
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, productPurchaseList, BasketTable);
+        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${productId}"));
+        columnBinding.setColumnName("Προϊόν");
+        columnBinding.setColumnClass(LocalDB.Product.class);
+        columnBinding.setEditable(false);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${quantity}"));
+        columnBinding.setColumnName("Ποσότητα");
+        columnBinding.setColumnClass(Integer.class);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();
+        BasketTable.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                BasketTableFocusGained(evt);
+            }
+        });
+        jScrollPane4.setViewportView(BasketTable);
+        BasketTable.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        if (BasketTable.getColumnModel().getColumnCount() > 0) {
+            BasketTable.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer() {
+                @Override
+
+                public Component getTableCellRendererComponent(JTable table, Object value,boolean isSelected, boolean hasFocus,int row, int column){
+
+                    //get the label
+                    JLabel label = (JLabel)super.getTableCellRendererComponent(table, value,isSelected, hasFocus,row, column);
+
+                    label.setText(((Product)value).getName());
+                    return label;
+                }
+            });
+        }
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(ReturnToMainCustomerForm)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(CheckOutButton)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(2, 2, 2)
+                        .addComponent(jTextFieldTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
+                        .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldSumPontoi, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(RemovefromBasketButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(9, 9, 9)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(RemovefromBasketButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldSumPontoi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ReturnToMainCustomerForm)
-                    .addComponent(CheckOutButton))
                 .addContainerGap())
         );
+
+        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
     private void CheckOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckOutButtonActionPerformed
@@ -431,6 +435,8 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
             Basket.setCustomer(Usr); 
             Basket.setAmount(totalPrice);
             Basket.setPointsEarned(totalPointsEarned);
+            Basket.setProductPurchaseCollection(productPurchaseList);
+
             if (DeliveryButton.isSelected()) {
                 Basket.setDelivery(true);
             } else {
@@ -456,43 +462,6 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         ParentFrame.addPanelInMain();
     }//GEN-LAST:event_ReturnToMainCustomerFormActionPerformed
 
-    private void RemovefromBasketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemovefromBasketButtonActionPerformed
-        //αφαιρεί από το καλάθι το επιλεγμένο προϊόν
-        int row = jTableBasket.getSelectedRow();
-        if (row < 0) {
-           //αν ο χρήστης δεν έχει επιλέξει προϊόν προς διαγραφή.
-            JOptionPane.showMessageDialog(this,
-                    "Επιλέξτε ένα προϊόν.",
-                    "Σφάλμα",
-                    JOptionPane.ERROR_MESSAGE);
-
-        } else {
-           Object[] Confirmation = {"Ναι", "Οχι"};
-           Integer choice = JOptionPane.showOptionDialog(null,
-                "Επιθυμείτει την αφαίρεση του προϊόντος από το καλάθι;",
-                "Αφαίρεση από το καλάθι",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                Confirmation,
-                Confirmation[0]);
-
-           if (choice == JOptionPane.YES_OPTION) {
-
-               ProductPurchase PPur = new ProductPurchase();
-            //αν έχει επιλέξει τότε θα βρει ποιο είναι και θα το διαγράψει από τη λίστα
-               if (row > -1) {
-                for (Integer i : jTableBasket.getSelectedRows()) {
-                    PPur = (ProductPurchase)jTableBasket.getValueAt(jTableBasket.convertRowIndexToModel(i), 1);
-                    Basket.getProductPurchaseCollection().remove(PPur);
-                }
-               JOptionPane.showMessageDialog(null, Basket.getProductPurchaseCollection().size());
-            }
-            PopulateCustPurchase();             
-        }
-        }
-    }//GEN-LAST:event_RemovefromBasketButtonActionPerformed
-
     private void AddVoucherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddVoucherActionPerformed
         if (!AvVoucherList.getSelectedValuesList().isEmpty()) {
             for (Object o : AvVoucherList.getSelectedValuesList()) {
@@ -511,8 +480,8 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
             for (Object o : RefundedVoucherList.getSelectedValuesList()) {
                 refVouch.remove((Voucher)o);
             }
-            repaintAvVouc(Usr);
             repaintRefVouch(Usr);
+            repaintAvVouc(Usr);
             PopulateCustPurchase();        
         }else {
             JOptionPane.showMessageDialog(null,"Δεν εχετε επιλέξει επιταγή...");
@@ -528,11 +497,30 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
         ShopButton.setSelected(false);
         DeliveryButton.setSelected(true);        
     }//GEN-LAST:event_DeliveryButtonActionPerformed
+
+    private void RemovefromBasketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemovefromBasketButtonActionPerformed
+        List<ProductPurchase> ppurList = new ArrayList<>();
+        if (BasketTable.getSelectedRows().length != 0) {
+            RemovefromBasketButton.setEnabled(false);
+            for (Integer i : BasketTable.getSelectedRows()) {
+                PPurList.remove(productPurchaseList.get(BasketTable.convertRowIndexToModel(i)));
+            }
+
+            BasketTable.updateUI();
+            PopulateCustPurchase();
+            //Basket.setProductPurchaseCollection(productPurchaseList);
+        }
+    }//GEN-LAST:event_RemovefromBasketButtonActionPerformed
+
+    private void BasketTableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_BasketTableFocusGained
+        RemovefromBasketButton.setEnabled(true);
+    }//GEN-LAST:event_BasketTableFocusGained
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Button AddVoucher;
     private javax.swing.JList AvVoucherList;
+    private javax.swing.JTable BasketTable;
     private javax.swing.JButton CheckOutButton;
     private javax.swing.JRadioButton DeliveryButton;
     private javax.swing.JList RefundedVoucherList;
@@ -541,13 +529,11 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private javax.swing.JButton ReturnToMainCustomerForm;
     private javax.swing.JRadioButton ShopButton;
     private javax.persistence.EntityManager entityManager;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTableBasket;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextField jTextFieldSumPontoi;
     private javax.swing.JTextField jTextFieldTotalPrice;
     private java.awt.Label label1;
@@ -557,5 +543,6 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
     private java.util.List<LocalDB.ProductPurchase> productPurchaseList;
     private java.util.List<LocalDB.Purchase> purchaseList;
     private javax.persistence.Query purchaseQuery;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
