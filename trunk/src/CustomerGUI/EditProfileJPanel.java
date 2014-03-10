@@ -228,14 +228,12 @@ public class EditProfileJPanel extends javax.swing.JPanel {
                     .addComponent(jLabel3)
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(usrOWNER_NAME)
-                    .addComponent(usrCARD_NUMBER)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(usrCVV, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(ExternalBankList, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(usrCVV, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ExternalBankList, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(usrOWNER_NAME, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                    .addComponent(usrCARD_NUMBER))
+                .addContainerGap(201, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -258,7 +256,7 @@ public class EditProfileJPanel extends javax.swing.JPanel {
                         .addComponent(usrCARD_NUMBER, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(usrCVV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         ReturnToMainCustomerForm.setText("επιστροφή");
@@ -312,8 +310,8 @@ public class EditProfileJPanel extends javax.swing.JPanel {
                     .addContainerGap()
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(23, 23, 23)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(ReturnToMainCustomerForm)
                         .addComponent(jButton2)
@@ -420,14 +418,10 @@ public class EditProfileJPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Επιλέξτε μια από τις διαθέσιμες τράπεζες.");
             return;
         }
-
+        
+        String Message = "";
+       
         try {
-            //update customer info
-            Usr.setLastName(usrLAST_NAME.getText());
-            Usr.setFirstName(usrFIRST_NAME.getText());
-            Usr.setAddress(usrADDRESS.getText());
-
-            db.UPDATE_CUSTOMER(Usr);
 
             //update credit card info
             CreditCard.setOwnerName(usrOWNER_NAME.getText());
@@ -437,11 +431,25 @@ public class EditProfileJPanel extends javax.swing.JPanel {
 
             db.UPDATE_CREDIT_CARD(CreditCard);
 
-            JOptionPane.showMessageDialog(null, "Τα στοιχεία του πελάτη ενημερώθηκαν επιτυχώς.");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Απέτυχε! η ενημέρωση των στοιχείων του πελάτη.");
-        }
+            Message="Τα στοιχεία της πιστωτικής κάρτας ενημερώθηκαν επιτυχώς.";
+         } catch (Exception e) {
+            Message="Απέτυχε! η ενημέρωση των στοιχείων της πιστωτικής κάρτας του πελάτη.";
+        }        
 
+        try {
+            //update customer info
+            Usr.setLastName(usrLAST_NAME.getText());
+            Usr.setFirstName(usrFIRST_NAME.getText());
+            Usr.setAddress(usrADDRESS.getText());
+
+            db.UPDATE_CUSTOMER(Usr);
+            
+            JOptionPane.showMessageDialog(null, "Τα στοιχεία του πελάτη ενημερώθηκαν επιτυχώς.\n"+Message);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Απέτυχε! η ενημέρωση των στοιχείων του πελάτη.\n"+Message);
+        }
+        
+        
         ParentFrame.setEnabled(true);
         this.revalidate();
         this.repaint();
