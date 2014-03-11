@@ -10,7 +10,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Random;
 import supermarket.DBmanager;
 
@@ -31,12 +30,22 @@ import supermarket.DBmanager;
  */
 public class Simulator extends Thread {
 
-    private DBmanager db;
-    public Purchase Basket;
-    private Calendar cal = new GregorianCalendar();
-    private Date date = cal.getTime();
+    private DBmanager db;//Διαχειριστής της Βάσης Δεδομένων
+    public Purchase Basket;//Καλάθι αγορών Πελάτη
+    private Calendar cal = new GregorianCalendar();//Ημερολόγιο
+    private Date date = cal.getTime();//Επιστρέφει την τρέχουσα ημερομηνία
+    /**
+     * *1)ο αριθμός των προσπαθειών (retries) που χρειάστηκαν για την
+     * επικοινωνία με την αρχή πιστοποίησης, μαζί με το timestamp της κάθε
+     * προσπάθειας καθώς και το όνομα (name) του κάθε νήματος**
+     */
+    private Boolean ResultPurchase;//2)	το τελικό αποτέλεσμα της συναλλαγής
+    private boolean ResultCreditCard;//Κρατάει το αποτέλεσμα αν η πιστωτική κάρτα του πελάτη είναι έγκυρη
+    private int Retries;/* αριθμός των προσπαθειών (retries)που χρειάστηκαν για την επικοινωνία με την αρχή πιστοποίησης*/
+    private ArrayList<Calendar> RetriesTimestamp;/*** μαζί με το timestamp της κάθε προσπάθειας***/
 
-    public Simulator(DBmanager db) {
+
+    public Simulator(DBmanager db) {//constructor
         this.db = db;
         this.Basket = new Purchase();
         if (!db.getLoc().getTransaction().isActive()) {
@@ -77,8 +86,6 @@ public class Simulator extends Thread {
         return customer;
     }
 
-    
-    
     public Purchase PopulateBasket(Customer customer) {
         Random r = new Random();
         //αποθηκεύουμε όλα τα καταστήματα σε μια λίστα
@@ -153,7 +160,7 @@ public class Simulator extends Thread {
             db.getLoc().persist(Basket);
 
             db.getLoc().merge(Basket);
-            db.getLoc().getTransaction().commit();
+            //  db.getLoc().getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
             db.getLoc().getTransaction().rollback();
@@ -162,4 +169,16 @@ public class Simulator extends Thread {
         return Basket;
     }
 
+    //παίρνουμε το αποτέλεσμα(true\false) αν η αγορά ολοκληρώθηκε
+    public boolean getResultPurchase() {
+        return ResultPurchase;
+    }
+
+    public int getRetries() {
+        return Retries;
+    }
+
+    public boolean getCreditCardResult() {
+        return ResultCreditCard;
+    }
 }
