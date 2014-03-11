@@ -9,7 +9,6 @@ import LocalDB.Purchase;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -32,8 +31,8 @@ public class PurchaseXMLManager {
     private File xmlFile;
     private boolean isNewDocument = true;
 
-    public PurchaseXMLManager(File xmlFile) {
-        this.xmlFile = xmlFile;
+    public PurchaseXMLManager() {
+        this.xmlFile = new File("C:\\file.xml");
         df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     }
 
