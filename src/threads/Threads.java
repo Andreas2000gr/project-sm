@@ -12,11 +12,11 @@ import supermarket.*;
  *
  * @author Euh
  */
-public class Threads extends Thread {
+public class Threads{
 
     private Simulator[] threads;
 
-//constructor
+    //constructor
     public Threads(DBmanager db, Customer customer, Simulator sim) {
 
     }
@@ -24,12 +24,12 @@ public class Threads extends Thread {
     // Η παρακάτω μέθοδος εκκινεί τα νήματα
     public void startThreads() throws InterruptedException {
         for (int i = 0; i < threads.length; i++) {
-            threads[i].wait();
+            threads[i].wait();//start???
         }
     }
 
-//Προσθήκη προϊόντων στο καλάθι του πελάτη
-//Για κάθε νήμα 
+    //Προσθήκη προϊόντων στο καλάθι του πελάτη
+    //Για κάθε νήμα 
     public void BuyProducts(Customer customer) {
         for (int i = 0; i < threads.length; i++) {
             threads[i].PopulateBasket(customer);
