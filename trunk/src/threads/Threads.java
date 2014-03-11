@@ -15,6 +15,7 @@ import supermarket.*;
 public class Threads{
 
     private Simulator[] threads;
+    private final String XML_FILE_NAME = "purchases.xml"; // Το όνομα του XML αρχείου
 
     //constructor
     public Threads(DBmanager db, Customer customer, Simulator sim) {
@@ -24,7 +25,7 @@ public class Threads{
     // Η παρακάτω μέθοδος εκκινεί τα νήματα
     public void startThreads() throws InterruptedException {
         for (int i = 0; i < threads.length; i++) {
-            threads[i].wait();//start???
+            threads[i].start();
         }
     }
 
