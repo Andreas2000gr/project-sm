@@ -12,20 +12,37 @@ import supermarket.*;
  *
  * @author Euh
  */
-public class Threads{
+public class Threads {
 
     private Simulator[] threads;
+    private DBmanager db;
     private final String XML_FILE_NAME = "purchases.xml"; // Το όνομα του XML αρχείου
+    private static final int NumOfRetries = 3;
 
     //constructor
-    public Threads(DBmanager db, Customer customer, Simulator sim) {
-
+    public Threads(DBmanager db, Customer customer, int NumOfThreads) {
+        this.db = db;
+        this.threads = new Simulator[NumOfThreads];//NumOfThreads:: μας το δίνει ο χρήστης από UI
     }
 
     // Η παρακάτω μέθοδος εκκινεί τα νήματα
     public void startThreads() throws InterruptedException {
         for (int i = 0; i < threads.length; i++) {
             threads[i].start();
+        }
+    }
+
+    //Δημιουργούμε τα νήματα 
+    //και αναθέτουμε ένα πελάτη σε κάθε ένα από αυτά
+    public void ThredsAssingRadCustomr() {
+        int Counter = 1;
+        for (int i = 0; i < threads.length; i++) {
+            //δημιουργία νέου νήματος
+            threads[i] = new Simulator(db);
+            //θέτουμε όνομα στο νήμα
+            threads[i].setName("Thread name::[" + Counter + "]");
+            Counter++;
+
         }
     }
 
