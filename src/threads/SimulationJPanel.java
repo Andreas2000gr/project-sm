@@ -6,8 +6,21 @@
 package threads;
 
 import LocalDB.Customer;
+import LocalDB.Product;
 import LocalDB.ProductPurchase;
 import LocalDB.Purchase;
+import LocalDB.Store;
+import externalDB.CreditCardAuthority;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Random;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.swing.JOptionPane;
 import supermarket.DBmanager;
 import supermarket.SuperMarketParentFrame;
 import supermarket.WelcomePanel;
@@ -21,15 +34,204 @@ public class SimulationJPanel extends javax.swing.JPanel {
     /**
      * Creates new form ThreadsJPanel
      */
-    private final SuperMarketParentFrame ParentFrame;
+
     private DBmanager db = new DBmanager();
-    private Simulator simulator = new Simulator(db);
+    private Calendar cal = new GregorianCalendar();
+    private Date date = cal.getTime();
+    private EntityManager loc;
+    private EntityManager ext;
+    private SuperMarketParentFrame frame;
+    private Query q;
+    private Purchase Basket;
 
-    public SimulationJPanel(SuperMarketParentFrame ParentFrame) {
-
-        this.ParentFrame = ParentFrame;
+    public SimulationJPanel(SuperMarketParentFrame frame) {
+        this.frame = frame;
         initComponents();
+        this.loc = db.getLoc();
+        this.ext = db.getExt();
+        this.Basket = new Purchase();
+        if (!db.getLoc().getTransaction().isActive()) {
+            db.getLoc().getTransaction().begin();
+        }
     }
+        
+    public Customer RandomFindCustomer() {
+        //χρήση της random
+        Random r = new Random();
+        Customer customer = new Customer();
+        List<Customer> customers = new ArrayList<>();
+        //βρίσκουμε όλους τους πελάτες και τους επιστρέφουμε στη βάση
+        try {
+            customers = db.FindAllCustomers();
+        } catch (javax.persistence.NoResultException e) {
+            e.printStackTrace();
+            loc.getTransaction().rollback();
+            return null;
+        }
+        //επιλέγουμε μια τυχαία θέση, με ανώτατο όριο, το όριο της λίστας μας
+        int customerIndex = r.nextInt(customers.size());
+        //και βρίσκουμε τον πελάτη που βρίσκεται στη συγκεκριμέη θέση
+        customer = customers.get(customerIndex);
+
+        return customer;
+    }
+
+    public boolean validateCCard(Customer customer){
+        CreditCardAuthority CCard = new CreditCardAuthority();
+        try {
+            q = ext.createNamedQuery("CreditCardAuthority.findByPkCardId");
+            q.setParameter("pkCardId", customer.getCreditCardId());
+            CCard = (CreditCardAuthority)q.getSingleResult();
+            return true;
+        } catch (javax.persistence.NoResultException e) {
+            JOptionPane.showMessageDialog(null, "Κάρτα δεν βρέθηκε...");
+            return false;
+        } catch (javax.persistence.NonUniqueResultException e) {
+            JOptionPane.showMessageDialog(null, "Μή μοναδική κάρτα...");
+            return false;
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Σφάλμα...");
+            return false; 
+        }
+    }
+    
+    public Purchase PopulateBasket(Customer customer) {
+        Random r = new Random();
+        Basket = new Purchase();
+        List<Store> stores = new ArrayList<>();
+        //αποθηκεύουμε όλα τα καταστήματα σε μια λίστα
+        try {
+            q = loc.createNamedQuery("Store.findAll");
+            stores = q.getResultList();
+        } catch (javax.persistence.NoResultException e) {
+            e.printStackTrace();
+            loc.getTransaction().rollback();
+            return null;
+        }
+    
+                 
+        //βρίσκουμε ένα κατάστημα
+        int storeIndex = r.nextInt(stores.size());
+        Store s = stores.get(storeIndex);
+
+        //αποθηκεόυμε όλα τα προϊόντα του επιλεγμένου καταστήματος σε μια λίστα
+        ArrayList<Product> products = new ArrayList(0);
+        products = new ArrayList<Product>(s.getProductCollection());
+        //λίστα στην οποία θα αποθηκεύσουμε τα επιλεγμένα προϊόντα
+        Collection<ProductPurchase> ProdPurchCollection = new ArrayList<>();
+
+        //θα γεμίζει το καλάθι του με ένα τυχαίο αριθμό διαφορετικών προϊόντων 
+        //με άνω όριο τα 20 προϊόντα ανά καλάθι
+        int Limit = 20;
+        //Αν στο κατάστημα υπάρχουν λιγότερα από 20 προϊόντα
+        //τότε παίρνουμε το μέγεθος της λίστας
+        if (Limit > products.size()) {
+            Limit = products.size();
+        }
+        //επιλέγουμε τυχαία έναν αριθμό προϊόντων που θα αγοραστούν
+        int NumOfSelectedProducts = 1 + r.nextInt(Limit);
+
+        //επιλέγουμε NumOfSelectedProducts τυχαία προϊόντα 
+        //Για κάθε ένα από τα επιλεγμένα προϊόντα
+        for (int i = 0; i < NumOfSelectedProducts; i++) {
+            //ορίζουμε έναν τυχαίο αριθμό τεμαχίων
+            //ως ανώνατο όριο ορίζουμε τα 10 τεμάχια
+            int Quantity = 1 + r.nextInt(10);
+
+            //επιλέγουμε ένα τυχαίο προϊόν του επιλεγμένου καταστήματος
+            int productIndex = r.nextInt(products.size());
+            Product p = products.get(productIndex);
+
+            //Ορίζουμε τη συχέτιση Αγορά-Προϊόν
+            ProductPurchase PP = new ProductPurchase();
+            PP.setProductId(p);
+            PP.setQuantity(Quantity);
+            PP.setProductPurchaseId(null);
+            PP.setPurchaseId(Basket);
+
+            //αποθηκεούμε τη συσχέτιση προϊόν-αγοράς στη λίστα
+            ProdPurchCollection.add(PP);
+
+            //αφαιρούμε από τη λίστα το προϊόν που επιλέξαμε
+            //για να μην το επιλέξουμε πάλι
+            products.remove(p);
+        }
+
+        //επιλέγουμε τυχαία τον τρόπο παράδοσης του προϊόντος
+        boolean Delivery = false;
+        if (r.nextInt(1) == 1) {
+            Delivery = true;
+        }
+        
+        Float cost = 0.0f;
+        Integer points = 0;
+        
+        for (ProductPurchase pp : ProdPurchCollection) {
+             cost = cost + (pp.getQuantity() * pp.getProductId().getPrice());
+             points = points + (pp.getQuantity() * pp.getProductId().getPoints());
+        }
+        //Προσθέτουμε στο καλάθι μας(Purchase) το προϊόν που 
+        Basket.setCustomer(customer);
+        Basket.setDatetime(date);
+        Basket.setAmount(cost);
+        Basket.setPointsEarned(points);
+        Basket.setStore(s);
+        Basket.setDelivery(Delivery);
+        Basket.getProductPurchaseCollection().addAll(ProdPurchCollection);
+        
+        try {
+            // αρχικοποίηση transaction
+            if (!loc.getTransaction().isActive()) {
+                loc.getTransaction().begin();
+            }
+            loc.persist(Basket);
+            return Basket;
+        } catch (Exception e) {
+            e.printStackTrace();
+            loc.getTransaction().rollback();
+            return null;
+        }
+    }
+    
+    public Purchase createPurchase(){
+        
+        //Γράφουμε τα αποτελέσματα στο textarea
+        if (jTextAreaSimulation.getText().isEmpty()) {
+            
+        }
+        jTextAreaSimulation.append("Έναρξη διαδικασίας προσωμείωσης νημάτων.\n");
+
+        //για κάθε ένα από τα νήματα επιλέγεται ένας πελάτης
+        jTextAreaSimulation.append("Τυχαία επιλογή πελατών\n");
+
+        //εντοπισμός τυχαίων πελατών
+        Customer customer = RandomFindCustomer();
+        jTextAreaSimulation.append("Επιλέχθηκε ο πελάτης " + customer.getLastName() + "\n");
+
+        //Αγορά τυχαίων προϊόντων και προσθήκη στο καλάθι του επιλεγμένου πελάτη
+        jTextAreaSimulation.append("Τυχαία επιλογή προϊόντων για αγορά\n");
+        Purchase purchase = PopulateBasket(customer);
+        jTextAreaSimulation.append("Purchase ID: "+purchase.getPurchaseId()+ "\n");
+
+        for(ProductPurchase pp : purchase.getProductPurchaseCollection()){
+            jTextAreaSimulation.append("Επιλέχθηκε τυχαία το προϊόν: " + pp.getProductId().getName() +"- τεμάχια:" + pp.getQuantity() + "\n");
+        }
+
+        try {
+            // αρχικοποίηση transaction
+            if (!loc.getTransaction().isActive()) {
+                loc.getTransaction().begin();
+            }
+                loc.persist(purchase);
+                return Basket;
+                
+        } catch (Exception e) {
+            e.printStackTrace();
+            loc.getTransaction().rollback();
+            return null;
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -123,43 +325,14 @@ public class SimulationJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        ParentFrame.pnl = new WelcomePanel(this.ParentFrame);
-        ParentFrame.addPanelInMain();
+        frame.pnl = new WelcomePanel(frame);
+        frame.addPanelInMain();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        //Γράφουμε τα αποτελέσματα στο textarea
-        jTextAreaSimulation.setText("");
-        jTextAreaSimulation.append("Έναρξη διαδικασίας προσωμείωσης νημάτων.\n");
-
-        //για κάθε ένα από τα νήματα επιλέγεται ένας πελάτης
-        jTextAreaSimulation.append("Τυχαία επιλογή πελατών\n");
-
-        //εντοπισμός τυχαίων πελατών
-        Customer customer = simulator.RandomFindCustomer();
-        jTextAreaSimulation.append("Επιλέχθηκε ο πελάτης " + customer.getLastName() + "\n");
-
-        //Αγορά τυχαίων προϊόντων και προσθήκη στο καλάθι του επιλεγμένου πελάτη
-        jTextAreaSimulation.append("Τυχαία επιλογή προϊόντων για αγορά\n");
-        Purchase purchase = simulator.PopulateBasket(customer);
-        jTextAreaSimulation.append("Purchase ID: "+purchase.getPurchaseId()+ "\n");
-        
-        for(ProductPurchase pp : purchase.getProductPurchaseCollection()){
-            jTextAreaSimulation.append("Επιλέχθηκε τυχαία το προϊόν: " + pp.getProductId().getName() +"- τεμάχια:" + pp.getQuantity() + "\n");
-        }
-        
-         try {
-            // αρχικοποίηση transaction
-            if (!db.getLoc().getTransaction().isActive()) {
-                db.getLoc().getTransaction().begin();
-            }
-
-            db.getLoc().persist(purchase);
-            
-           db.getLoc().getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            db.getLoc().getTransaction().rollback();
+        Integer choice = (Integer)(JSpinnerNumOfThreads.getValue());
+        for (int i = 0; i < choice; i++) {
+            createPurchase();
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
