@@ -3,8 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package supermarket;
+
 import LocalDB.Purchase;
 import java.io.File;
 import java.text.DateFormat;
@@ -27,16 +27,16 @@ import org.w3c.dom.NodeList;
  * @author Euh
  */
 public class PurchaseXMLManager {
-        
+
     private final DateFormat df;
     private File xmlFile;
     private boolean isNewDocument = true;
-    
-    public PurchaseXMLManager(File xmlFile){
-        this.xmlFile = xmlFile;        
+
+    public PurchaseXMLManager(File xmlFile) {
+        this.xmlFile = xmlFile;
         df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     }
-    
+
     private Document readXmlDocument() {
         Document document;
         try {
@@ -45,26 +45,26 @@ public class PurchaseXMLManager {
             document = builder.parse(xmlFile);
             isNewDocument = false;
             return document;
-        }catch (Exception e){
+        } catch (Exception e) {
             // File does not exist
             isNewDocument = true;
             return null;
         }
     }
-    
-    public void writeXML(List<Purchase> purchases){        
+
+    public void writeXML(List<Purchase> purchases) {
         Document document = readXmlDocument();
-        try {            
-            if (isNewDocument){ // Create New file
+        try {
+            if (isNewDocument) { // Create New file
                 DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-                document = docBuilder.newDocument();            
-                Element rootElement = document.createElement("purchases");            
+                document = docBuilder.newDocument();
+                Element rootElement = document.createElement("purchases");
                 document.appendChild(rootElement);
             }
             Element root = document.getDocumentElement();
-            
-            for (Purchase p:purchases){
+
+            for (Purchase p : purchases) {
                 // purchase elements                
                 Element purchase = document.createElement("Purchase");
                 root.appendChild(purchase);
@@ -83,12 +83,12 @@ public class PurchaseXMLManager {
                 Element amount = document.createElement("amount");
                 amount.appendChild(document.createTextNode(Float.toString(p.getAmount())));
                 purchase.appendChild(amount);
-                
+
                 // points_earned element
                 Element pointsEarned = document.createElement("points_earned");
                 pointsEarned.appendChild(document.createTextNode(Integer.toString(p.getPointsEarned())));
                 purchase.appendChild(pointsEarned);
-                
+
                 // delivery elements
                 Element isCreditCardUsed = document.createElement("delivery");
                 isCreditCardUsed.appendChild(document.createTextNode(Boolean.toString(p.getDelivery())));
@@ -101,43 +101,42 @@ public class PurchaseXMLManager {
 
                 // customer elements
                 Element customer = document.createElement("customer");
-                customer.appendChild(document.createTextNode(p.getCustomer().getLastName()+" "+p.getCustomer().getFirstName()));
+                customer.appendChild(document.createTextNode(p.getCustomer().getLastName() + " " + p.getCustomer().getFirstName()));
                 purchase.appendChild(customer);
             }
-            
+
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            DOMSource source = new DOMSource(document);      
+            DOMSource source = new DOMSource(document);
             StreamResult result = new StreamResult(xmlFile);
             transformer.transform(source, result);
             System.out.println("File saved!");
-            
-        }catch (Exception e){
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
-    public float calculateAveragePurchaseAmount(){
-        Document document = readXmlDocument();        
+
+    public float calculateAveragePurchaseAmount() {
+        Document document = readXmlDocument();
         if (isNewDocument) {
             System.out.println("Δεν υπάρχει το αρχείο purchases.xml στην τοποθεσία C:\\temp");
             return 0.0f;
         }
-        
+
         Element root = document.getDocumentElement();
         NodeList nodeList = root.getChildNodes();
-        float sum=0.0f;
+        float sum = 0.0f;
         for (int i = 0; i < nodeList.getLength(); i++) {
-            Node currentNode = nodeList.item(i);            
+            Node currentNode = nodeList.item(i);
             NodeList subNodeList = currentNode.getChildNodes();
             for (int j = 0; j < subNodeList.getLength(); j++) {
                 Node currentSubNode = subNodeList.item(j);
                 if (currentSubNode.getNodeName().equalsIgnoreCase("amount")) {
                     float value = Float.valueOf(currentSubNode.getTextContent());
-                    sum+=value;
-                }                
-            }            
+                    sum += value;
+                }
+            }
         }
-        return sum/(float)nodeList.getLength();
+        return sum / (float) nodeList.getLength();
     }
 }
-
