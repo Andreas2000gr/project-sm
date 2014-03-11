@@ -6,11 +6,9 @@
 
 package AdminGUI;
 
-import CustomerGUI.CreditCardDialog;
-import LocalDB.Product;
+import LocalDB.Store;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.Random;
 import javax.persistence.EntityManager;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -24,7 +22,7 @@ import supermarket.SuperMarketParentFrame;
  *
  * @author Panagis
  */
-public class CreateProductDialog extends javax.swing.JDialog {
+public class CreateStoreDialog extends javax.swing.JDialog {
 
     /**
      * A return status code - returned if Cancel button has been pressed
@@ -42,7 +40,7 @@ public class CreateProductDialog extends javax.swing.JDialog {
     private EntityManager loc;
     private EntityManager ext;
     
-    public CreateProductDialog(java.awt.Frame parent, boolean modal) {
+    public CreateStoreDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.frame = (SuperMarketParentFrame)parent;
@@ -92,14 +90,12 @@ public class CreateProductDialog extends javax.swing.JDialog {
         }
     }
     
-    private boolean createProduct(){
-        Product prod = new Product(null,
-                        prodNAME.getText(), 
-                        prodCODE.getText(), 
-                Integer.parseInt(prodPOINTS.getText()), 
-                Float.parseFloat(prodCOST.getText()));
+    private boolean createStore(){
+        Store store = new Store(null,
+                        storeNAME.getText(), 
+                        storeADDRESS.getText());
         try {
-            loc.persist(prod);
+            loc.persist(store);
             loc.getTransaction().commit();
             return true;
         } catch (Exception e) {
@@ -121,14 +117,10 @@ public class CreateProductDialog extends javax.swing.JDialog {
         jPanel3 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        prodCODE = new javax.swing.JTextField();
-        prodPOINTS = new javax.swing.JTextField();
-        prodNAME = new javax.swing.JTextField();
+        storeADDRESS = new javax.swing.JTextField();
+        storeNAME = new javax.swing.JTextField();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
-        prodCOST = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
 
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -136,19 +128,15 @@ public class CreateProductDialog extends javax.swing.JDialog {
             }
         });
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Νέο Προϊόν"));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Νέο Κατάστημα"));
 
-        jLabel10.setText("Κωδικός:");
+        jLabel10.setText("Διεύθυνση:");
 
-        jLabel11.setText("Περιγραφή:");
+        jLabel11.setText("Όνομα:");
 
-        jLabel12.setText("Πόντοι:");
+        storeADDRESS.setToolTipText("");
 
-        prodCODE.setToolTipText("");
-
-        prodPOINTS.setToolTipText("");
-
-        prodNAME.setToolTipText("");
+        storeNAME.setToolTipText("");
 
         okButton.setText("Αποθήκευση");
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -164,8 +152,6 @@ public class CreateProductDialog extends javax.swing.JDialog {
             }
         });
 
-        jLabel1.setText("Τιμή:");
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -174,20 +160,15 @@ public class CreateProductDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel11)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel12)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel10))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(prodCOST, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
-                        .addComponent(prodPOINTS, javax.swing.GroupLayout.Alignment.LEADING))
-                    .addComponent(prodCODE, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(prodNAME, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(storeADDRESS, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+                    .addComponent(storeNAME))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -195,25 +176,17 @@ public class CreateProductDialog extends javax.swing.JDialog {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(prodNAME, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(storeNAME, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(prodCODE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(prodPOINTS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel12))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(prodCOST, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(storeADDRESS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(okButton))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         getRootPane().setDefaultButton(okButton);
@@ -222,16 +195,16 @@ public class CreateProductDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -239,30 +212,21 @@ public class CreateProductDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-
-        if (!isFloat(prodCOST.getText()) || prodCOST.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Λάθος Τιμή...");
-            return;
-        }
-        if (!isInteger(prodPOINTS.getText()) || prodPOINTS.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Λάθος τιμή πόντων...");
-            return;
-        }
-        if ( prodNAME.getText().isEmpty() &&
-             prodNAME.getText().length()>30 &&
-             prodCODE.getText().isEmpty() && 
-             prodCODE.getText().length()>10 )
+        if ( storeNAME.getText().isEmpty() &&
+             storeNAME.getText().length()>50 &&
+             storeADDRESS.getText().isEmpty() && 
+             storeADDRESS.getText().length()>20 )
         {
-            JOptionPane.showMessageDialog(null, "Λάθος όνομα ή κωδικός...");
+            JOptionPane.showMessageDialog(null, "Λάθος όνομα ή Διεύθυνση...");
             return; 
         } 
         
-        if (!createProduct()) {
-            JOptionPane.showMessageDialog(null, "Σφάλμα στην δημιουργία "
-                    + "προϊόντος...");
+        if (!createStore()) {
+            JOptionPane.showMessageDialog(null, "Σφάλμα στην δημιουργία!!! "
+                    + "καταστήματος...");
             doClose(RET_CANCEL);
         } else {
-            JOptionPane.showMessageDialog(null, "Προϊόν Δημιουργήθηκε!!!");
+            JOptionPane.showMessageDialog(null, "Κατάστημα Δημιουργήθηκε!!!");
             doClose(RET_OK);
         }
         
@@ -303,20 +267,20 @@ public class CreateProductDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CreateProductDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CreateStoreDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CreateProductDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CreateStoreDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CreateProductDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CreateStoreDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CreateProductDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CreateStoreDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CreateProductDialog dialog = new CreateProductDialog(new javax.swing.JFrame(), true);
+                CreateStoreDialog dialog = new CreateStoreDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -330,16 +294,12 @@ public class CreateProductDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JButton okButton;
-    private javax.swing.JTextField prodCODE;
-    private javax.swing.JTextField prodCOST;
-    private javax.swing.JTextField prodNAME;
-    private javax.swing.JTextField prodPOINTS;
+    private javax.swing.JTextField storeADDRESS;
+    private javax.swing.JTextField storeNAME;
     // End of variables declaration//GEN-END:variables
 
     private int returnStatus = RET_CANCEL;
