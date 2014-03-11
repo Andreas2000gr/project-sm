@@ -28,7 +28,7 @@ import supermarket.DBmanager;
  * κάποιοι περιορισμοί:
  *
  */
-class Simulator {
+public class Simulator {
 
     private DBmanager db;
     public Purchase Basket;
@@ -38,7 +38,7 @@ class Simulator {
     public Simulator(DBmanager db) {
         this.db = db;
         this.Basket = new Purchase();
-                if (!db.getLoc().getTransaction().isActive()) {
+        if (!db.getLoc().getTransaction().isActive()) {
             db.getLoc().getTransaction().begin();
         }
     }
@@ -72,7 +72,7 @@ class Simulator {
             e.printStackTrace();
             db.getLoc().getTransaction().rollback();
         }
-        
+
         return customer;
     }
 
@@ -141,7 +141,7 @@ class Simulator {
         Basket.setStore(s);
         Basket.setDelivery(Delivery);
         Basket.getProductPurchaseCollection().addAll(ProdPurchCollection);
-        
+
         try {
             // αρχικοποίηση transaction
             if (!db.getLoc().getTransaction().isActive()) {
