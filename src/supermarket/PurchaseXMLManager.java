@@ -9,7 +9,7 @@ import LocalDB.Purchase;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.Calendar;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -52,7 +52,13 @@ public class PurchaseXMLManager {
         }
     }
 
-    public void writeXML(List<Purchase> purchases) {
+    public void writeXML(
+            Purchase p
+            ,Boolean purchaseResult//το αποτέλεσμα της εκτέλεσης
+            ,Integer retries//ο αριθμός των προσπαθειών
+            ,String thrdname//το όνομα του thread
+            ,Boolean creditCardResult//αποτελέσμα έκγρισης πιστωτικής κάρτας
+            ) {
         Document document = readXmlDocument();
         try {
             if (isNewDocument) { // Create New file
@@ -64,51 +70,81 @@ public class PurchaseXMLManager {
             }
             Element root = document.getDocumentElement();
 
-            for (Purchase p : purchases) {
-                // purchase elements                
-                Element purchase = document.createElement("Purchase");
-                root.appendChild(purchase);
+            // for (Purchase p : purchases) {
+            // purchase elements                
+            Element purchase = document.createElement("Purchase");
+            root.appendChild(purchase);
 
-                // set attribute to purchase element
-                Attr attr = document.createAttribute("id");
-                attr.setValue(p.getPurchaseId().toString());
-                purchase.setAttributeNode(attr);
+            //@EPA: Προσθέτουμε πληροφορίες που αφορούν τα νήματα
+            // Όνομα νήματος
+            // thread name elements
+            Element ThreadName = document.createElement("thread_name");
+            ThreadName.appendChild(document.createTextNode(thrdname));
+            purchase.appendChild(ThreadName);
 
-                // date elements
-                Element date = document.createElement("date");
-                date.appendChild(document.createTextNode(df.format(p.getDatetime())));
-                purchase.appendChild(date);
+            //Προσπάθειες (Retries)/ο αριθμός των προσπαθειών (retries) που χρειάστηκαν
+            Element Retries = document.createElement("retries");
+            Retries.appendChild(document.createTextNode(retries.toString()));
+            purchase.appendChild(Retries);
 
-                // amount elements
-                Element amount = document.createElement("amount");
-                amount.appendChild(document.createTextNode(Float.toString(p.getAmount())));
-                purchase.appendChild(amount);
-
-                // points_earned element
-                Element pointsEarned = document.createElement("points_earned");
-                pointsEarned.appendChild(document.createTextNode(Integer.toString(p.getPointsEarned())));
-                purchase.appendChild(pointsEarned);
-
-                // delivery elements
-                Element isCreditCardUsed = document.createElement("delivery");
-                isCreditCardUsed.appendChild(document.createTextNode(Boolean.toString(p.getDelivery())));
-                purchase.appendChild(isCreditCardUsed);
-
-                // store elements
-                Element store = document.createElement("store");
-                store.appendChild(document.createTextNode(p.getStore().getName()));
-                purchase.appendChild(store);
-
-                // customer elements
-                Element customer = document.createElement("customer");
-                customer.appendChild(document.createTextNode(p.getCustomer().getLastName() + " " + p.getCustomer().getFirstName()));
-                purchase.appendChild(customer);
+            //Αποτέλεσμα εκτέλεσης αγοράς/τελικό αποτέλεσμα της συναλλαγής 
+            Element PurchaseResult = document.createElement("purchase_result");
+            String result;
+            if (purchaseResult) {
+                result = "OK";
+            } else {
+                result = "NOK";
             }
+            PurchaseResult.appendChild(document.createTextNode(result));
+            purchase.appendChild(PurchaseResult);
+
+            // Αρχή Πιστοποίησης Καρτών
+            if (creditCardResult) {
+                Element invalidccard = document.createElement("invalid_credit_card");
+                invalidccard.appendChild(document.createTextNode("true"));
+                purchase.appendChild(invalidccard);
+            }
+
+            // set attribute to purchase element
+            Attr attr = document.createAttribute("id");
+            attr.setValue(p.getPurchaseId().toString());
+            purchase.setAttributeNode(attr);
+
+            // date elements
+            Element date = document.createElement("date");
+            date.appendChild(document.createTextNode(df.format(p.getDatetime())));
+            purchase.appendChild(date);
+
+            // amount elements
+            Element amount = document.createElement("amount");
+            amount.appendChild(document.createTextNode(Float.toString(p.getAmount())));
+            purchase.appendChild(amount);
+
+            // points_earned element
+            Element pointsEarned = document.createElement("points_earned");
+            pointsEarned.appendChild(document.createTextNode(Integer.toString(p.getPointsEarned())));
+            purchase.appendChild(pointsEarned);
+
+            // delivery elements
+            Element isCreditCardUsed = document.createElement("delivery");
+            isCreditCardUsed.appendChild(document.createTextNode(Boolean.toString(p.getDelivery())));
+            purchase.appendChild(isCreditCardUsed);
+
+            // store elements
+            Element store = document.createElement("store");
+            store.appendChild(document.createTextNode(p.getStore().getName()));
+            purchase.appendChild(store);
+
+            // customer elements
+            Element customer = document.createElement("customer");
+            customer.appendChild(document.createTextNode(p.getCustomer().getLastName() + " " + p.getCustomer().getFirstName()));
+            purchase.appendChild(customer);
+//            }
 
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             DOMSource source = new DOMSource(document);
-            StreamResult result = new StreamResult(xmlFile);
-            transformer.transform(source, result);
+            StreamResult sresult = new StreamResult(xmlFile);
+            transformer.transform(source, sresult);
             System.out.println("File saved!");
 
         } catch (Exception e) {
