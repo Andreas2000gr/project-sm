@@ -11,7 +11,6 @@ import LocalDB.ProductPurchase;
 import LocalDB.Purchase;
 import LocalDB.Store;
 import externalDB.CreditCardAuthority;
-import static java.awt.image.ImageObserver.WIDTH;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -19,19 +18,19 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.swing.JOptionPane;
 import supermarket.DBmanager;
 import supermarket.PurchaseXMLManager;
 import supermarket.SuperMarketParentFrame;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import supermarket.WelcomePanel;
-import java.io.File;
-import static javax.swing.JComponent.TOOL_TIP_TEXT_KEY;
 /**
  *
  * @author Euh
@@ -51,7 +50,7 @@ public class SimulationJPanel extends javax.swing.JPanel {
     private Query q;
     private Purchase Basket;
     private List<Purchase> purchaseList = new ArrayList<>();
-    private final CyclicBarrier gate = new CyclicBarrier(3);
+    private CyclicBarrier gate;
     private PurchaseXMLManager xml;
 
     public SimulationJPanel(SuperMarketParentFrame frame) {
@@ -194,7 +193,6 @@ public class SimulationJPanel extends javax.swing.JPanel {
             if (!loc.getTransaction().isActive()) {
                 loc.getTransaction().begin();
             }
-            loc.persist(Basket);
             return Basket;
         } catch (Exception e) {
             e.printStackTrace();
@@ -226,90 +224,51 @@ public class SimulationJPanel extends javax.swing.JPanel {
         for(ProductPurchase pp : purchase.getProductPurchaseCollection()){
             jTextAreaSimulation.append("Επιλέχθηκε τυχαία το προϊόν: " + pp.getProductId().getName() +"- τεμάχια:" + pp.getQuantity() + "\n");
         }
-
-        try {
-            // αρχικοποίηση transaction
-            if (!loc.getTransaction().isActive()) {
-                loc.getTransaction().begin();
-            }
-                loc.persist(purchase);
-                return Basket;
-                
-        } catch (Exception e) {
-            e.printStackTrace();
-            loc.getTransaction().rollback();
-            return null;
-        }
+       return Basket;
     }
     
     public void startThreads(Integer num){
-        Thread t1 = new Thread(){
-            public void run(){
-                try {
-                        gate.await();
-                        Purchase pur = createPurchase();
-                        try {
-                        // αρχικοποίηση transaction
-                        if (!loc.getTransaction().isActive()) {
-                        loc.getTransaction().begin();
-                        }
-                        if (validateCCard(pur.getCustomer())) {
-                            xml.writeXML(pur, true, 1, this.getName(), true);
-                        }
-
-                        } catch (Exception e) {
-                        e.printStackTrace();
-                        loc.getTransaction().rollback();
-                        }
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(SimulationJPanel.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (BrokenBarrierException ex) {
-                    Logger.getLogger(SimulationJPanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
-           
-            }};
+      
+        ExecutorService threadPool = Executors.newFixedThreadPool(2);
         
-         Thread t2 = new Thread(){
-            public void run(){
+        for (int i = 0; i < num; i++) {
+         threadPool.submit(new Runnable() {
+         public void run() {
+                Purchase pur = createPurchase();
                 try {
-                        gate.await();
-                        Purchase pur = createPurchase();
-                        try {
-                        // αρχικοποίηση transaction
-                        if (!loc.getTransaction().isActive()) {
-                        loc.getTransaction().begin();
-                        }
-                        if (validateCCard(pur.getCustomer())) {
-                            xml.writeXML(pur, true, 1, this.getName(), true);
-
-                        }
-
-                        } catch (Exception e) {
-                        e.printStackTrace();
-                        loc.getTransaction().rollback();
-                        }
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(SimulationJPanel.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (BrokenBarrierException ex) {
-                    Logger.getLogger(SimulationJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                // αρχικοποίηση transaction
+                    if (!loc.getTransaction().isActive()) {
+                         loc.getTransaction().begin();
+                    }    
+                    if (validateCCard(pur.getCustomer())) {
+                        loc.persist(pur);
+                        loc.getTransaction().commit();
+                        xml.writeXML(pur, true, 1, getName(), true);
+                    } 
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    loc.getTransaction().rollback();
                 }
-           
-            }};
+         }
+         });
 
-        t1.start();
-        t2.start();
-        try {
-            // αρχικοποίηση transaction
-            if (!loc.getTransaction().isActive()) {
-                loc.getTransaction().begin();
-            }
-        loc.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            loc.getTransaction().rollback();
 
-        }
+       }
+       
+       threadPool.shutdown(); 
+//        try {
+//            // αρχικοποίηση transaction
+//            if (!loc.getTransaction().isActive()) {
+//                loc.getTransaction().begin();
+//            }
+//        loc.getTransaction().commit();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            loc.getTransaction().rollback();
+//
+//        }
     }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -409,6 +368,7 @@ public class SimulationJPanel extends javax.swing.JPanel {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         Integer choice = (Integer)(JSpinnerNumOfThreads.getValue());
         startThreads(choice);
+        gate = new CyclicBarrier(choice);
         try {
             gate.await();
         } catch (InterruptedException ex) {
