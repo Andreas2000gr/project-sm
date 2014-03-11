@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Random;
 import supermarket.DBmanager;
 
@@ -76,6 +77,8 @@ public class Simulator extends Thread {
         return customer;
     }
 
+    
+    
     public Purchase PopulateBasket(Customer customer) {
         Random r = new Random();
         //αποθηκεύουμε όλα τα καταστήματα σε μια λίστα

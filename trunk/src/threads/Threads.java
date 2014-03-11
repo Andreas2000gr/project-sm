@@ -6,6 +6,8 @@
 package threads;
 
 import LocalDB.*;
+import java.util.ArrayList;
+import java.util.List;
 import supermarket.*;
 
 /**
@@ -35,6 +37,15 @@ public class Threads {
     //Δημιουργούμε τα νήματα 
     //και αναθέτουμε ένα πελάτη σε κάθε ένα από αυτά
     public void ThreadsAssingRadCustomr() {
+        //επιστρέφει μια λίστα με πελάτες με τυχαία σειρά
+        ArrayList<Customer> CustomerList = db.FindAllCustomers();
+        for(int i=0; i< CustomerList.size(); i++){
+            Customer cust = threads[i].RandomFindCustomer();
+            if(!CustomerList.contains(cust))
+            CustomerList.add(cust);
+        }
+        
+        //για κάθε ένα από τα threads
         int Counter = 1;
         for (int i = 0; i < threads.length; i++) {
             //δημιουργία νέου νήματος
