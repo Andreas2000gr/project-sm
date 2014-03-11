@@ -446,6 +446,8 @@ public class ViewBasketJPanel extends javax.swing.JPanel {
             Basket.setPointsEarned(totalPointsEarned);
             Basket.setProductPurchaseCollection(productPurchaseList);
 
+            Usr.setAvailablePoints(Usr.getAvailablePoints()+totalPointsEarned);
+            
             if (DeliveryButton.isSelected()) {
                 Basket.setDelivery(true);
             } else {
