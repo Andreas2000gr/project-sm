@@ -11,7 +11,7 @@ import java.util.List;
 import supermarket.*;
 
 /**
- *
+ * 
  * @author Euh
  */
 public class Threads {
