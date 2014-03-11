@@ -11,6 +11,7 @@ import LocalDB.ProductPurchase;
 import LocalDB.Purchase;
 import LocalDB.Store;
 import externalDB.CreditCardAuthority;
+import static java.awt.image.ImageObserver.WIDTH;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -18,13 +19,19 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.swing.JOptionPane;
 import supermarket.DBmanager;
+import supermarket.PurchaseXMLManager;
 import supermarket.SuperMarketParentFrame;
 import supermarket.WelcomePanel;
-
+import java.io.File;
+import static javax.swing.JComponent.TOOL_TIP_TEXT_KEY;
 /**
  *
  * @author Euh
@@ -43,6 +50,9 @@ public class SimulationJPanel extends javax.swing.JPanel {
     private SuperMarketParentFrame frame;
     private Query q;
     private Purchase Basket;
+    private List<Purchase> purchaseList = new ArrayList<>();
+    private final CyclicBarrier gate = new CyclicBarrier(3);
+    private PurchaseXMLManager xml;
 
     public SimulationJPanel(SuperMarketParentFrame frame) {
         this.frame = frame;
@@ -232,7 +242,74 @@ public class SimulationJPanel extends javax.swing.JPanel {
         }
     }
     
+    public void startThreads(Integer num){
+        Thread t1 = new Thread(){
+            public void run(){
+                try {
+                        gate.await();
+                        Purchase pur = createPurchase();
+                        try {
+                        // αρχικοποίηση transaction
+                        if (!loc.getTransaction().isActive()) {
+                        loc.getTransaction().begin();
+                        }
+                        if (validateCCard(pur.getCustomer())) {
+                            xml.writeXML(pur, true, 1, this.getName(), true);
+                        }
 
+                        } catch (Exception e) {
+                        e.printStackTrace();
+                        loc.getTransaction().rollback();
+                        }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(SimulationJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (BrokenBarrierException ex) {
+                    Logger.getLogger(SimulationJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+           
+            }};
+        
+         Thread t2 = new Thread(){
+            public void run(){
+                try {
+                        gate.await();
+                        Purchase pur = createPurchase();
+                        try {
+                        // αρχικοποίηση transaction
+                        if (!loc.getTransaction().isActive()) {
+                        loc.getTransaction().begin();
+                        }
+                        if (validateCCard(pur.getCustomer())) {
+                            xml.writeXML(pur, true, 1, this.getName(), true);
+
+                        }
+
+                        } catch (Exception e) {
+                        e.printStackTrace();
+                        loc.getTransaction().rollback();
+                        }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(SimulationJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (BrokenBarrierException ex) {
+                    Logger.getLogger(SimulationJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+           
+            }};
+
+        t1.start();
+        t2.start();
+        try {
+            // αρχικοποίηση transaction
+            if (!loc.getTransaction().isActive()) {
+                loc.getTransaction().begin();
+            }
+        loc.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            loc.getTransaction().rollback();
+
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -331,8 +408,13 @@ public class SimulationJPanel extends javax.swing.JPanel {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         Integer choice = (Integer)(JSpinnerNumOfThreads.getValue());
-        for (int i = 0; i < choice; i++) {
-            createPurchase();
+        startThreads(choice);
+        try {
+            gate.await();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SimulationJPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BrokenBarrierException ex) {
+            Logger.getLogger(SimulationJPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
