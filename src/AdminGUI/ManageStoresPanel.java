@@ -6,11 +6,13 @@
 
 package AdminGUI;
 
+import LocalDB.Product;
 import LocalDB.Store;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import supermarket.*;
+import supermarket.SuperMarketParentFrame;
 
 /**
  *
@@ -19,20 +21,18 @@ import supermarket.*;
 public class ManageStoresPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form ManageStoresPanel
+     * Creates new form ManageCustomersPanel
      */
     private final SuperMarketParentFrame frame;
-    private Store store;
     private EntityManager loc;
     private Boolean tableChanged = false;
     private String oldValue;
     private String newValue;
     private Integer row;
     private Integer column;
-    private Object[][] stores;
-    private String[] columnNames = {"Όνομα","Διεύθυνση"};
-    private DefaultTableModel model = new DefaultTableModel(stores,columnNames);
-    private Boolean existsEmptyRow = false;
+    private List<Store> changedStore = new  ArrayList<>();
+    private List<Store> stoList = new ArrayList<>();    
+    private Store store = new Store();
     
     public ManageStoresPanel(SuperMarketParentFrame frame) {
         this.loc = frame.getLoc();
@@ -42,6 +42,7 @@ public class ManageStoresPanel extends javax.swing.JPanel {
             loc.getTransaction().begin();
         }
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -54,15 +55,19 @@ public class ManageStoresPanel extends javax.swing.JPanel {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("SuperMarket-local-PU").createEntityManager();
+        customerQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT c FROM Customer c");
+        customerList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : customerQuery.getResultList();
+        productQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT p FROM Product p");
+        productList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : productQuery.getResultList();
         storeQuery = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT s FROM Store s");
         storeList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : storeQuery.getResultList();
         ReturnButton = new javax.swing.JButton();
+        SaveButton = new javax.swing.JButton();
+        NewButton = new javax.swing.JButton();
+        ClearChanges = new javax.swing.JButton();
+        DeleteButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         StoreTable = new javax.swing.JTable();
-        SaveButton = new javax.swing.JButton();
-        AddRow = new javax.swing.JButton();
-        RemoveRow = new javax.swing.JButton();
-        EditButton = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Διαχείριση Καταστημάτων"));
 
@@ -73,24 +78,6 @@ public class ManageStoresPanel extends javax.swing.JPanel {
             }
         });
 
-        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, storeList, StoreTable);
-        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${address}"));
-        columnBinding.setColumnName("Address");
-        columnBinding.setColumnClass(String.class);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${name}"));
-        columnBinding.setColumnName("Name");
-        columnBinding.setColumnClass(String.class);
-        bindingGroup.addBinding(jTableBinding);
-        jTableBinding.bind();org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, StoreTable, org.jdesktop.beansbinding.ELProperty.create("${selectedElement}"), StoreTable, org.jdesktop.beansbinding.BeanProperty.create("selectedElement"));
-        bindingGroup.addBinding(binding);
-
-        StoreTable.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                StoreTablePropertyChange(evt);
-            }
-        });
-        jScrollPane1.setViewportView(StoreTable);
-
         SaveButton.setText("Αποθήκευση");
         SaveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -98,26 +85,47 @@ public class ManageStoresPanel extends javax.swing.JPanel {
             }
         });
 
-        AddRow.setText("+");
-        AddRow.addActionListener(new java.awt.event.ActionListener() {
+        NewButton.setText("Δημιουργία");
+        NewButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddRowActionPerformed(evt);
+                NewButtonActionPerformed(evt);
             }
         });
 
-        RemoveRow.setText("-");
-        RemoveRow.addActionListener(new java.awt.event.ActionListener() {
+        ClearChanges.setText("Επαναφορά");
+        ClearChanges.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RemoveRowActionPerformed(evt);
+                ClearChangesActionPerformed(evt);
             }
         });
 
-        EditButton.setText("Επεξεργασία");
-        EditButton.addActionListener(new java.awt.event.ActionListener() {
+        DeleteButton.setText("Διαγραφή");
+        DeleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EditButtonActionPerformed(evt);
+                DeleteButtonActionPerformed(evt);
             }
         });
+
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, storeList, StoreTable);
+        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${name}"));
+        columnBinding.setColumnName("Name");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${address}"));
+        columnBinding.setColumnName("Address");
+        columnBinding.setColumnClass(String.class);
+        bindingGroup.addBinding(jTableBinding);
+        jTableBinding.bind();
+        StoreTable.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                StoreTableFocusGained(evt);
+            }
+        });
+        StoreTable.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                StoreTablePropertyChange(evt);
+            }
+        });
+        jScrollPane1.setViewportView(StoreTable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -128,69 +136,67 @@ public class ManageStoresPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(ReturnButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(EditButton, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(233, 233, 233)
+                        .addComponent(ClearChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(SaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
+                        .addComponent(NewButton, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(SaveButton, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(AddRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(RemoveRow, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(DeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(AddRow, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(RemoveRow, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ReturnButton)
-                    .addComponent(SaveButton)
-                    .addComponent(EditButton))
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                .addGap(21, 21, 21)
+                .addComponent(DeleteButton)
+                .addGap(62, 62, 62)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(SaveButton)
+                            .addComponent(NewButton)
+                            .addComponent(ClearChanges))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(ReturnButton)
+                        .addGap(11, 11, 11))))
         );
 
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
- 
-//    private void populateTable(){
-//        for (Store st : storeList) {
-//            model.addRow(new Object[]{st.getName(),st.getAddress(),st.getStoreId()});
-//        }
-//         StoreTable.setModel(model);
-//        for (int i=0 ; i < StoreTable.getRowCount(); i++) {
-//            for (int j = 0; j < StoreTable.getColumnCount(); j++) {
-//               //StoreTable.setEnabled(false);
-//            }
-//        }
-//    }
-//    
-//    private boolean validateStore(){
-//        return true;
-//    }
-    
     private void ReturnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnButtonActionPerformed
-        frame.pnl = new MainPanel(frame);
-        frame.addPanelInMain();
-    }//GEN-LAST:event_ReturnButtonActionPerformed
+        Object[] options = {"Ναι","Οχι"};
+        Integer choice = JOptionPane.showOptionDialog(null,
+        "Όλες οι αλλαγές θα χαθούν. Είστε σίγουρος;",
+        "Επαναφορά στο αρχικό μενού.",
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        options,
+        options[0]);
 
-    private void AddRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddRowActionPerformed
-        if (!existsEmptyRow) {
-            existsEmptyRow = true;
-
-            model = (DefaultTableModel)StoreTable.getModel();
-            model.addRow(new Object[]{"",""});
-            StoreTable.setModel(model);
+        if (choice == JOptionPane.YES_OPTION){
+            if (loc.getTransaction().isActive()) {
+                try {
+                    loc.getTransaction().rollback();
+                    frame.pnl = new MainPanel(frame);
+                    frame.addPanelInMain();
+                } catch (Exception e) {
+                        e.printStackTrace();
+                    loc.getTransaction().rollback();
+                    frame.pnl = new MainPanel(frame);
+                    frame.addPanelInMain();
+                }
+            }
         }
-    }//GEN-LAST:event_AddRowActionPerformed
+    }//GEN-LAST:event_ReturnButtonActionPerformed
 
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
         if (tableChanged) {
@@ -215,11 +221,46 @@ public class ManageStoresPanel extends javax.swing.JPanel {
                         loc.getTransaction().rollback();            
                     }
                 }
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Δεν υπάρχουν αλλαγές...");
+            } 
         }
     }//GEN-LAST:event_SaveButtonActionPerformed
+
+    private void ClearChangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearChangesActionPerformed
+                try {
+                    loc.getTransaction().rollback();
+                    frame.pnl = new ManageStoresPanel(frame);
+                    frame.addPanelInMain();                    
+                } catch (Exception e) {
+                        e.printStackTrace();
+                    loc.getTransaction().rollback();            
+                }
+    }//GEN-LAST:event_ClearChangesActionPerformed
+
+    private void DeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButtonActionPerformed
+        if (StoreTable.getSelectedRow()!= -1) {
+            for (Integer i : StoreTable.getSelectedRows()) {
+                stoList.add(storeList.get(StoreTable.convertRowIndexToModel(i)));
+                tableChanged = true;
+                DeleteButton.setEnabled(false);
+            }
+            storeList.removeAll(stoList);
+            StoreTable.updateUI();
+            for (Store c : stoList) {
+                try {
+                    store = loc.find(Store.class, c.getStoreId());
+                    loc.remove(store);
+                    for (Product prod : productList) {
+                        prod.getStoreCollection().remove(store);
+                        loc.merge(prod);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Σφάλμα βάσης...");
+                }
+            }
+            stoList.clear();
+        }  
+    }//GEN-LAST:event_DeleteButtonActionPerformed
 
     private void StoreTablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_StoreTablePropertyChange
         if ("tableCellEditor".equals(evt.getPropertyName())) {
@@ -238,35 +279,54 @@ public class ManageStoresPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_StoreTablePropertyChange
 
-    private void RemoveRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveRowActionPerformed
-        if (StoreTable.getSelectedRowCount() != -1) {
-            tableChanged = true;
-            for (Integer i : StoreTable.getSelectedRows()) {
-                store = storeList.get(StoreTable.convertRowIndexToModel(i));
-                loc.remove(store);
+    private void StoreTableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_StoreTableFocusGained
+        DeleteButton.setEnabled(true); //Η διαγραφή ενεργοποιείται μονο εάν έχουμε επιλέξει σειρά.
+    }//GEN-LAST:event_StoreTableFocusGained
+
+    private void NewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewButtonActionPerformed
+        if (tableChanged) {
+            Object[] options = {"Ναι","Οχι"};
+            Integer choice = JOptionPane.showOptionDialog(null,
+            "Επιβεβαίωση αλλαγών;",
+            null,
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            options,
+            options[0]);
+
+            if (choice == JOptionPane.YES_OPTION){
+                if (loc.getTransaction().isActive()) {
+                    try {
+                        loc.getTransaction().commit();
+                    } catch (Exception e) {
+                            e.printStackTrace();
+                        loc.getTransaction().rollback(); 
+                    }
+                }
             }
         }
-    }//GEN-LAST:event_RemoveRowActionPerformed
-
-    private void EditButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditButtonActionPerformed
-        row = StoreTable.getSelectedRow();
-        JOptionPane.showMessageDialog(null,model.getValueAt(row, 2).toString());
-//        store = new Store(  ,
-//                            model.getValueAt(row, 0).toString(),
-//                            model.getValueAt(row, 1).toString());
-//        JOptionPane.showMessageDialog(null, store.getName());
-    }//GEN-LAST:event_EditButtonActionPerformed
+        
+        CreateStoreDialog dialog = new CreateStoreDialog(frame,true);
+        dialog.setVisible(true);
+        frame.pnl = new ManageStoresPanel(frame);
+        frame.addPanelInMain();
+    }//GEN-LAST:event_NewButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton AddRow;
-    private javax.swing.JButton EditButton;
-    private javax.swing.JButton RemoveRow;
+    private javax.swing.JButton ClearChanges;
+    private javax.swing.JButton DeleteButton;
+    private javax.swing.JButton NewButton;
     private javax.swing.JButton ReturnButton;
     private javax.swing.JButton SaveButton;
     private javax.swing.JTable StoreTable;
+    private java.util.List<LocalDB.Customer> customerList;
+    private javax.persistence.Query customerQuery;
     private javax.persistence.EntityManager entityManager;
     private javax.swing.JScrollPane jScrollPane1;
+    private java.util.List<LocalDB.Product> productList;
+    private javax.persistence.Query productQuery;
     private java.util.List<LocalDB.Store> storeList;
     private javax.persistence.Query storeQuery;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
