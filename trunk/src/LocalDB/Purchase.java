@@ -106,7 +106,7 @@ public class Purchase implements Serializable {
         this.pointsEarned = pointsEarned;
     }
 
-    public Serializable getDelivery() {
+    public Boolean getDelivery() {
         return delivery;
     }
 
