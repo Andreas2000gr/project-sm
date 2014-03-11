@@ -34,7 +34,7 @@ public class Threads {
 
     //Δημιουργούμε τα νήματα 
     //και αναθέτουμε ένα πελάτη σε κάθε ένα από αυτά
-    public void ThredsAssingRadCustomr() {
+    public void ThreadsAssingRadCustomr() {
         int Counter = 1;
         for (int i = 0; i < threads.length; i++) {
             //δημιουργία νέου νήματος
