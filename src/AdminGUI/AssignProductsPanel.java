@@ -161,6 +161,7 @@ public class AssignProductsPanel extends javax.swing.JPanel {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        StoreProductsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         StoreProductsList.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -204,6 +205,7 @@ public class AssignProductsPanel extends javax.swing.JPanel {
 
         jScrollPane2.setEnabled(false);
 
+        AvailableProducts.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         AvailableProducts.setAutoscrolls(false);
         AvailableProducts.setCellRenderer(new DefaultListCellRenderer() {
             @Override

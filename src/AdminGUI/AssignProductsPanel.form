@@ -189,6 +189,7 @@
                 <StringItem index="4" value="Item 5"/>
               </StringArray>
             </Property>
+            <Property name="selectionMode" type="int" value="1"/>
             <Property name="cellRenderer" type="javax.swing.ListCellRenderer" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="new DefaultListCellRenderer() {&#xd;&#xa;            @Override&#xd;&#xa;            public Component getListCellRendererComponent(JList&lt;?&gt; list, Object value, int index, boolean isSelected, boolean cellHasFocus) {&#xd;&#xa;                Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);&#xd;&#xa;                if (value instanceof Product) {&#xd;&#xa;                   setText(((Product)value).getName());&#xd;&#xa;                }&#xd;&#xa;                return renderer;&#xd;&#xa;            }&#xd;&#xa;        }" type="code"/>
             </Property>
@@ -238,6 +239,7 @@
       <SubComponents>
         <Component class="javax.swing.JList" name="AvailableProducts">
           <Properties>
+            <Property name="selectionMode" type="int" value="1"/>
             <Property name="autoscrolls" type="boolean" value="false"/>
             <Property name="cellRenderer" type="javax.swing.ListCellRenderer" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="new DefaultListCellRenderer() {&#xd;&#xa;            @Override&#xd;&#xa;            public Component getListCellRendererComponent(JList&lt;?&gt; list, Object value, int index, boolean isSelected, boolean cellHasFocus) {&#xd;&#xa;                Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);&#xd;&#xa;                if (value instanceof Product) {&#xd;&#xa;                   setText(((Product)value).getName());&#xd;&#xa;                }&#xd;&#xa;                return renderer;&#xd;&#xa;            }&#xd;&#xa;        }" type="code"/>
