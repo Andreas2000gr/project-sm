@@ -28,7 +28,7 @@ import supermarket.DBmanager;
  * κάποιοι περιορισμοί:
  *
  */
-public class Simulator {
+public class Simulator extends Thread {
 
     private DBmanager db;
     public Purchase Basket;
