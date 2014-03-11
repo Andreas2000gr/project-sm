@@ -249,7 +249,7 @@ public class SuperMarket {
             //δημιουργούμε ένα πελάτη
             Customer CustomerA = new Customer("Andreas", "Paradise", "111-111", "Αιόλου 29, Γαλάτσι", 0, "aparadis");
             Customer CustomerB = new Customer("Panagis", "Loukatos", "222-222", "Αγ. Μαρίνας 33, Πειραιάς", 0, "ploukato");
-            Customer CustomerC = new Customer("Anestis", "Passas", "333-333", "Δωδεκανήσου 20, Χολαργός", 0, "apassas");
+            Customer CustomerC = new Customer("Nicolas", "Drossos", "333-333", "Δωδεκανήσου 20, Χολαργός", 0, "ndrossos");
             Customer CustomerD = new Customer("Euh", "Papavasileiou", "444-444", "Αγ. Διονυσίου 123, Αγ. Παρασκευή", 0, "epapavas");
 
             //δημιουργούμε νέες επιταγές      
@@ -296,15 +296,15 @@ public class SuperMarket {
             Voucher VoucherD2 = new Voucher(false, date, CustomerD);
 
             //----------------
-            myDateAsString = "3013-05-03";
+            myDateAsString = "2013-05-03";
             formatter = new SimpleDateFormat("yyyy-MM-dd");
             date = formatter.parse(myDateAsString);
             Voucher VoucherD3 = new Voucher(false, date, CustomerD);
 
             //Σχετίζουμε τον πελάτη με την πιστωτική κάρτα
             CustomerA.setCreditCardId(2);
-            CustomerB.setCreditCardId(3);
-            CustomerC.setCreditCardId(4);
+            CustomerB.setCreditCardId(4);
+            CustomerC.setCreditCardId(3);
             CustomerD.setCreditCardId(5);
 
             //ορίζουμε διευθύνση στον πελάτη
