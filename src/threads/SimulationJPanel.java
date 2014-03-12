@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import supermarket.WelcomePanel;
+
 /**
  *
  * @author Euh
@@ -41,7 +42,6 @@ public class SimulationJPanel extends javax.swing.JPanel {
     /**
      * Creates new form ThreadsJPanel
      */
-
     private DBmanager db = new DBmanager();
     private Calendar cal = new GregorianCalendar();
     private Date date = cal.getTime();
@@ -64,12 +64,14 @@ public class SimulationJPanel extends javax.swing.JPanel {
             db.getLoc().getTransaction().begin();
         }
     }
-        
-    public Customer RandomFindCustomer() {
+
+    public List<Customer> RandomFindCustomer(int NumberOfCustomers) {
         //χρήση της random
         Random r = new Random();
         Customer customer = new Customer();
         List<Customer> customers = new ArrayList<>();
+        List<Customer> Returncustomers = new ArrayList<>();
+
         //βρίσκουμε όλους τους πελάτες και τους επιστρέφουμε στη βάση
         try {
             customers = db.FindAllCustomers();
@@ -78,20 +80,31 @@ public class SimulationJPanel extends javax.swing.JPanel {
             loc.getTransaction().rollback();
             return null;
         }
-        //επιλέγουμε μια τυχαία θέση, με ανώτατο όριο, το όριο της λίστας μας
-        int customerIndex = r.nextInt(customers.size());
-        //και βρίσκουμε τον πελάτη που βρίσκεται στη συγκεκριμέη θέση
-        customer = customers.get(customerIndex);
 
-        return customer;
+        //Αν επιλεγούν περισσότεροι πελάτες από όσους έχουμε στη βάση
+        //μικραίνουμε το ίριο
+        if (NumberOfCustomers > customers.size()) {
+            NumberOfCustomers = customers.size();
+        }
+
+        for (int i = 0; i < NumberOfCustomers; i++) {
+            //επιλέγουμε μια τυχαία θέση, με ανώτατο όριο, το όριο της λίστας μας
+            int customerIndex = r.nextInt(customers.size());
+            //και βρίσκουμε τον πελάτη που βρίσκεται στη συγκεκριμέη θέση
+            customer = customers.get(customerIndex);
+            Returncustomers.add(customer);
+            //αφαιρούμε από την αρχική λίστα τον πελάτη που προστέθηκε στη νέα λίστα
+            customers.add(customer);
+        }
+        return Returncustomers;
     }
 
-    public boolean validateCCard(Customer customer){
+    public boolean validateCCard(Customer customer) {
         CreditCardAuthority CCard = new CreditCardAuthority();
         try {
             q = ext.createNamedQuery("CreditCardAuthority.findByPkCardId");
             q.setParameter("pkCardId", customer.getCreditCardId());
-            CCard = (CreditCardAuthority)q.getSingleResult();
+            CCard = (CreditCardAuthority) q.getSingleResult();
             return true;
         } catch (javax.persistence.NoResultException e) {
 
@@ -99,12 +112,12 @@ public class SimulationJPanel extends javax.swing.JPanel {
         } catch (javax.persistence.NonUniqueResultException e) {
 
             return false;
-        } catch (Exception e){
+        } catch (Exception e) {
 
-            return false; 
+            return false;
         }
     }
-    
+
     public Purchase PopulateBasket(Customer customer) {
         Random r = new Random();
         Basket = new Purchase();
@@ -118,8 +131,7 @@ public class SimulationJPanel extends javax.swing.JPanel {
             loc.getTransaction().rollback();
             return null;
         }
-    
-                 
+
         //βρίσκουμε ένα κατάστημα
         int storeIndex = r.nextInt(stores.size());
         Store s = stores.get(storeIndex);
@@ -172,13 +184,13 @@ public class SimulationJPanel extends javax.swing.JPanel {
         if (r.nextInt(1) == 1) {
             Delivery = true;
         }
-        
+
         Float cost = 0.0f;
         Integer points = 0;
-        
+
         for (ProductPurchase pp : ProdPurchCollection) {
-             cost = cost + (pp.getQuantity() * pp.getProductId().getPrice());
-             points = points + (pp.getQuantity() * pp.getProductId().getPoints());
+            cost = cost + (pp.getQuantity() * pp.getProductId().getPrice());
+            points = points + (pp.getQuantity() * pp.getProductId().getPoints());
         }
         //Προσθέτουμε στο καλάθι μας(Purchase) το προϊόν που 
         Basket.setCustomer(customer);
@@ -188,7 +200,7 @@ public class SimulationJPanel extends javax.swing.JPanel {
         Basket.setStore(s);
         Basket.setDelivery(Delivery);
         Basket.getProductPurchaseCollection().addAll(ProdPurchCollection);
-        
+
         try {
             // αρχικοποίηση transaction
             if (!loc.getTransaction().isActive()) {
@@ -201,69 +213,81 @@ public class SimulationJPanel extends javax.swing.JPanel {
             return null;
         }
     }
-    
-    public Purchase createPurchase(){
-        
+
+    public List<Purchase> createPurchase() {
+
         //Γράφουμε τα αποτελέσματα στο textarea
         if (jTextAreaSimulation.getText().isEmpty()) {
-            
+
         }
         jTextAreaSimulation.append("Έναρξη διαδικασίας προσωμείωσης νημάτων.\n");
 
         //για κάθε ένα από τα νήματα επιλέγεται ένας πελάτης
         jTextAreaSimulation.append("Τυχαία επιλογή πελατών\n");
 
+        List<Purchase> BasketList = new ArrayList();
         //εντοπισμός τυχαίων πελατών
-        Customer customer = RandomFindCustomer();
-        jTextAreaSimulation.append("Επιλέχθηκε ο πελάτης " + customer.getLastName() + "\n");
-
-        //Αγορά τυχαίων προϊόντων και προσθήκη στο καλάθι του επιλεγμένου πελάτη
-        jTextAreaSimulation.append("Τυχαία επιλογή προϊόντων για αγορά\n");
-        Purchase purchase = PopulateBasket(customer);
-        jTextAreaSimulation.append("Purchase ID: "+purchase.getPurchaseId()+ "\n");
-
-        for(ProductPurchase pp : purchase.getProductPurchaseCollection()){
-            jTextAreaSimulation.append("Επιλέχθηκε τυχαία το προϊόν: " + pp.getProductId().getName() +"- τεμάχια:" + pp.getQuantity() + "\n");
-        }
-        loc.persist(Basket);
-       return Basket;
-    }
-    
-    private void persistPurchase(){
-            if (!loc.getTransaction().isActive()) {
-                 loc.getTransaction().begin();
-            }
-            // αρχικοποίηση transaction
-        Purchase p = createPurchase();
-            try {
+        List<Customer> customers = RandomFindCustomer(2);//ορίζουμε 2 πελάτες
         
-            if (validateCCard(p.getCustomer())) {
-                loc.getTransaction().commit();
-                xml.writeXML(p, true, 1, "thread 1", true);
+        for (Customer customer : customers) {
 
-            } 
+            jTextAreaSimulation.append("Επιλέχθηκε ο πελάτης " + customer.getLastName() + "\n");
+
+            //Αγορά τυχαίων προϊόντων και προσθήκη στο καλάθι του επιλεγμένου πελάτη
+            jTextAreaSimulation.append("Τυχαία επιλογή προϊόντων για αγορά\n");
+            Purchase purchase = PopulateBasket(customer);
+
+            for (ProductPurchase pp : purchase.getProductPurchaseCollection()) {
+                jTextAreaSimulation.append("Επιλέχθηκε τυχαία το προϊόν: " + pp.getProductId().getName() + "- τεμάχια:" + pp.getQuantity() + "\n");
+            }
+            BasketList.add(Basket);
+            loc.persist(Basket);
+        }
+        return BasketList;
+    }
+
+    private void persistPurchase() {
+        this.xml = new PurchaseXMLManager();//in order to create/update XML File
+        if (!loc.getTransaction().isActive()) {
+            loc.getTransaction().begin();
+        }
+        // αρχικοποίηση transaction
+        List<Purchase> p = new ArrayList();
+        p=createPurchase();
+
+        for (Purchase Pur : p) {
+            try {
+                if (validateCCard(Pur.getCustomer())) {
+                            if (!loc.getTransaction().isActive()) {
+            loc.getTransaction().begin();
+        }
+                    loc.getTransaction().commit();
+                    xml.writeXML(Pur, true, 1, "test 1", true);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 loc.getTransaction().rollback();
             }
-    }
-    
-    public void startThreads(Integer num) throws InterruptedException{
-      
-        ExecutorService threadPool = Executors.newFixedThreadPool(2);
-        
-        for (int i=0; i < num ; i++) {
-            threadPool.submit(new Runnable() {
-                public void run() {
-                  persistPurchase();
-             }
-            });
-         }
-       
-        threadPool.shutdown(); 
+        }
 
     }
-    
+
+    public void startThreads(Integer num) throws InterruptedException {
+
+        ExecutorService threadPool = Executors.newFixedThreadPool(2);
+
+        for (int i = 0; i < num; i++) {
+            threadPool.submit(new Runnable() {
+                public void run() {
+                    persistPurchase();
+                }
+            });
+        }
+
+        threadPool.shutdown();
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -361,7 +385,7 @@ public class SimulationJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        Integer choice = (Integer)(JSpinnerNumOfThreads.getValue());
+        Integer choice = (Integer) (JSpinnerNumOfThreads.getValue());
         try {
             startThreads(choice);
         } catch (InterruptedException ex) {
