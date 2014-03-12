@@ -28,6 +28,7 @@ import supermarket.SuperMarketParentFrame;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import supermarket.WelcomePanel;
@@ -93,13 +94,13 @@ public class SimulationJPanel extends javax.swing.JPanel {
             CCard = (CreditCardAuthority)q.getSingleResult();
             return true;
         } catch (javax.persistence.NoResultException e) {
-            JOptionPane.showMessageDialog(null, "Κάρτα δεν βρέθηκε...");
+
             return false;
         } catch (javax.persistence.NonUniqueResultException e) {
-            JOptionPane.showMessageDialog(null, "Μή μοναδική κάρτα...");
+
             return false;
         } catch (Exception e){
-            JOptionPane.showMessageDialog(null, "Σφάλμα...");
+
             return false; 
         }
     }
@@ -224,49 +225,43 @@ public class SimulationJPanel extends javax.swing.JPanel {
         for(ProductPurchase pp : purchase.getProductPurchaseCollection()){
             jTextAreaSimulation.append("Επιλέχθηκε τυχαία το προϊόν: " + pp.getProductId().getName() +"- τεμάχια:" + pp.getQuantity() + "\n");
         }
+        loc.persist(Basket);
        return Basket;
     }
     
-    public void startThreads(Integer num){
+    private void persistPurchase(){
+            if (!loc.getTransaction().isActive()) {
+                 loc.getTransaction().begin();
+            }
+            // αρχικοποίηση transaction
+        Purchase p = createPurchase();
+            try {
+        
+            if (validateCCard(p.getCustomer())) {
+                loc.getTransaction().commit();
+                xml.writeXML(p, true, 1, "thread 1", true);
+
+            } 
+            } catch (Exception e) {
+                e.printStackTrace();
+                loc.getTransaction().rollback();
+            }
+    }
+    
+    public void startThreads(Integer num) throws InterruptedException{
       
         ExecutorService threadPool = Executors.newFixedThreadPool(2);
         
-        for (int i = 0; i < num; i++) {
-         threadPool.submit(new Runnable() {
-         public void run() {
-                Purchase pur = createPurchase();
-                try {
-                // αρχικοποίηση transaction
-                    if (!loc.getTransaction().isActive()) {
-                         loc.getTransaction().begin();
-                    }    
-                    if (validateCCard(pur.getCustomer())) {
-                        loc.persist(pur);
-                        loc.getTransaction().commit();
-                        xml.writeXML(pur, true, 1, getName(), true);
-                    } 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    loc.getTransaction().rollback();
-                }
+        for (int i=0; i < num ; i++) {
+            threadPool.submit(new Runnable() {
+                public void run() {
+                  persistPurchase();
+             }
+            });
          }
-         });
-
-
-       }
        
-       threadPool.shutdown(); 
-//        try {
-//            // αρχικοποίηση transaction
-//            if (!loc.getTransaction().isActive()) {
-//                loc.getTransaction().begin();
-//            }
-//        loc.getTransaction().commit();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            loc.getTransaction().rollback();
-//
-//        }
+        threadPool.shutdown(); 
+
     }
     
     /**
@@ -367,13 +362,9 @@ public class SimulationJPanel extends javax.swing.JPanel {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         Integer choice = (Integer)(JSpinnerNumOfThreads.getValue());
-        startThreads(choice);
-        gate = new CyclicBarrier(choice);
         try {
-            gate.await();
+            startThreads(choice);
         } catch (InterruptedException ex) {
-            Logger.getLogger(SimulationJPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (BrokenBarrierException ex) {
             Logger.getLogger(SimulationJPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
