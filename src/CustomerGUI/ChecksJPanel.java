@@ -88,6 +88,8 @@ public class ChecksJPanel extends javax.swing.JPanel {
             }
         });
 
+        AvailablePoints.setEditable(false);
+
         jLabel1.setText("Διαθέσμοι Πόντοι:");
 
         jButton1.setText("Ανανέωση");
