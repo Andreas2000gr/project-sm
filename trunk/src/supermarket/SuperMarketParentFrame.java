@@ -13,6 +13,7 @@ import CustomerGUI.*;
 import javax.persistence.*;
 import LocalDB.*;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;
@@ -119,8 +120,15 @@ public class SuperMarketParentFrame extends javax.swing.JFrame {
         if (!loc.getTransaction().isActive()) {
             loc.getTransaction().begin();
         }
-        Float amount = pur.getAmount();
-        Integer noOfVouchers = amount.intValue()/200;
+        
+        Collection<ProductPurchase> pp = pur.getProductPurchaseCollection();
+        int AvailablePoints = 0; 
+        
+        for (ProductPurchase ppp: pp){
+            AvailablePoints = AvailablePoints + ppp.getProductId().getPoints();
+        }
+        
+        Integer noOfVouchers = AvailablePoints/200;
         
         try {
             for (int i = 0; i < noOfVouchers; i++) {
